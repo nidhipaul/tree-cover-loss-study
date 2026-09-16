@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Tree cover loss in Kenya, 2001-2025, by county, sub-county and driver. Hansen/UMD data via Global Nature Watch, dataset v20260427.">
+<title>Kenya Tree Cover Loss</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<style>
+:root {
+  color-scheme: light;
+
+  --ground:      #f6f8f5;
+  --surface:     #ffffff;
+  --surface-2:   #eef2ed;
+  --ink:         #15201b;
+  --ink-2:       #4a5a52;
+  --ink-3:       #7b8a82;
+  --rule:        #dde4dc;
+  --rule-2:      #c9d3c8;
+
+  --canopy:      #1f6f5c;
+  --canopy-soft: #e3f0eb;
+  --ember:       #b84a26;
+  --graphite:    #3f4d46;
+  --graphite-2:  #97a79f;
+
+  --d1: #2a78d6;
+  --d2: #eb6834;
+  --d3: #1baf7a;
+  --d4: #eda100;
+  --d5: #e87ba4;
+  --d6: #008300;
+  --d7: #4a3aa7;
+
+  --shadow: 0 1px 2px rgba(21,32,27,.05), 0 8px 24px -16px rgba(21,32,27,.18);
+
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-sans: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ground:      #111512;
+    --surface:     #181d19;
+    --surface-2:   #1f2620;
+    --ink:         #e7ebe6;
+    --ink-2:       #a9b6ad;
+    --ink-3:       #7d8b82;
+    --rule:        #28302b;
+    --rule-2:      #38423a;
+
+    --canopy:      #43a086;
+    --canopy-soft: #18312a;
+    --ember:       #e08256;
+    --graphite:    #93a79d;
+    --graphite-2:  #5b6b62;
+
+    --d1: #3987e5;
+    --d2: #d95926;
+    --d3: #199e70;
+    --d4: #c98500;
+    --d5: #d55181;
+    --d6: #008300;
+    --d7: #9085e9;
+
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.6);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground:      #111512;
+  --surface:     #181d19;
+  --surface-2:   #1f2620;
+  --ink:         #e7ebe6;
+  --ink-2:       #a9b6ad;
+  --ink-3:       #7d8b82;
+  --rule:        #28302b;
+  --rule-2:      #38423a;
+
+  --canopy:      #43a086;
+  --canopy-soft: #18312a;
+  --ember:       #e08256;
+  --graphite:    #93a79d;
+  --graphite-2:  #5b6b62;
+
+  --d1: #3987e5;
+  --d2: #d95926;
+  --d3: #199e70;
+  --d4: #c98500;
+  --d5: #d55181;
+  --d6: #008300;
+  --d7: #9085e9;
+
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.6);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--f-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 0 64px;
+}
+
+/* ---------- masthead ---------- */
+
+.mast { padding-block: 44px 26px; }
+
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--canopy);
+  margin: 0 0 14px;
+}
+
+h1 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 6.1vw, 4.35rem);
+  line-height: 1.04;
+  letter-spacing: -.035em;
+  margin: 0 0 18px;
+  max-width: none;
+}
+h1 em { font-style: normal; color: var(--ember); }
+
+.standfirst {
+  font-size: 1.0625rem;
+  color: var(--ink-2);
+  margin: 0;
+}
+.standfirst strong { color: var(--ember); font-weight: 600; }
+
+/* ---------- control bar ---------- */
+
+.controls {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin-block: 26px 12px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 3px solid var(--canopy);
+  border-radius: 3px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 28px;
+}
+
+.ctl-head { display: flex; flex-direction: column; gap: 3px; }
+
+.ctl-title {
+  font-family: var(--f-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -.015em;
+  color: var(--ink);
+}
+
+.ctl-hint { font-size: 12.5px; color: var(--ink-3); }
+
+.ctl-label {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.chip {
+  font-family: var(--f-mono);
+  font-size: 13px;
+  padding: 7px 13px;
+  border: 1px solid var(--rule-2);
+  background: var(--surface);
+  color: var(--ink-2);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.chip:hover { border-color: var(--canopy); color: var(--ink); }
+.chip[aria-pressed="true"] {
+  background: var(--canopy);
+  border-color: var(--canopy);
+  color: #fff;
+  font-weight: 500;
+}
+:root[data-theme="dark"] .chip[aria-pressed="true"],
+.chip[aria-pressed="true"] { color: #fff; }
+
+:focus-visible { outline: 2px solid var(--canopy); outline-offset: 2px; }
+
+/* ---------- stat tiles ---------- */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.tile { background: var(--surface); padding: 18px 20px 20px; }
+
+.tile-k {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 10px;
+}
+.tile-v {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 2.1rem;
+  line-height: 1;
+  letter-spacing: -.025em;
+  font-variant-numeric: tabular-nums;
+}
+.tile-v .unit {
+  font-family: var(--f-mono);
+  font-size: .78rem;
+  letter-spacing: 0;
+  color: var(--ink-3);
+  margin-left: 5px;
+}
+.tile-sub { margin-top: 9px; font-size: 12.5px; color: var(--ink-2); }
+.tile.accent .tile-v { color: var(--ember); }
+
+/* ---------- sections ---------- */
+
+section { margin-top: 46px; }
+
+.sec-head { margin-bottom: 18px; }
+
+h2 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  margin: 0 0 7px;
+  letter-spacing: -.02em;
+}
+.sec-head p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 20px;
+}
+
+.chart-host { width: 100%; }
+.chart-host svg { display: block; max-width: 100%; }
+
+/* ---------- legend ---------- */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 16px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+.lg { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink-2); }
+.lg i { width: 11px; height: 11px; border-radius: 2px; flex: none; display: block; }
+.lg b { font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-3); font-weight: 500; }
+
+/* ---------- two-column band ---------- */
+
+.band {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  gap: 20px;
+  align-items: start;
+}
+
+/* state ranking */
+
+.rank-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 14px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+  flex-wrap: wrap;
+}
+
+/* ---------- threshold explainer ---------- */
+
+.explainer {
+  margin-bottom: 30px;
+  padding: 18px 20px;
+  background: var(--surface-2);
+  border-radius: 3px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+.explainer h2 {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--canopy);
+  margin: 0;
+}
+.explainer p { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+.explainer p strong { color: var(--ink); font-weight: 600; }
+.explainer-std {
+  margin-top: 4px !important;
+  font-size: 14px !important;
+}
+.explainer-std strong { color: var(--canopy) !important; }
+.explainer-note {
+  margin-top: 4px !important;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule-2);
+  font-family: var(--f-mono);
+  font-size: 11.5px !important;
+  color: var(--ink-3) !important;
+}
+
+.rank-list { display: flex; flex-direction: column; }
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3px;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 2px;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+}
+.row:hover { background: var(--surface-2); }
+.row[aria-current="true"] { background: var(--canopy-soft); }
+
+.row-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.row-name { font-size: 13.5px; font-weight: 500; }
+.row[aria-current="true"] .row-name { color: var(--canopy); }
+.row-val {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+.row-track { height: 5px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
+.row[aria-current="true"] .row-track { background: color-mix(in srgb, var(--canopy) 18%, transparent); }
+.row-fill { display: block; height: 100%; background: var(--graphite); border-radius: 0 2px 2px 0; }
+.row[aria-current="true"] .row-fill { background: var(--canopy); }
+
+/* detail panel */
+
+#states-head { scroll-margin-top: 108px; }
+
+.detail-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--rule);
+}
+.detail-name {
+  font-family: var(--f-display);
+  font-size: 1.45rem;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  margin: 0;
+  font-weight: 600;
+}
+.detail-meta { font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-3); text-align: right; }
+
+.minis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.mini-k {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 5px;
+}
+.mini-v {
+  font-family: var(--f-mono);
+  font-size: 1.05rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.mini-n { font-size: 11.5px; color: var(--ink-3); margin-top: 3px; line-height: 1.35; }
+
+.sub-h {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 22px 0 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+}
+.sub-h span { letter-spacing: 0; text-transform: none; font-size: 11px; }
+
+.compbar { display: flex; height: 26px; border-radius: 2px; overflow: hidden; gap: 2px; }
+.compbar i { display: block; height: 100%; }
+
+.dlist { display: flex; flex-direction: column; gap: 6px; }
+.drow { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: baseline; }
+.drow .n { font-size: 13px; }
+.drow .v { font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.drow .t { grid-column: 1 / -1; height: 5px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
+.drow .t i { display: block; height: 100%; background: var(--graphite); border-radius: 0 2px 2px 0; }
+
+.note {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  background: var(--surface-2);
+  border-left: 2px solid var(--rule-2);
+  padding: 9px 12px;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ---------- cautions ---------- */
+
+.cautions {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 26px 24px;
+}
+.caution-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 34px;
+  margin-top: 4px;
+}
+.caution h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 6px;
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+}
+.caution h3 b {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ember);
+  font-weight: 500;
+  flex: none;
+}
+.caution p { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+
+.cites {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-size: 12px;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+.cites p { margin: 0 0 7px; }
+.cites .how {
+  font-family: var(--f-sans);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--rule);
+}
+.cites .how b { color: var(--ink); }
+.cites .how sub { font-size: .75em; }
+.cites a { color: var(--canopy); text-decoration: none; border-bottom: 1px solid var(--rule-2); }
+.cites a:hover { border-bottom-color: var(--canopy); }
+
+/* ---------- tooltip ---------- */
+
+#tip {
+  position: fixed;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -100%);
+  background: var(--ink);
+  color: var(--ground);
+  padding: 7px 10px;
+  border-radius: 3px;
+  font-family: var(--f-mono);
+  font-size: 11.5px;
+  line-height: 1.45;
+  white-space: nowrap;
+  box-shadow: var(--shadow);
+  transition: opacity .1s;
+}
+#tip b { font-weight: 600; }
+#tip .tk { color: var(--graphite-2); }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 980px) {
+  .band { grid-template-columns: minmax(0, 1fr); }
+  .tiles { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 620px) {
+  .wrap { padding-inline: 16px; }
+  .tiles { grid-template-columns: 1fr; }
+  .minis { grid-template-columns: 1fr 1fr; }
+  .caution-grid { grid-template-columns: 1fr; }
+  .controls { position: static; }
+  #states-head { scroll-margin-top: 16px; }
+  .detail-meta { text-align: left; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">Hansen / UMD · Global Nature Watch · Dataset v20260427 · 2001–2025</p>
+    <h1>Kenya has lost <em>12.4%</em> of its tree cover this century</h1>
+    <p class="standfirst">
+      410,801 hectares of canopy came down between 2001 and 2025, from a forest covering less
+      than 6% of the country. But the trend has turned: <strong>loss peaked in 2007, and the
+      last five years have run at under half the 2006–10 rate</strong>. Narok county alone
+      accounts for one hectare in five, and nearly three-quarters of all attributed loss is
+      conversion to permanent cropland. Read the caveats before quoting any number here.
+    </p>
+
+  </header>
+
+  <div class="controls">
+    <div class="ctl-head">
+      <span class="ctl-title">Canopy cover</span>
+      <span class="ctl-hint">Every figure on this page responds to this setting</span>
+    </div>
+    <div class="chips" id="th-chips" role="group" aria-label="Canopy density threshold"></div>
+  </div>
+
+  <aside class="explainer">
+    <h2 id="explainer-title">What does Canopy cover &gt;30% mean?</h2>
+    <p>
+      <strong>How thick did the tree cover have to be in 2000 for a patch of land to count as
+      forest at all?</strong> Every 30 m square of Kenya has a score for how much of it sat under
+      canopy that year — 5%, 40%, 90%. The threshold is where you draw the line. At
+      &gt;<span id="ex-th-a">30</span>%, only squares that were at least
+      <span id="ex-th-b">30</span>% covered are counted; the rest are ignored.
+    </p>
+    <p>
+      It defines forest. It says nothing about how much was later lost. Set the line low and
+      patchy scrub counts too, so the totals grow; set it high and only dense forest counts.
+    </p>
+    <p class="explainer-std"><strong>&gt;30% is the standard that gets published.</strong></p>
+    <p class="explainer-note">
+      Kenya's Constitution targets 10% tree cover of total land area — that is a share of the
+      country, not a canopy density, so it is not this setting. Drivers and primary forest are
+      only measured at &gt;30%.
+    </p>
+  </aside>
+
+  <div class="tiles" id="tiles"></div>
+
+  <section>
+    <div class="sec-head">
+      <h2>Annual loss</h2>
+      <p>Driver attribution is only available at &gt;30% canopy cover, so the split shows at that setting alone.</p>
+    </div>
+    <div class="panel">
+      <div class="chart-host" id="annual"></div>
+      <div class="legend" id="annual-legend"></div>
+    </div>
+  </section>
+
+
+  <section>
+    <div class="sec-head" id="states-head">
+      <h2>County by county</h2>
+      <p>Select a county to see its drivers, its sub-counties, and its carbon balance.</p>
+    </div>
+    <div class="band">
+      <div class="panel">
+        <div class="rank-head">
+          <div class="chips" id="metric-chips" role="group" aria-label="County ranking metric">
+            <button class="chip" type="button" id="m-abs" data-metric="abs" aria-pressed="true">Hectares lost</button>
+            <button class="chip" type="button" id="m-pct" data-metric="pct" aria-pressed="false">% of extent</button>
+          </div>
+          <span class="ctl-label" id="rank-th"></span>
+        </div>
+        <div class="rank-list" id="rank"></div>
+      </div>
+      <div class="panel" id="detail"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Before you quote these figures</h2>
+      <p>Four things this dataset does not say, each of which is routinely misread.</p>
+    </div>
+    <div class="cautions">
+      <div class="caution-grid">
+        <div class="caution">
+          <h3><b>01</b> Loss is not deforestation</h3>
+          <p>
+            "Tree cover" is any vegetation over 5 m — natural forest and plantation alike — and
+            "loss" is canopy removal from any cause: harvesting, fire, disease, storm damage.
+            Much of it regrows. Permanence is not in this measurement.
+          </p>
+        </div>
+        <div class="caution">
+          <h3><b>02</b> This loss is unusually likely to be permanent</h3>
+          <p>
+            72% of driver-attributed loss is conversion to permanent agriculture and a further
+            24% is logging. Unlike rotational systems that clear and regrow, cropland conversion
+            rarely returns to forest — so here, more of the loss than usual really does mean
+            forest gone for good.
+          </p>
+        </div>
+        <div class="caution">
+          <h3><b>03</b> The early years are not comparable to the late ones</h3>
+          <p>
+            Satellite inputs and methods changed between 2011 and 2015, improving detection.
+            That normally inflates later years — which makes Kenya's fall from 21,300 ha/yr in
+            2006–10 to 10,000 ha/yr in 2021–25 more convincing, not less: the decline shows up
+            despite the instrument getting better at finding loss.
+          </p>
+        </div>
+        <div class="caution">
+          <h3><b>04</b> Primary forest here means humid tropical only</h3>
+          <p>
+            The primary-forest layer reaches 35 of Kenya's 47 counties and accounts for just
+            55,025 ha of loss. Dryland and montane forest outside the humid tropical zone falls
+            outside its scope, so a blank county is not an absence of old-growth.
+          </p>
+        </div>
+      </div>
+
+      <div class="cites">
+        <p class="how">
+          <b>How this was compiled.</b> Tree cover and its loss come from the University of
+          Maryland's GLAD laboratory working with Google, derived from Landsat imagery at 30 m;
+          a pixel is recorded as lost where a stand-replacing disturbance clears at least half
+          its canopy. Humid tropical primary forest follows Turubanova et al.'s definition —
+          mature natural forest never completely cleared and regrown in recent history. Dominant
+          drivers were mapped by WRI with Google DeepMind, which assigns each 1 km cell the
+          single driver responsible for the majority of its loss across the whole period. Carbon
+          emissions, removals and net flux are modelled from Harris et al., revised by Gibbs et
+          al., covering CO<sub>2</sub>, CH<sub>4</sub> and N<sub>2</sub>O across multiple carbon
+          pools, with a negative net flux indicating a sink. Administrative boundaries are
+          GADM 4.1.
+        </p>
+        <p><b>Tree cover and loss</b> — Hansen, M.C., P.V. Potapov, R. Moore, et al. 2013. "High-Resolution Global Maps of 21st-Century Forest Cover Change." <i>Science</i> 342: 850–53.</p>
+        <p><b>Primary forest</b> — Turubanova, S., P.V. Potapov, A. Tyukavina, M.C. Hansen. 2018. <i>Environmental Research Letters</i> 13(7): 074028.</p>
+        <p><b>Drivers</b> — Sims, M., R. Stanimirova, A. Raichuk, M. Neumann, et al. 2025. "Global Drivers of Forest Loss at 1 km Resolution." <i>Environmental Research Letters</i> 20(7): 074027.</p>
+        <p><b>Carbon flux</b> — Harris, N.L., D.A. Gibbs, A. Baccini, et al. 2021, <i>Nature Climate Change</i> 11: 234–240; revised in Gibbs, D.A., M. Rose, et al. 2025, <i>ESSD</i> 17(3): 1217–1243.</p>
+        <p style="margin-top:12px">Compiled from the Global Nature Watch country download for Kenya, dataset version v20260427. Explore the source data at <a href="https://www.globalnaturewatch.org" target="_blank" rel="noopener">globalnaturewatch.org</a>.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<script id="payload" type="application/json">{"meta":{"version":"v20260427","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025],"primaryYears":[2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025],"thresholds":[10,15,20,25,30,50,75],"countryArea":58598332,"drivers":["Hard commodities","Logging","Other natural disturbances","Permanent agriculture","Settlements & Infrastructure","Shifting cultivation","Wildfire"]},"country":{"10":{"extent2000":11005196,"extent2010":10722771,"loss":[22556,24330,20794,21877,22656,26666,31614,25937,27249,26317,22437,25783,23788,26628,20275,28831,33086,23060,22630,27375,18184,12267,18527,24813,19310]},"15":{"extent2000":7584317,"extent2010":7996723,"loss":[21701,23310,18542,20950,18974,24830,30406,24425,24245,25573,21375,23316,21353,23307,19317,27217,30737,21605,21333,25858,15820,10929,16588,21996,16697]},"20":{"extent2000":4292230,"extent2010":4497651,"loss":[20064,21377,15068,18534,14608,22178,27815,21165,19841,23894,18846,19609,15951,17827,16950,21858,25190,17969,18115,21673,9957,8080,13073,16671,12390]},"25":{"extent2000":3975173,"extent2010":4103940,"loss":[19814,21147,14675,18184,14148,21819,27436,20670,19265,23614,18489,19127,15156,16912,16484,20881,24196,17365,17443,20967,9043,7633,12508,15945,11756]},"30":{"extent2000":3319472,"extent2010":3335496,"loss":[19027,20287,13553,16988,12745,20656,26103,19224,17696,22692,17300,17899,13564,15357,15615,19049,22163,15908,15950,19045,7564,6639,11257,14102,10418]},"50":{"extent2000":1891464,"extent2010":1959162,"loss":[16211,17631,10607,12941,9344,16719,21373,14237,12812,18997,13312,14031,8843,10043,11426,12505,14865,10538,9651,11891,2857,3303,6838,8031,6281]},"75":{"extent2000":963682,"extent2010":829816,"loss":[11605,13517,6914,8811,5855,11075,14305,8189,6479,12832,7415,8441,4446,4823,6452,6832,8309,5026,3683,4659,638,954,3041,3662,3256]}},"countryDrivers":{"Hard commodities":[44,38,48,44,18,91,37,125,43,274,45,91,53,105,51,47,79,102,60,42,56,91,78,64,29],"Logging":[3495,5324,3107,2503,2057,3332,5145,3573,2104,2558,3679,4513,4466,4612,6062,7342,7109,4211,3558,5049,1088,1279,2584,4118,3412],"Other natural disturbances":[153,118,134,99,151,182,201,127,279,383,83,137,88,201,40,61,107,126,272,421,34,53,169,39,26],"Permanent agriculture":[14526,14368,9643,14033,10272,16490,20028,14749,14791,18698,12865,12441,8337,9556,8923,11226,14173,10856,11318,12831,6054,4940,7977,9479,6535],"Settlements & Infrastructure":[355,176,290,163,85,343,291,434,258,470,340,281,123,266,57,114,205,224,209,296,123,78,146,141,122],"Shifting cultivation":[169,121,117,57,42,86,94,75,70,78,107,162,204,422,155,186,261,275,156,201,177,100,179,162,188],"Wildfire":[24,23,40,6,7,36,42,11,9,48,18,41,50,48,284,23,168,43,313,68,8,77,101,61,81]},"countryPrimary":[2974,1568,2974,1703,3340,3440,1887,1596,6749,1410,1664,1623,1210,3055,2052,3134,2649,2798,3545,445,867,1809,1593,940],"states":[{"name":"Baringo","area":1084235,"th":{"10":{"extent2000":317725,"extent2010":354612,"loss":[179,507,260,645,579,453,435,742,687,578,1055,915,678,625,1604,2335,3150,1522,837,801,599,700,1179,1380,1318]},"15":{"extent2000":248712,"extent2010":273192,"loss":[178,500,252,638,574,446,432,736,682,578,1047,912,636,557,1517,2233,3000,1420,781,758,514,607,1045,1298,1224]},"20":{"extent2000":145823,"extent2010":146882,"loss":[174,475,239,606,550,418,418,701,668,574,1010,902,524,417,1314,1979,2652,1153,627,627,327,433,782,1085,955]},"25":{"extent2000":130505,"extent2010":126344,"loss":[173,473,238,602,547,416,416,695,663,573,1005,901,491,372,1250,1895,2542,1062,573,585,277,384,695,1022,867]},"30":{"extent2000":113986,"extent2010":114239,"loss":[170,462,233,588,537,401,404,673,647,571,983,897,462,329,1184,1804,2420,973,511,535,231,333,617,935,774]},"50":{"extent2000":67668,"extent2010":77427,"loss":[155,428,219,536,503,353,369,592,587,561,892,871,302,143,891,1493,1935,650,284,332,58,128,315,576,513]},"75":{"extent2000":46904,"extent2010":47667,"loss":[116,340,184,423,440,273,280,438,467,519,708,772,230,101,760,1264,1650,481,194,226,15,51,212,376,384]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0],"Logging":[47,239,39,92,121,51,169,293,214,312,528,584,220,121,598,1156,1191,312,89,105,25,64,115,246,308],"Other natural disturbances":[0,3,1,5,1,1,4,7,4,0,4,1,0,3,1,1,1,2,1,6,1,0,0,0,0],"Permanent agriculture":[121,206,191,475,409,336,224,352,407,257,441,295,210,177,531,613,1154,588,371,387,175,213,434,630,416],"Settlements & Infrastructure":[0,1,0,0,0,0,2,0,2,0,1,0,0,0,0,0,1,0,0,2,0,0,0,0,0],"Shifting cultivation":[1,9,1,14,2,9,2,14,15,0,5,13,26,26,47,29,67,59,46,25,29,54,65,54,47],"Wildfire":[0,0,0,0,0,0,0,0,0,0,0,1,2,0,3,1,4,10,3,3,0,1,2,3,2]},"primary":[121,139,293,314,162,44,103,196,132,183,80,39,14,185,44,174,103,134,136,6,33,88,79,19],"carbon":{"agc":8503470,"agcDensity":75,"emissions":441740,"removals":631309,"netFlux":-189569}},{"name":"Bomet","area":237832,"th":{"10":{"extent2000":220170,"extent2010":230473,"loss":[480,612,577,591,372,720,1006,789,308,304,348,784,1195,267,430,363,655,666,1244,1863,169,219,367,763,278]},"15":{"extent2000":201666,"extent2010":215232,"loss":[480,612,577,591,372,720,1005,789,308,304,348,781,1183,265,429,348,649,657,1211,1847,166,213,356,757,273]},"20":{"extent2000":146058,"extent2010":152292,"loss":[478,609,576,590,371,717,1003,786,307,303,345,751,1042,246,426,329,619,608,1161,1753,151,189,301,702,249]},"25":{"extent2000":141895,"extent2010":146088,"loss":[478,608,576,590,371,717,1003,785,307,303,345,748,1026,244,426,325,614,600,1150,1739,149,186,296,695,247]},"30":{"extent2000":120629,"extent2010":120608,"loss":[475,603,574,588,369,712,1000,782,306,303,341,738,943,236,423,308,580,567,1091,1642,137,168,259,652,230]},"50":{"extent2000":66012,"extent2010":77211,"loss":[436,550,544,575,351,681,972,748,297,296,319,683,602,200,261,208,305,327,674,1045,85,104,136,414,170]},"75":{"extent2000":39284,"extent2010":46748,"loss":[361,462,446,513,301,585,867,643,266,251,270,537,248,110,112,93,96,144,211,357,42,41,52,151,72]}},"drivers":{"Logging":[103,252,176,249,130,348,455,416,181,93,147,356,304,149,158,184,141,224,505,734,90,115,158,336,165],"Other natural disturbances":[0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,2,2,5,0,0,0,0,0],"Permanent agriculture":[365,345,394,333,235,358,537,358,123,205,190,374,627,87,264,123,437,334,584,900,47,53,101,313,66],"Settlements & Infrastructure":[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],"Shifting cultivation":[0,2,2,5,2,2,3,3,0,3,1,2,4,0,0,0,0,1,0,0,0,0,0,3,0]},"primary":[47,88,107,78,100,257,105,52,39,26,48,188,7,196,13,281,115,123,58,2,3,6,42,0],"carbon":{"agc":8674075,"agcDensity":72,"emissions":310839,"removals":444134,"netFlux":-133296}},{"name":"Bungoma","area":357317,"th":{"10":{"extent2000":307329,"extent2010":296841,"loss":[1095,488,405,138,115,263,841,464,114,279,299,956,748,437,286,338,616,134,424,169,151,153,251,269,430]},"15":{"extent2000":209733,"extent2010":241902,"loss":[1093,484,402,135,113,261,837,460,113,278,292,887,595,310,260,313,561,110,395,120,102,106,176,180,273]},"20":{"extent2000":91644,"extent2010":113222,"loss":[1068,451,365,106,99,232,794,420,101,244,264,728,303,139,204,250,466,66,337,53,41,45,71,61,98]},"25":{"extent2000":82032,"extent2010":96566,"loss":[1061,446,360,101,96,227,786,414,98,238,259,710,279,127,198,238,459,60,332,50,38,44,65,50,87]},"30":{"extent2000":71106,"extent2010":76909,"loss":[1033,419,333,79,86,203,749,385,85,212,245,640,248,115,191,224,444,51,322,44,32,38,54,40,73]},"50":{"extent2000":48527,"extent2010":50183,"loss":[884,354,249,27,48,128,629,278,52,143,207,429,178,103,166,161,370,24,280,22,19,25,32,12,36]},"75":{"extent2000":33921,"extent2010":32073,"loss":[653,263,202,8,22,82,465,198,29,97,152,307,121,88,136,128,329,14,227,13,11,21,22,2,16]}},"drivers":{"Logging":[467,257,142,1,30,45,146,162,7,49,94,70,48,60,91,174,89,24,44,14,3,6,17,19,37],"Other natural disturbances":[1,0,1,0,0,0,13,1,1,1,1,1,0,0,3,1,0,0,0,0,1,0,0,0,0],"Permanent agriculture":[546,156,180,73,54,155,557,211,71,156,148,554,193,54,93,49,350,23,273,28,28,31,36,18,34],"Settlements & Infrastructure":[4,2,0,3,1,0,3,1,0,1,0,3,0,0,1,0,1,3,3,0,0,0,1,2,1],"Shifting cultivation":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0],"Wildfire":[5,0,2,0,0,0,9,2,0,1,0,0,1,0,1,0,0,0,0,0,1,0,0,0,0]},"primary":[28,51,3,5,0,134,22,6,32,55,169,72,28,53,12,271,8,181,10,8,19,18,1,11],"carbon":{"agc":6109211,"agcDensity":86,"emissions":162028,"removals":324096,"netFlux":-162068}},{"name":"Busia","area":179951,"th":{"10":{"extent2000":160656,"extent2010":147535,"loss":[319,119,127,130,131,172,269,97,198,260,57,272,214,172,35,124,122,104,547,161,110,72,169,177,130]},"15":{"extent2000":116055,"extent2010":110392,"loss":[318,118,126,129,130,171,266,95,197,260,47,250,177,140,30,117,114,98,536,152,96,63,161,161,106]},"20":{"extent2000":36884,"extent2010":44152,"loss":[296,105,108,103,108,153,220,84,168,236,36,160,49,50,17,92,85,66,499,92,56,36,129,96,53]},"25":{"extent2000":32291,"extent2010":37775,"loss":[293,103,106,99,105,149,215,83,163,232,34,152,38,41,15,90,82,63,492,84,52,33,125,89,47]},"30":{"extent2000":22038,"extent2010":23310,"loss":[261,90,90,77,86,123,173,71,135,200,29,123,24,26,13,83,70,56,463,65,44,28,111,67,33]},"50":{"extent2000":4745,"extent2010":9656,"loss":[97,39,34,26,41,51,53,29,54,102,11,38,6,9,6,26,25,21,237,18,17,10,33,16,10]},"75":{"extent2000":203,"extent2010":2311,"loss":[40,12,7,3,10,16,11,4,15,39,4,8,0,0,0,0,0,0,1,0,0,0,0,0,0]}},"drivers":{"Logging":[1,0,0,0,1,1,0,1,0,2,1,1,0,0,0,3,1,0,19,4,0,2,2,6,1],"Other natural disturbances":[17,6,3,1,3,8,5,7,4,27,2,1,1,1,0,6,14,5,157,0,1,5,17,3,0],"Permanent agriculture":[237,83,85,74,78,112,164,60,128,164,26,117,21,25,11,73,54,47,282,59,41,21,90,55,32],"Settlements & Infrastructure":[1,0,0,0,2,1,1,0,1,2,0,2,0,0,2,0,1,3,5,1,1,0,1,2,0]},"carbon":{"agc":808690,"agcDensity":37,"emissions":25566,"removals":133638,"netFlux":-108073}},{"name":"Elgeyo-Marakwet","area":280395,"th":{"10":{"extent2000":199216,"extent2010":200854,"loss":[295,1774,552,1265,498,903,2627,1625,570,293,1050,884,748,776,1176,1353,1612,658,366,464,424,369,469,628,682]},"15":{"extent2000":168219,"extent2010":161163,"loss":[294,1763,549,1233,491,892,2619,1613,553,292,1040,881,723,741,1127,1273,1515,635,347,441,401,346,453,605,649]},"20":{"extent2000":123057,"extent2010":108889,"loss":[292,1733,535,1128,461,841,2579,1566,512,288,972,859,633,646,1035,1116,1334,575,308,367,332,299,409,546,579]},"25":{"extent2000":118896,"extent2010":102934,"loss":[292,1728,533,1115,457,833,2565,1555,504,286,961,856,615,628,1017,1081,1311,569,302,359,324,291,402,537,567]},"30":{"extent2000":107094,"extent2010":92712,"loss":[290,1708,526,1057,440,807,2539,1523,476,284,920,840,578,595,975,1020,1238,535,285,323,286,262,375,510,529]},"50":{"extent2000":79267,"extent2010":68315,"loss":[281,1641,487,861,376,725,2366,1349,400,264,748,754,444,475,745,686,921,378,157,187,94,115,202,357,374]},"75":{"extent2000":56311,"extent2010":29105,"loss":[243,1485,406,592,277,601,1769,1016,269,204,506,560,362,403,581,526,683,247,70,88,23,38,119,248,262]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,8,1,1],"Logging":[160,1311,274,264,192,470,534,594,122,105,379,333,343,356,520,505,559,183,53,78,45,45,142,233,196],"Other natural disturbances":[1,1,0,2,0,1,3,2,2,2,0,1,2,0,15,3,0,5,1,1,0,0,1,1,6],"Permanent agriculture":[127,394,248,788,247,333,1986,920,348,173,537,499,228,237,435,509,673,345,224,239,240,216,225,275,323],"Settlements & Infrastructure":[0,0,0,0,0,0,3,0,0,0,0,0,0,0,4,1,0,0,0,1,0,0,0,0,2],"Shifting cultivation":[2,1,2,0,0,2,9,4,1,3,1,6,3,1,0,0,1,2,5,0,1,0,0,0,0],"Wildfire":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0]},"primary":[39,25,23,8,21,180,58,12,33,16,48,21,10,13,13,32,43,19,19,4,8,14,11,14],"carbon":{"agc":8976465,"agcDensity":84,"emissions":450554,"removals":557282,"netFlux":-106728}},{"name":"Embu","area":290440,"th":{"10":{"extent2000":150778,"extent2010":133775,"loss":[242,61,580,337,1241,296,796,185,1255,197,954,141,255,261,132,135,179,104,120,85,61,31,155,375,129]},"15":{"extent2000":92441,"extent2010":96896,"loss":[224,55,540,268,1053,219,715,145,946,167,869,118,192,188,129,128,139,80,100,71,39,22,110,272,88]},"20":{"extent2000":46474,"extent2010":51092,"loss":[178,36,411,114,596,70,464,63,384,105,522,78,84,85,120,101,72,43,65,48,10,6,46,129,32]},"25":{"extent2000":43515,"extent2010":47083,"loss":[170,33,392,102,540,56,429,56,321,99,479,74,78,80,119,97,68,40,60,45,10,5,43,117,29]},"30":{"extent2000":36166,"extent2010":37084,"loss":[141,25,312,66,356,27,318,35,176,78,331,62,64,70,115,87,54,29,45,35,7,3,29,81,24]},"50":{"extent2000":23070,"extent2010":25463,"loss":[42,8,114,10,51,3,56,8,9,27,63,34,46,53,74,64,28,9,11,12,1,0,8,32,8]},"75":{"extent2000":15968,"extent2010":10405,"loss":[5,2,19,2,4,0,7,1,0,9,4,10,14,21,20,33,5,1,2,3,0,0,1,5,3]}},"drivers":{"Logging":[3,1,1,0,7,0,6,0,0,5,7,30,40,41,39,61,12,4,1,1,0,0,1,12,1],"Other natural disturbances":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Permanent agriculture":[132,23,293,64,345,26,306,35,174,67,319,30,22,28,75,24,40,23,39,25,6,3,27,67,22],"Settlements & Infrastructure":[1,0,1,0,1,0,2,0,0,2,2,0,0,0,0,1,1,1,3,2,0,0,0,2,0],"Shifting cultivation":[0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0,0,0,0],"Wildfire":[0,0,9,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"primary":[0,2,1,0,0,1,0,0,3,0,0,0,9,5,1,0,0,1,4,0,0,0,1,0],"carbon":{"agc":3083705,"agcDensity":85,"emissions":38198,"removals":134610,"netFlux":-96412}},{"name":"Garissa","area":4385027,"th":{"10":{"extent2000":868966,"extent2010":636842,"loss":[188,86,114,80,83,55,106,148,224,49,95,277,562,326,7,50,67,49,24,98,390,105,105,40,43]},"15":{"extent2000":399601,"extent2010":412842,"loss":[178,79,93,74,72,50,100,135,212,45,88,259,450,298,7,45,63,48,19,92,356,100,103,35,36]},"20":{"extent2000":269314,"extent2010":291611,"loss":[124,61,50,48,42,41,68,83,135,24,55,210,307,246,4,28,39,43,12,74,261,77,90,23,24]},"25":{"extent2000":258322,"extent2010":282460,"loss":[118,59,48,47,38,39,65,77,126,22,51,204,280,238,4,25,34,43,12,72,249,74,86,21,23]},"30":{"extent2000":239155,"extent2010":252257,"loss":[96,53,41,41,31,38,59,62,100,18,41,187,237,225,4,20,26,41,12,69,228,69,80,19,23]},"50":{"extent2000":128226,"extent2010":146842,"loss":[46,34,21,19,13,24,27,40,42,12,19,108,110,142,1,5,8,22,5,40,46,27,34,8,19]},"75":{"extent2000":4872,"extent2010":26525,"loss":[14,12,4,3,2,5,7,7,8,3,4,4,4,5,0,0,0,1,0,2,0,0,0,0,0]}},"drivers":{"Hard commodities":[1,0,0,0,0,0,0,0,1,0,0,2,1,1,0,1,1,0,0,3,22,42,31,9,0],"Logging":[1,0,0,0,0,0,1,0,0,0,0,1,2,3,0,0,0,0,0,0,0,0,0,0,0],"Other natural disturbances":[2,1,3,3,0,4,0,1,5,1,3,22,18,21,0,9,0,1,0,17,0,0,0,0,0],"Permanent agriculture":[65,32,25,22,20,22,42,47,71,13,22,87,104,94,2,8,25,17,7,33,204,26,49,7,4],"Settlements & Infrastructure":[6,8,4,5,3,4,2,3,6,0,3,4,6,2,0,0,0,14,4,5,0,0,0,0,0],"Shifting cultivation":[2,2,1,1,1,2,3,1,2,0,2,23,36,44,0,1,0,6,0,2,0,0,0,0,11],"Wildfire":[0,0,0,0,0,0,0,0,0,0,0,11,12,19,0,0,0,0,0,4,0,0,0,4,7]},"carbon":{"agc":8039654,"agcDensity":34,"emissions":17598,"removals":504086,"netFlux":-486489}},{"name":"Homa Bay","area":467868,"th":{"10":{"extent2000":279109,"extent2010":270615,"loss":[304,67,50,44,227,52,60,67,114,89,23,125,184,222,174,94,92,171,97,557,114,41,140,165,184]},"15":{"extent2000":220758,"extent2010":226068,"loss":[304,67,50,44,226,52,59,66,114,88,23,122,149,172,174,93,86,165,97,554,110,39,135,158,171]},"20":{"extent2000":91375,"extent2010":108380,"loss":[302,64,47,41,221,49,56,62,107,84,21,106,92,100,170,87,63,139,92,518,82,21,106,122,130]},"25":{"extent2000":79469,"extent2010":89748,"loss":[301,64,47,41,219,47,56,61,105,82,21,102,85,93,170,85,61,137,91,509,78,18,101,118,125]},"30":{"extent2000":50462,"extent2010":55335,"loss":[297,62,44,39,211,44,51,57,97,75,18,91,61,73,167,79,54,131,87,474,68,11,86,100,108]},"50":{"extent2000":10237,"extent2010":20664,"loss":[275,51,35,30,180,34,38,36,74,56,11,60,10,31,94,35,20,63,37,169,22,3,31,28,31]},"75":{"extent2000":2925,"extent2010":6614,"loss":[225,26,21,17,100,16,26,16,42,29,3,27,1,9,32,2,5,24,10,53,6,0,7,2,5]}},"drivers":{"Logging":[22,1,1,0,19,7,0,4,9,2,1,9,7,13,14,8,1,8,9,22,1,1,5,1,1],"Other natural disturbances":[5,1,1,1,27,5,0,1,1,2,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0],"Permanent agriculture":[255,55,38,34,156,28,46,45,76,63,15,69,43,55,148,70,50,119,74,443,66,9,81,96,103],"Settlements & Infrastructure":[0,0,0,0,0,1,1,2,1,1,0,1,0,0,0,0,1,2,0,0,0,0,0,0,2],"Shifting cultivation":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,1,0,0,0,0,0,0,0]},"primary":[0,0,0,5,1,1,0,4,2,0,1,0,3,16,0,1,8,2,24,2,0,2,0,0],"carbon":{"agc":1952269,"agcDensity":39,"emissions":13419,"removals":225228,"netFlux":-211809}},{"name":"Isiolo","area":2543942,"th":{"10":{"extent2000":10382,"extent2010":18836,"loss":[4,2,1,3,5,4,6,4,3,13,2,2,0,0,0,0,4,0,2,1,2,3,3,6,3]},"15":{"extent2000":3733,"extent2010":8496,"loss":[1,1,0,1,2,2,3,2,2,5,1,1,0,0,0,0,1,0,2,0,1,3,2,5,2]},"20":{"extent2000":413,"extent2010":754,"loss":[0,0,0,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]},"25":{"extent2000":269,"extent2010":459,"loss":[0,0,0,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"30":{"extent2000":117,"extent2010":143,"loss":[0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"50":{"extent2000":20,"extent2010":6,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"75":{"extent2000":2,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}},"drivers":{"Permanent agriculture":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"carbon":{"agc":5892,"agcDensity":50,"emissions":24,"removals":1506,"netFlux":-1482}},{"name":"Kajiado","area":2199357,"th":{"10":{"extent2000":124637,"extent2010":196770,"loss":[144,54,76,40,334,40,98,51,175,25,207,152,196,151,32,145,124,52,24,16,10,14,33,17,51]},"15":{"extent2000":71301,"extent2010":103615,"loss":[136,44,65,34,305,36,87,47,164,23,184,125,170,119,31,143,97,46,20,9,8,9,27,10,46]},"20":{"extent2000":29760,"extent2010":36823,"loss":[124,21,36,25,207,27,61,31,122,18,124,73,52,77,27,130,65,37,14,5,3,3,21,5,38]},"25":{"extent2000":25878,"extent2010":30062,"loss":[122,20,33,25,198,25,58,29,117,18,118,68,45,74,26,127,63,36,13,5,3,3,20,4,37]},"30":{"extent2000":19467,"extent2010":23326,"loss":[115,15,24,21,159,21,50,23,98,16,95,54,39,66,23,101,55,31,11,4,2,1,19,3,36]},"50":{"extent2000":10011,"extent2010":11764,"loss":[95,4,11,11,59,14,23,10,46,10,28,28,20,54,16,48,22,5,2,2,0,0,7,1,30]},"75":{"extent2000":5492,"extent2010":3420,"loss":[46,1,2,5,2,2,7,4,4,2,2,6,1,3,1,8,0,1,0,0,0,0,0,0,1]}},"drivers":{"Logging":[3,1,0,1,0,0,1,4,2,0,0,16,30,52,17,97,52,16,4,0,0,0,16,2,36],"Other natural disturbances":[0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0],"Permanent agriculture":[78,12,20,14,150,19,44,16,90,14,90,33,8,12,6,2,2,2,4,3,1,1,2,0,0],"Settlements & Infrastructure":[2,0,0,0,0,0,0,1,0,1,1,0,0,0,0,1,0,13,3,0,0,0,0,0,0],"Shifting cultivation":[19,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0],"Wildfire":[0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0]},"primary":[0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"carbon":{"agc":1410440,"agcDensity":72,"emissions":22102,"removals":81860,"netFlux":-59758}},{"name":"Kakamega","area":244218,"th":{"10":{"extent2000":234170,"extent2010":219378,"loss":[398,160,253,198,232,215,400,185,180,252,98,483,839,335,215,259,487,352,194,112,259,207,192,251,209]},"15":{"extent2000":170929,"extent2010":176293,"loss":[397,157,250,195,228,213,395,181,179,250,90,406,632,241,163,210,410,320,173,92,224,178,164,215,158]},"20":{"extent2000":56979,"extent2010":72617,"loss":[380,144,225,172,204,190,360,157,168,222,58,240,153,54,66,126,235,228,122,55,134,95,95,116,58]},"25":{"extent2000":49643,"extent2010":60087,"loss":[375,141,220,167,197,186,351,152,165,216,53,224,107,38,57,118,219,220,116,51,126,86,88,108,52]},"30":{"extent2000":35907,"extent2010":40570,"loss":[334,122,188,134,165,161,302,130,149,189,42,182,50,20,42,105,188,194,100,42,107,66,71,88,38]},"50":{"extent2000":18425,"extent2010":23259,"loss":[177,66,85,56,77,81,140,67,98,102,21,79,6,4,19,77,93,97,50,17,67,13,28,35,9]},"75":{"extent2000":15515,"extent2010":17475,"loss":[43,22,16,7,20,21,37,19,60,35,8,16,1,1,10,60,59,51,23,9,56,3,8,20,3]}},"drivers":{"Hard commodities":[0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Logging":[18,12,8,0,4,7,9,6,42,12,3,6,5,6,15,82,120,86,31,8,47,18,9,31,4],"Other natural disturbances":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,11,0,0,0,0],"Permanent agriculture":[304,106,171,130,157,147,267,116,99,167,38,170,41,13,24,21,62,102,65,29,44,44,61,47,34],"Settlements & Infrastructure":[8,1,6,2,2,3,21,5,6,7,2,4,1,1,1,2,6,5,2,5,3,3,1,9,1],"Shifting cultivation":[1,0,0,0,0,2,0,1,0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,0]},"primary":[1,1,0,1,3,1,2,18,4,0,1,0,0,3,22,23,22,7,3,10,2,0,5,2],"carbon":{"agc":2980074,"agcDensity":83,"emissions":64779,"removals":190444,"netFlux":-125665}},{"name":"Kericho","area":257634,"th":{"10":{"extent2000":232617,"extent2010":234874,"loss":[206,449,343,571,422,896,895,667,688,285,971,1181,1525,1623,1678,1557,2029,1098,1279,1056,328,379,650,889,1042]},"15":{"extent2000":215202,"extent2010":213311,"loss":[206,447,340,570,421,892,894,667,687,285,968,1172,1500,1588,1635,1533,1966,1051,1268,1041,320,359,629,827,967]},"20":{"extent2000":170469,"extent2010":162187,"loss":[205,435,328,559,404,871,887,658,678,283,934,1150,1398,1477,1593,1463,1852,995,1227,997,290,318,583,735,837]},"25":{"extent2000":163614,"extent2010":154867,"loss":[205,434,326,557,400,867,885,657,675,283,925,1147,1377,1461,1586,1451,1833,987,1220,990,283,312,575,723,818]},"30":{"extent2000":141241,"extent2010":129892,"loss":[204,424,318,549,386,843,876,648,663,282,892,1137,1322,1424,1565,1409,1779,947,1189,955,265,289,542,684,767]},"50":{"extent2000":69011,"extent2010":81434,"loss":[187,379,289,518,325,741,825,589,606,270,766,1087,1030,1288,1447,1181,1441,697,922,636,135,160,362,451,569]},"75":{"extent2000":49844,"extent2010":54543,"loss":[150,296,243,439,218,586,656,440,430,232,553,953,759,1074,1293,933,1187,410,672,330,60,71,250,263,426]}},"drivers":{"Logging":[102,251,172,351,147,456,504,230,252,166,378,844,839,1174,1073,1017,1139,519,464,472,129,125,255,409,385],"Other natural disturbances":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,3,0,4,8,0,0,0,0,2],"Permanent agriculture":[98,161,145,194,236,363,366,412,405,111,502,272,455,245,273,383,564,418,445,445,135,162,254,272,376],"Settlements & Infrastructure":[0,0,0,0,0,1,2,0,0,1,1,2,2,2,0,2,1,3,4,3,1,1,3,3,3],"Shifting cultivation":[0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,3,5,3,0,0,0,0,0],"Wildfire":[3,9,0,1,2,20,1,4,3,3,9,17,20,3,214,4,68,2,267,23,1,1,30,0,0]},"primary":[65,10,18,9,73,26,49,29,23,42,58,78,43,341,34,252,42,482,103,6,13,112,19,197],"carbon":{"agc":10246737,"agcDensity":73,"emissions":537158,"removals":726822,"netFlux":-189664}},{"name":"Kiambu","area":257376,"th":{"10":{"extent2000":165238,"extent2010":179470,"loss":[1764,48,127,67,77,114,411,32,78,186,108,239,431,723,652,798,624,746,874,1056,283,300,376,1591,566]},"15":{"extent2000":135275,"extent2010":151318,"loss":[1762,47,126,66,77,114,411,32,78,186,105,227,385,657,618,749,587,686,823,991,248,256,349,1505,513]},"20":{"extent2000":85429,"extent2010":100636,"loss":[1753,45,125,64,73,109,407,31,76,184,98,200,299,532,546,635,514,519,653,765,179,168,277,1225,405]},"25":{"extent2000":80148,"extent2010":96737,"loss":[1752,44,124,63,72,109,406,31,76,183,98,197,289,516,534,624,504,500,630,720,170,162,270,1190,392]},"30":{"extent2000":67620,"extent2010":78485,"loss":[1737,43,122,61,68,104,401,30,74,181,93,187,260,471,500,569,459,433,546,623,144,136,240,1063,348]},"50":{"extent2000":39046,"extent2010":47281,"loss":[1633,36,113,49,51,84,346,25,62,167,75,159,174,316,380,419,335,244,237,298,73,65,165,651,231]},"75":{"extent2000":25315,"extent2010":13898,"loss":[1085,15,69,21,21,39,207,12,29,111,40,97,80,147,212,202,153,94,40,79,14,19,88,283,130]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Logging":[725,14,44,12,17,53,124,6,37,89,35,96,173,347,403,436,316,209,164,255,93,74,178,584,241],"Other natural disturbances":[0,0,0,0,0,0,1,0,0,0,2,1,0,1,0,0,0,0,2,9,3,2,0,1,0],"Permanent agriculture":[933,29,73,45,49,50,260,23,37,86,50,86,82,119,93,129,140,217,366,345,44,51,60,454,104],"Settlements & Infrastructure":[25,1,2,4,2,1,7,1,0,2,2,1,3,2,2,3,2,3,14,10,3,4,2,9,2],"Shifting cultivation":[40,0,3,0,0,0,4,0,0,3,0,1,1,1,1,1,0,2,0,2,0,5,0,12,0]},"primary":[0,4,0,0,0,11,0,0,7,2,7,8,4,14,19,6,7,2,11,0,2,2,34,6],"carbon":{"agc":5305520,"agcDensity":78,"emissions":215416,"removals":366324,"netFlux":-150908}},{"name":"Kilifi","area":1265196,"th":{"10":{"extent2000":730974,"extent2010":652843,"loss":[510,1394,1028,3742,1360,2639,908,2311,2669,3728,787,2394,1752,3325,1541,2687,2701,1639,1915,1499,3974,964,1052,1215,725]},"15":{"extent2000":472304,"extent2010":436722,"loss":[502,1343,988,3650,1300,2567,888,2253,2606,3672,766,2330,1566,3052,1457,2413,2504,1565,1832,1391,3241,918,1007,1123,659]},"20":{"extent2000":221587,"extent2010":255374,"loss":[422,1057,754,2994,951,2045,726,1851,2104,3210,630,2002,1054,2174,1083,1628,1762,1205,1502,1008,1790,710,769,837,471]},"25":{"extent2000":190125,"extent2010":243812,"loss":[406,1008,715,2858,896,1948,698,1765,2013,3106,604,1921,931,1978,999,1460,1589,1122,1407,908,1533,655,699,771,424]},"30":{"extent2000":160174,"extent2010":172828,"loss":[355,830,592,2475,737,1678,604,1523,1752,2816,534,1757,792,1779,894,1262,1393,1031,1300,818,1279,590,626,700,368]},"50":{"extent2000":78073,"extent2010":71506,"loss":[175,311,213,934,261,716,255,578,737,1450,287,1036,330,918,358,467,583,523,703,413,405,222,288,313,160]},"75":{"extent2000":21865,"extent2010":37681,"loss":[39,42,22,55,15,68,24,41,52,113,36,140,26,185,26,15,29,62,131,72,15,10,47,18,7]}},"drivers":{"Hard commodities":[23,14,46,33,11,75,13,63,36,158,31,27,22,34,37,31,22,28,49,27,24,14,23,44,12],"Logging":[0,0,1,0,0,0,0,0,3,1,0,1,2,10,0,0,0,2,8,8,2,3,2,0,0],"Other natural disturbances":[0,3,0,2,0,1,3,1,1,3,1,4,5,18,1,2,10,21,21,26,1,0,6,6,1],"Permanent agriculture":[281,771,463,2334,695,1399,537,1329,1621,2340,419,1605,720,1582,821,1194,1298,900,1172,689,1210,552,544,626,334],"Settlements & Infrastructure":[48,38,80,83,25,192,46,120,84,301,82,108,29,95,25,32,45,59,22,31,28,15,42,17,16],"Shifting cultivation":[1,0,0,18,3,6,1,7,3,7,0,5,5,21,9,2,15,20,25,32,13,5,8,6,4],"Wildfire":[0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,1]},"primary":[1,0,7,1,6,3,1,4,11,2,9,6,53,1,4,4,14,54,61,1,1,5,1,0],"carbon":{"agc":7272876,"agcDensity":45,"emissions":319957,"removals":392957,"netFlux":-73000}},{"name":"Kirinyaga","area":155698,"th":{"10":{"extent2000":96520,"extent2010":111600,"loss":[20,19,172,9,13,4,98,29,38,78,48,28,166,79,76,166,163,96,116,111,23,16,34,231,68]},"15":{"extent2000":82658,"extent2010":97882,"loss":[19,19,171,8,12,3,98,29,37,77,47,27,160,64,69,161,159,95,113,104,20,12,28,214,65]},"20":{"extent2000":56724,"extent2010":65436,"loss":[17,19,168,6,11,2,97,28,35,76,42,27,125,38,60,145,142,86,100,80,14,7,17,160,52]},"25":{"extent2000":53665,"extent2010":60129,"loss":[17,18,167,6,10,2,97,28,35,76,40,27,120,35,59,143,139,84,98,76,13,6,17,152,50]},"30":{"extent2000":47484,"extent2010":51472,"loss":[15,18,164,5,9,2,96,27,34,76,38,26,111,28,56,133,127,82,91,68,11,4,14,136,44]},"50":{"extent2000":34320,"extent2010":36003,"loss":[12,16,156,4,6,1,93,26,27,72,31,23,79,14,47,101,93,56,44,27,4,2,5,88,26]},"75":{"extent2000":25693,"extent2010":14362,"loss":[6,11,125,2,2,0,75,24,15,64,16,14,35,4,28,41,63,41,22,9,1,0,1,58,10]}},"drivers":{"Logging":[0,2,44,1,0,0,70,22,18,40,20,20,86,20,51,119,97,41,9,11,0,0,4,95,19],"Other natural disturbances":[0,1,5,0,0,0,0,0,0,2,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0],"Permanent agriculture":[10,12,87,2,7,1,21,3,14,22,14,4,19,7,5,12,20,37,69,53,11,4,9,37,22],"Settlements & Infrastructure":[0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,3,0],"Shifting cultivation":[1,1,13,0,0,0,1,0,0,8,0,1,1,0,0,0,9,2,9,1,0,0,0,1,2]},"primary":[2,65,0,0,0,9,1,4,44,6,10,18,2,21,25,54,34,20,8,0,0,1,51,9],"carbon":{"agc":4407973,"agcDensity":93,"emissions":35196,"removals":150766,"netFlux":-115570}},{"name":"Kisii","area":131486,"th":{"10":{"extent2000":129163,"extent2010":129342,"loss":[257,9,11,7,23,35,110,24,39,50,5,28,151,38,0,25,62,51,212,1039,87,85,105,184,160]},"15":{"extent2000":124902,"extent2010":124089,"loss":[256,9,11,7,23,35,110,23,39,50,5,27,144,37,0,25,60,45,209,1032,85,85,102,175,154]},"20":{"extent2000":86103,"extent2010":84766,"loss":[255,8,11,7,21,34,108,23,38,49,4,24,98,21,0,21,50,24,184,969,68,62,77,125,111]},"25":{"extent2000":79726,"extent2010":76747,"loss":[255,8,11,7,21,34,107,23,37,49,4,23,92,20,0,20,48,22,180,956,66,57,72,118,104]},"30":{"extent2000":48734,"extent2010":49631,"loss":[251,8,10,7,20,32,102,22,36,46,4,22,62,11,0,18,38,15,155,857,54,41,54,86,76]},"50":{"extent2000":7672,"extent2010":14987,"loss":[220,7,7,5,15,28,82,17,28,36,3,14,16,2,0,8,14,3,66,418,21,12,19,27,19]},"75":{"extent2000":738,"extent2010":2986,"loss":[156,3,4,2,8,20,51,9,16,19,2,6,1,0,0,1,2,0,12,46,2,1,2,2,2]}},"drivers":{"Logging":[56,3,4,2,8,13,45,5,7,14,1,4,11,2,0,5,8,5,58,412,17,14,21,34,29],"Permanent agriculture":[150,4,5,3,11,16,50,14,22,24,3,12,39,7,0,8,16,6,75,338,27,18,23,41,31],"Settlements & Infrastructure":[38,1,1,1,1,3,5,3,7,6,0,4,11,3,0,4,12,4,21,100,10,8,10,9,14]},"carbon":{"agc":2366146,"agcDensity":49,"emissions":49855,"removals":285012,"netFlux":-235157}},{"name":"Kisumu","area":266481,"th":{"10":{"extent2000":186745,"extent2010":159701,"loss":[114,247,260,126,288,156,182,114,191,302,101,255,611,438,44,83,135,49,19,96,82,50,96,76,101]},"15":{"extent2000":133317,"extent2010":124231,"loss":[113,235,249,123,281,153,178,112,189,298,96,224,481,294,43,79,127,48,18,93,78,45,87,70,91]},"20":{"extent2000":47487,"extent2010":50007,"loss":[80,152,191,90,250,133,144,79,159,267,66,119,150,104,29,65,93,46,12,72,53,22,64,46,68]},"25":{"extent2000":39084,"extent2010":39262,"loss":[74,144,182,83,246,130,137,74,154,262,61,106,110,78,22,62,88,45,11,69,50,20,61,42,64]},"30":{"extent2000":26033,"extent2010":26426,"loss":[58,122,145,73,232,123,114,61,137,244,47,80,58,38,14,48,72,43,8,63,43,15,50,34,56]},"50":{"extent2000":5599,"extent2010":9380,"loss":[39,95,94,51,193,99,76,32,103,194,26,47,4,4,1,17,26,12,2,9,8,3,9,4,14]},"75":{"extent2000":1253,"extent2010":2908,"loss":[20,52,30,18,113,60,41,8,45,95,9,17,0,0,0,4,3,2,0,1,0,0,0,0,0]}},"drivers":{"Logging":[1,2,4,1,0,1,3,2,1,1,3,2,4,6,1,7,10,10,1,4,8,2,5,1,5],"Other natural disturbances":[20,48,41,15,73,45,24,6,40,105,1,16,0,1,0,1,5,0,0,1,1,0,0,1,1],"Permanent agriculture":[33,69,94,53,152,74,80,47,90,132,42,58,48,30,13,38,48,29,5,49,28,12,41,26,47],"Settlements & Infrastructure":[2,1,2,1,3,2,5,2,5,3,0,2,2,1,0,1,7,2,2,7,6,1,3,6,3]},"carbon":{"agc":982849,"agcDensity":38,"emissions":28594,"removals":112007,"netFlux":-83413}},{"name":"Kitui","area":3045761,"th":{"10":{"extent2000":571793,"extent2010":442303,"loss":[1064,922,2534,728,3365,2310,1456,1864,4051,621,1187,3476,523,1006,46,583,1224,942,311,531,690,380,687,2123,1270]},"15":{"extent2000":236662,"extent2010":247282,"loss":[602,521,1402,356,1515,1035,819,1087,2148,342,645,1783,257,539,30,515,946,813,275,463,509,304,410,1381,709]},"20":{"extent2000":56056,"extent2010":73811,"loss":[194,124,341,78,369,287,278,331,590,110,193,360,67,151,14,240,383,421,145,264,167,113,129,477,167]},"25":{"extent2000":49306,"extent2010":62811,"loss":[156,97,232,58,276,215,216,241,436,88,146,256,60,133,13,215,347,383,133,244,147,102,117,434,143]},"30":{"extent2000":32855,"extent2010":42121,"loss":[96,45,79,24,128,99,115,119,212,50,73,94,37,80,10,132,227,248,86,155,76,57,71,274,76]},"50":{"extent2000":7884,"extent2010":13537,"loss":[13,5,6,2,3,4,12,7,12,8,6,17,4,5,2,14,18,34,12,22,4,7,5,21,8]},"75":{"extent2000":194,"extent2010":618,"loss":[1,0,2,0,0,0,2,1,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,0]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,1,0],"Logging":[0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,8,4,0,0,0,0,0,0,0],"Other natural disturbances":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Permanent agriculture":[93,43,77,23,127,99,106,117,209,47,71,91,36,77,9,128,209,228,82,133,74,54,66,234,65],"Settlements & Infrastructure":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Shifting cultivation":[1,0,1,0,0,0,2,0,1,0,1,0,1,1,0,1,9,9,3,3,1,1,5,29,10],"Wildfire":[0,0,0,0,0,0,2,0,0,1,0,1,0,1,0,1,1,6,1,12,0,1,0,10,0]},"primary":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,1,1,0,0,0,0,0],"carbon":{"agc":1388156,"agcDensity":42,"emissions":28770,"removals":92749,"netFlux":-63980}},{"name":"Kwale","area":837987,"th":{"10":{"extent2000":434296,"extent2010":343676,"loss":[906,1107,843,1622,591,1305,1003,3244,2123,1869,836,1936,1085,2739,433,906,2758,1151,470,579,1370,366,1019,1734,849]},"15":{"extent2000":230811,"extent2010":200198,"loss":[883,1067,806,1574,575,1280,994,3151,2054,1854,820,1858,974,2581,395,852,2547,1130,454,562,1305,355,995,1650,806]},"20":{"extent2000":115608,"extent2010":114555,"loss":[748,846,613,1248,490,1119,931,2532,1629,1697,692,1553,740,2211,289,615,1988,967,376,452,902,291,856,1185,638]},"25":{"extent2000":104641,"extent2010":108482,"loss":[716,806,579,1193,477,1090,916,2427,1555,1662,665,1488,690,2100,268,565,1857,921,356,422,811,274,824,1089,601]},"30":{"extent2000":88915,"extent2010":85816,"loss":[642,684,496,1012,434,1012,868,2128,1356,1557,601,1337,609,1939,241,492,1607,850,322,373,653,248,767,919,537]},"50":{"extent2000":50862,"extent2010":44869,"loss":[386,360,255,493,272,687,604,1196,735,1020,352,769,354,1288,153,231,774,546,191,209,222,141,551,425,333]},"75":{"extent2000":23758,"extent2010":31183,"loss":[141,87,55,128,70,233,204,308,162,329,87,192,152,588,87,75,234,159,61,64,29,53,334,132,164]}},"drivers":{"Hard commodities":[20,22,2,10,7,15,24,58,5,105,14,62,28,70,9,10,51,74,8,6,7,2,13,9,15],"Logging":[0,0,0,1,0,0,1,1,0,1,0,1,13,58,0,0,0,0,0,0,0,0,0,0,0],"Other natural disturbances":[0,0,0,0,0,0,0,0,0,0,0,6,6,39,0,0,7,7,0,0,0,0,3,1,0],"Permanent agriculture":[570,619,427,985,398,918,743,1878,1305,1349,479,1187,485,1437,216,403,1427,695,289,341,611,220,658,863,459],"Settlements & Infrastructure":[35,23,52,10,24,40,83,165,38,84,98,54,35,110,3,5,70,41,13,19,22,14,41,20,17],"Shifting cultivation":[11,16,13,5,4,36,16,21,5,17,4,24,37,220,12,74,51,30,12,6,14,11,52,26,45]},"primary":[0,2,9,4,13,17,25,11,40,4,7,9,28,5,3,10,20,3,4,3,2,17,11,15],"carbon":{"agc":5895523,"agcDensity":66,"emissions":422729,"removals":653278,"netFlux":-230549}},{"name":"Laikipia","area":952423,"th":{"10":{"extent2000":146861,"extent2010":171841,"loss":[248,160,640,265,257,1209,484,768,691,715,1889,166,73,163,101,87,277,307,229,202,158,158,229,232,92]},"15":{"extent2000":102359,"extent2010":121080,"loss":[248,155,639,257,250,1206,481,747,688,710,1879,160,59,113,91,77,240,269,204,172,127,116,189,193,79]},"20":{"extent2000":61257,"extent2010":54491,"loss":[246,147,621,221,233,1177,470,653,676,680,1778,148,39,50,67,47,166,191,148,122,75,70,91,129,53]},"25":{"extent2000":55853,"extent2010":45295,"loss":[246,147,618,218,231,1174,469,639,675,676,1770,147,37,45,60,37,110,167,118,111,61,62,81,121,50]},"30":{"extent2000":46232,"extent2010":38469,"loss":[244,143,603,197,220,1155,463,572,669,649,1727,144,29,32,52,29,86,142,103,96,45,49,68,107,43]},"50":{"extent2000":26678,"extent2010":17873,"loss":[232,131,524,147,194,1034,426,349,634,559,1437,122,10,6,31,10,43,93,68,53,16,22,38,62,22]},"75":{"extent2000":11675,"extent2010":3947,"loss":[183,97,300,78,105,712,296,126,480,389,671,72,5,2,13,4,26,64,49,34,3,9,22,32,9]}},"drivers":{"Logging":[32,16,46,7,47,158,88,37,46,42,282,18,1,2,2,5,13,17,15,20,5,7,12,23,8],"Permanent agriculture":[212,127,553,187,172,995,369,531,622,602,1440,123,26,28,48,24,72,115,86,74,40,40,56,83,34],"Settlements & Infrastructure":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,0,0,0,0,0,0,0],"Shifting cultivation":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0],"Wildfire":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,2,0,0,0]},"primary":[60,198,51,63,463,192,70,337,262,278,45,4,2,16,7,22,57,36,35,6,11,21,24,9],"carbon":{"agc":3207468,"agcDensity":69,"emissions":157557,"removals":171794,"netFlux":-14238}},{"name":"Lamu","area":671993,"th":{"10":{"extent2000":627364,"extent2010":584450,"loss":[735,659,966,710,1021,1450,1161,1436,3029,1250,1108,1490,1433,2697,1385,4408,1084,724,1521,1057,3284,977,1352,600,1464]},"15":{"extent2000":506784,"extent2010":492545,"loss":[729,653,951,704,997,1443,1130,1419,3011,1241,1101,1465,1350,2632,1367,4154,1030,718,1509,1029,2999,936,1324,578,1397]},"20":{"extent2000":290663,"extent2010":323781,"loss":[686,592,815,643,869,1331,963,1267,2851,1172,1013,1353,1018,2232,1180,2374,825,665,1366,811,1616,690,1134,410,997]},"25":{"extent2000":267027,"extent2010":302641,"loss":[675,582,790,632,849,1311,942,1244,2816,1159,996,1321,928,2093,1098,2085,771,642,1252,753,1402,625,1067,373,896]},"30":{"extent2000":244950,"extent2010":261849,"loss":[635,541,706,569,782,1237,878,1178,2701,1126,948,1257,809,1878,982,1652,686,599,1108,680,1150,533,961,322,783]},"50":{"extent2000":150311,"extent2010":148606,"loss":[331,298,353,270,386,759,511,737,1859,898,699,896,311,863,284,496,268,288,409,443,294,115,393,106,336]},"75":{"extent2000":24536,"extent2010":46590,"loss":[46,50,68,47,57,172,105,189,474,287,158,240,60,170,12,47,19,66,80,187,13,9,61,24,35]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,3,0,2,24,2,0,0],"Logging":[0,0,0,0,0,0,0,0,0,0,0,0,1,15,0,0,0,4,0,0,0,0,0,0,4],"Other natural disturbances":[1,1,1,1,3,2,1,2,1,1,1,4,21,64,0,1,2,21,38,233,0,1,15,0,1],"Permanent agriculture":[592,441,640,543,747,1198,852,1152,2640,1107,850,1119,670,1637,904,1564,620,487,994,389,1017,491,916,307,739],"Settlements & Infrastructure":[1,9,3,11,4,15,5,6,20,7,3,28,3,12,3,24,9,20,51,9,12,12,4,6,4],"Shifting cultivation":[31,83,54,10,22,17,8,10,35,8,86,73,66,95,71,63,52,61,18,27,115,3,23,7,26],"Wildfire":[0,0,0,0,0,0,0,1,0,0,0,3,0,12,0,0,0,0,0,0,0,0,0,0,9]},"primary":[0,2,0,0,0,1,0,0,0,0,1,9,18,0,1,0,13,25,50,0,0,4,0,0],"carbon":{"agc":10372248,"agcDensity":42,"emissions":290780,"removals":911627,"netFlux":-620848}},{"name":"Machakos","area":603423,"th":{"10":{"extent2000":109751,"extent2010":116484,"loss":[391,91,56,81,227,44,341,52,141,120,408,60,60,46,41,23,56,120,99,92,65,45,151,171,71]},"15":{"extent2000":44544,"extent2010":48771,"loss":[386,79,52,72,196,38,324,44,125,114,384,53,38,32,35,22,40,106,76,72,53,40,121,122,48]},"20":{"extent2000":13268,"extent2010":12111,"loss":[339,40,39,46,111,26,268,30,86,100,293,39,17,25,27,18,20,71,44,45,35,28,87,54,22]},"25":{"extent2000":11852,"extent2010":10357,"loss":[331,37,37,44,102,24,258,28,80,98,278,37,16,25,27,18,19,68,42,43,34,26,85,50,21]},"30":{"extent2000":7796,"extent2010":6846,"loss":[298,26,31,33,73,18,224,22,61,89,231,30,11,23,24,16,15,51,32,34,26,20,72,35,13]},"50":{"extent2000":2827,"extent2010":2506,"loss":[158,6,12,8,19,6,103,6,15,45,57,9,5,19,14,12,8,18,11,16,9,8,33,14,4]},"75":{"extent2000":1155,"extent2010":512,"loss":[26,1,2,1,3,1,17,1,2,10,5,0,2,14,5,6,4,6,1,5,1,5,20,6,1]}},"drivers":{"Logging":[20,0,1,1,2,0,18,0,1,12,3,0,5,18,7,14,9,18,12,21,10,6,17,12,7],"Other natural disturbances":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Permanent agriculture":[267,23,29,30,67,17,196,20,58,74,223,27,5,5,16,2,6,33,20,12,16,10,46,22,5],"Settlements & Infrastructure":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Shifting cultivation":[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,4,9,2,0]},"primary":[0,0,0,0,0,1,0,0,3,0,0,1,8,1,3,0,2,1,5,0,2,7,3,0],"carbon":{"agc":470119,"agcDensity":60,"emissions":25382,"removals":51516,"netFlux":-26134}},{"name":"Makueni","area":817483,"th":{"10":{"extent2000":218942,"extent2010":195945,"loss":[943,227,2115,161,1816,140,351,221,518,265,468,153,98,62,34,87,86,178,62,207,109,20,260,306,84]},"15":{"extent2000":115659,"extent2010":118268,"loss":[785,200,1452,128,1464,106,333,171,441,243,422,125,50,41,29,75,64,139,47,163,73,14,114,200,54]},"20":{"extent2000":48469,"extent2010":52416,"loss":[396,107,451,58,729,52,276,69,236,199,244,84,30,23,20,43,44,92,24,73,21,8,61,122,35]},"25":{"extent2000":44040,"extent2010":45741,"loss":[348,96,380,51,642,45,264,55,212,193,220,80,29,22,19,42,43,89,23,70,20,8,60,117,33]},"30":{"extent2000":29163,"extent2010":31877,"loss":[234,66,212,37,410,30,231,41,135,180,153,64,25,18,17,35,40,77,18,56,16,6,54,93,27]},"50":{"extent2000":8646,"extent2010":8964,"loss":[63,11,21,13,46,4,125,11,21,144,33,22,18,7,11,23,23,43,7,26,9,3,38,44,14]},"75":{"extent2000":2826,"extent2010":1406,"loss":[18,1,3,3,5,0,35,1,3,75,9,8,6,2,2,9,4,7,2,5,2,1,9,10,3]}},"drivers":{"Logging":[10,3,3,3,6,0,27,1,3,21,1,1,4,6,4,16,21,17,11,23,8,3,39,34,16],"Other natural disturbances":[0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0],"Permanent agriculture":[212,60,204,32,392,28,192,26,127,138,141,58,20,11,10,16,5,29,6,27,7,2,14,53,9],"Settlements & Infrastructure":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],"Shifting cultivation":[0,0,0,0,0,0,0,10,0,14,1,0,1,0,3,2,9,28,0,2,0,0,1,3,3],"Wildfire":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,0,0,0,0,0,0]},"primary":[0,0,1,3,0,5,0,1,32,4,2,6,1,1,5,4,3,0,1,2,0,12,4,0],"carbon":{"agc":1446547,"agcDensity":50,"emissions":34556,"removals":183717,"netFlux":-149161}},{"name":"Mandera","area":2577244,"th":{"10":{"extent2000":192,"extent2010":388,"loss":[0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,4,0,1,0,0,0,3,0,0]},"15":{"extent2000":71,"extent2010":144,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,1,0,0]},"20":{"extent2000":12,"extent2010":41,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0]},"25":{"extent2000":8,"extent2010":35,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0]},"30":{"extent2000":0,"extent2010":21,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"50":{"extent2000":0,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"75":{"extent2000":0,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Permanent agriculture":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"carbon":{"agc":16,"agcDensity":35,"emissions":36,"removals":579,"netFlux":-544}},{"name":"Marsabit","area":7577487,"th":{"10":{"extent2000":20754,"extent2010":25450,"loss":[2,1,0,4,3,1,1,2,0,2,11,2,0,0,0,6,1,1,0,0,4,7,1,0,5]},"15":{"extent2000":16287,"extent2010":18568,"loss":[2,1,0,1,1,1,0,1,0,2,10,1,0,0,0,5,1,1,0,0,3,6,1,0,1]},"20":{"extent2000":11880,"extent2010":10990,"loss":[2,1,0,1,0,1,0,0,0,1,7,1,0,0,0,2,0,0,0,0,0,3,1,0,0]},"25":{"extent2000":11095,"extent2010":9950,"loss":[2,1,0,1,0,1,0,0,0,1,5,1,0,0,0,1,0,0,0,0,0,2,1,0,0]},"30":{"extent2000":8614,"extent2010":8373,"loss":[2,1,0,1,0,1,0,0,0,1,4,1,0,0,0,1,0,0,0,0,0,0,1,0,0]},"50":{"extent2000":838,"extent2010":3194,"loss":[1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"75":{"extent2000":2,"extent2010":1,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}},"drivers":{"Other natural disturbances":[1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Permanent agriculture":[0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0],"Shifting cultivation":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"carbon":{"agc":391492,"agcDensity":45,"emissions":169,"removals":25292,"netFlux":-25123}},{"name":"Meru","area":698469,"th":{"10":{"extent2000":306277,"extent2010":339579,"loss":[59,109,221,47,57,7,239,75,110,148,180,86,341,260,412,691,550,294,325,326,121,179,311,792,665]},"15":{"extent2000":246063,"extent2010":288650,"loss":[58,106,218,45,54,7,233,74,108,145,176,83,321,244,391,667,536,279,285,302,106,155,285,736,629]},"20":{"extent2000":159534,"extent2010":182783,"loss":[55,100,202,38,45,5,218,68,101,134,160,74,270,210,345,585,489,243,213,230,76,110,235,590,541]},"25":{"extent2000":149912,"extent2010":167348,"loss":[54,99,199,37,44,4,214,67,101,133,157,72,262,204,336,568,480,237,200,219,74,103,228,567,524]},"30":{"extent2000":120910,"extent2010":138747,"loss":[51,94,187,34,39,4,200,62,97,126,145,67,232,189,311,520,453,219,169,181,63,83,205,487,471]},"50":{"extent2000":69309,"extent2010":88360,"loss":[38,74,144,22,29,2,150,48,91,95,106,52,165,145,229,352,324,160,77,93,38,41,146,247,287]},"75":{"extent2000":37832,"extent2010":32218,"loss":[18,35,52,6,14,1,93,27,80,36,43,36,65,84,117,199,203,87,12,26,1,3,60,100,136]}},"drivers":{"Logging":[16,20,34,2,7,2,117,32,75,50,66,40,166,147,219,305,234,99,67,52,12,22,69,177,132],"Other natural disturbances":[0,1,0,0,0,0,0,0,0,1,0,0,2,4,0,0,0,8,1,7,0,0,0,0,0],"Permanent agriculture":[29,62,130,30,29,1,64,27,15,47,66,22,51,36,83,199,206,106,89,107,49,47,121,294,272],"Settlements & Infrastructure":[1,1,6,0,0,0,3,0,4,4,6,0,2,2,2,8,6,2,8,10,1,2,3,11,7],"Shifting cultivation":[0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,0,3,0,0,0,0,10,10,1,20],"Wildfire":[0,4,6,0,0,0,5,0,0,11,1,1,2,0,3,1,0,0,2,1,0,0,0,0,39]},"primary":[9,9,0,5,0,15,3,10,8,6,6,21,14,19,31,22,21,7,21,0,7,7,28,32],"carbon":{"agc":9018080,"agcDensity":75,"emissions":119217,"removals":556262,"netFlux":-437045}},{"name":"Migori","area":320042,"th":{"10":{"extent2000":232514,"extent2010":218714,"loss":[203,73,30,31,52,51,187,79,82,52,44,145,481,138,14,64,312,65,154,530,149,135,138,359,239]},"15":{"extent2000":173446,"extent2010":175214,"loss":[202,72,29,31,52,50,185,78,81,51,43,135,413,110,11,61,288,57,141,503,129,125,126,331,208]},"20":{"extent2000":42764,"extent2010":54263,"loss":[183,58,24,26,44,47,157,60,71,43,20,89,121,30,5,44,158,31,75,344,58,50,60,198,88]},"25":{"extent2000":34863,"extent2010":44709,"loss":[178,55,23,25,43,46,152,56,69,42,16,82,90,21,5,42,136,28,68,324,52,43,54,186,79]},"30":{"extent2000":14725,"extent2010":18732,"loss":[150,41,19,20,37,39,132,41,58,34,10,63,41,9,3,31,75,15,47,240,33,23,38,142,50]},"50":{"extent2000":1228,"extent2010":2410,"loss":[82,10,7,3,16,12,65,10,23,14,2,23,6,1,1,2,6,1,6,39,5,2,7,27,4]},"75":{"extent2000":69,"extent2010":116,"loss":[22,0,1,0,1,1,2,1,2,3,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Logging":[5,0,0,0,1,1,41,1,3,3,0,1,6,1,0,19,3,1,13,47,8,5,8,20,10],"Other natural disturbances":[1,2,1,3,1,1,0,2,2,1,0,1,0,0,0,0,13,0,0,21,0,0,0,0,0],"Permanent agriculture":[127,37,16,16,32,34,85,36,49,28,9,55,31,9,3,12,56,10,33,165,25,18,30,121,40],"Settlements & Infrastructure":[3,0,0,0,1,0,1,1,2,0,0,1,0,0,0,0,2,2,1,4,0,0,1,1,0]},"primary":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"carbon":{"agc":479313,"agcDensity":33,"emissions":25045,"removals":78252,"netFlux":-53207}},{"name":"Mombasa","area":26732,"th":{"10":{"extent2000":14503,"extent2010":12271,"loss":[57,54,164,36,6,131,55,165,84,52,132,69,38,44,21,82,58,26,23,31,80,6,31,31,53]},"15":{"extent2000":8607,"extent2010":7785,"loss":[57,54,163,34,6,130,53,164,83,51,131,68,33,40,18,58,46,24,22,25,59,6,30,28,48]},"20":{"extent2000":4909,"extent2010":4808,"loss":[55,52,157,31,5,124,49,150,77,47,126,65,23,31,13,28,30,17,15,16,27,4,21,19,32]},"25":{"extent2000":4350,"extent2010":4415,"loss":[54,52,155,31,5,122,48,146,76,46,124,64,21,28,12,24,27,17,14,15,23,4,20,16,31]},"30":{"extent2000":3811,"extent2010":3751,"loss":[53,50,148,29,4,115,44,132,70,43,115,61,18,26,10,21,23,16,13,13,19,3,18,13,27]},"50":{"extent2000":2354,"extent2010":2584,"loss":[31,34,104,19,3,75,29,76,44,30,78,42,9,19,5,7,13,10,9,6,7,2,12,6,17]},"75":{"extent2000":690,"extent2010":1597,"loss":[5,6,23,6,1,17,9,14,7,10,19,11,3,7,1,0,4,2,4,1,1,1,2,1,4]}},"drivers":{"Hard commodities":[1,1,0,0,0,1,0,4,0,10,0,1,0,0,3,5,3,0,0,0,0,0,0,0,1],"Other natural disturbances":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0],"Permanent agriculture":[15,37,53,7,0,56,9,18,15,17,8,15,3,5,0,2,2,1,1,1,3,1,1,2,4],"Settlements & Infrastructure":[36,12,95,21,4,57,35,109,54,15,108,44,15,21,7,14,17,14,11,11,15,2,17,11,22]},"carbon":{"agc":205008,"agcDensity":54,"emissions":16759,"removals":34848,"netFlux":-18089}},{"name":"Murang'a","area":252608,"th":{"10":{"extent2000":188773,"extent2010":214540,"loss":[585,86,245,63,39,33,333,18,101,137,109,122,278,215,163,402,301,550,612,866,186,178,343,960,552]},"15":{"extent2000":161543,"extent2010":185743,"loss":[584,86,245,63,38,33,332,18,100,136,107,120,251,200,157,392,291,518,565,829,164,141,293,882,511]},"20":{"extent2000":108387,"extent2010":125457,"loss":[579,84,243,62,36,30,322,18,95,135,100,114,206,172,136,347,247,420,435,670,121,101,244,685,451]},"25":{"extent2000":101529,"extent2010":114186,"loss":[576,84,242,62,35,29,320,18,93,135,99,111,196,168,133,334,240,402,409,631,112,95,235,644,443]},"30":{"extent2000":83220,"extent2010":94178,"loss":[567,83,239,61,33,28,311,17,90,134,93,109,180,156,125,307,215,372,360,550,96,84,215,548,412]},"50":{"extent2000":44653,"extent2010":58611,"loss":[505,64,224,51,23,21,263,15,74,122,70,98,122,113,97,226,139,242,170,270,41,42,111,196,295]},"75":{"extent2000":25444,"extent2010":14636,"loss":[300,19,159,30,10,7,157,9,39,81,38,65,74,67,59,139,82,111,51,83,10,12,40,35,186]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],"Logging":[165,28,98,24,3,9,90,9,29,43,25,35,102,76,81,135,103,171,158,245,54,45,103,172,189],"Other natural disturbances":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1],"Permanent agriculture":[375,54,132,33,28,16,204,8,54,78,59,69,74,79,43,166,109,196,197,298,40,39,111,368,208],"Settlements & Infrastructure":[4,0,0,1,0,0,1,0,0,0,3,0,0,0,0,0,1,2,2,0,1,0,1,3,1],"Shifting cultivation":[2,0,1,0,0,0,2,0,4,0,0,1,0,0,0,5,2,1,1,0,0,0,0,0,14],"Wildfire":[0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"primary":[0,4,1,0,0,4,0,1,7,0,6,4,4,1,4,4,6,2,8,0,0,1,1,4],"carbon":{"agc":6402741,"agcDensity":77,"emissions":116460,"removals":326127,"netFlux":-209668}},{"name":"Nairobi","area":71234,"th":{"10":{"extent2000":16352,"extent2010":20303,"loss":[134,5,4,8,18,12,30,6,8,33,29,22,28,33,7,62,38,28,37,24,13,25,7,35,30]},"15":{"extent2000":11957,"extent2010":13968,"loss":[134,3,4,8,14,12,29,6,8,32,27,21,25,30,7,60,36,24,33,19,11,15,5,30,26]},"20":{"extent2000":7150,"extent2010":7299,"loss":[132,2,4,7,11,11,27,5,6,30,25,20,18,24,6,56,30,20,25,14,8,6,4,22,22]},"25":{"extent2000":6702,"extent2010":6520,"loss":[132,2,4,7,11,10,27,5,6,30,25,20,17,23,5,55,29,20,25,14,8,6,4,21,22]},"30":{"extent2000":5242,"extent2010":4854,"loss":[130,1,3,6,9,10,25,5,5,29,24,19,16,19,4,53,27,12,23,12,7,6,3,17,19]},"50":{"extent2000":2517,"extent2010":2252,"loss":[123,1,3,3,6,8,21,2,3,24,20,18,11,8,2,24,10,4,11,6,3,3,2,6,12]},"75":{"extent2000":485,"extent2010":193,"loss":[91,0,1,1,2,3,10,1,1,13,14,10,1,1,0,3,3,0,1,1,0,0,1,1,1]}},"drivers":{"Logging":[7,0,0,0,0,1,1,0,0,4,6,4,10,8,0,38,8,7,3,0,0,0,0,3,1],"Other natural disturbances":[1,0,0,0,1,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Permanent agriculture":[17,1,0,1,2,1,2,0,1,3,4,4,2,4,0,9,13,0,4,3,0,1,0,3,10],"Settlements & Infrastructure":[100,0,3,5,5,8,22,4,4,22,11,11,3,7,4,6,6,5,16,9,7,5,3,10,8]},"carbon":{"agc":351785,"agcDensity":67,"emissions":12152,"removals":70273,"netFlux":-58121}},{"name":"Nakuru","area":747554,"th":{"10":{"extent2000":332693,"extent2010":354395,"loss":[1955,5087,862,2937,1287,3484,1723,1347,1109,1548,2264,1316,1084,1125,1157,1417,2135,1490,988,1075,418,650,958,797,973]},"15":{"extent2000":241377,"extent2010":260674,"loss":[1951,5076,857,2927,1277,3475,1714,1341,1105,1545,2247,1300,1020,980,1063,1325,1965,1350,882,934,326,507,809,695,882]},"20":{"extent2000":151382,"extent2010":134380,"loss":[1940,5029,842,2878,1243,3454,1667,1308,1077,1533,2141,1263,915,825,939,1184,1676,1146,668,694,213,351,607,537,718]},"25":{"extent2000":143683,"extent2010":121658,"loss":[1939,5024,842,2874,1241,3451,1663,1302,1074,1532,2134,1260,905,812,921,1169,1647,1128,650,673,202,335,589,522,700]},"30":{"extent2000":123398,"extent2010":105272,"loss":[1931,4990,833,2851,1227,3432,1637,1278,1059,1523,2081,1246,868,772,877,1112,1531,1048,570,589,162,286,534,466,641]},"50":{"extent2000":81416,"extent2010":64952,"loss":[1869,4788,776,2714,1143,3326,1496,1174,991,1479,1864,1173,751,647,726,909,1182,832,388,329,65,132,412,306,497]},"75":{"extent2000":52200,"extent2010":37876,"loss":[1574,3964,557,2153,843,2907,1123,877,781,1212,1335,929,615,539,551,658,708,488,193,150,30,46,236,188,369]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0],"Logging":[289,823,150,331,202,688,486,523,297,566,594,561,710,655,599,785,928,517,266,239,71,89,317,289,481],"Other natural disturbances":[69,39,12,54,18,91,21,56,197,53,25,30,0,1,6,1,8,4,1,21,5,34,9,5,1],"Permanent agriculture":[1565,4119,667,2463,1001,2638,1121,690,561,895,1451,649,155,115,232,324,592,524,291,325,83,160,201,170,155],"Settlements & Infrastructure":[3,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,1,2,3,0,2],"Wildfire":[0,3,0,0,3,11,1,2,0,3,0,0,0,0,37,0,0,1,10,2,0,0,2,0,0]},"primary":[428,29,406,109,267,105,131,148,326,158,77,40,9,125,24,104,149,100,64,21,14,167,16,53],"carbon":{"agc":9312644,"agcDensity":75,"emissions":829451,"removals":692845,"netFlux":136607}},{"name":"Nandi","area":283051,"th":{"10":{"extent2000":239765,"extent2010":254177,"loss":[1027,635,968,417,681,631,885,395,629,272,427,673,1197,810,1158,1155,1034,1195,1416,1047,678,663,725,794,783]},"15":{"extent2000":207403,"extent2010":219263,"loss":[1026,634,967,416,680,629,884,395,628,271,425,665,1164,758,1122,1122,951,1129,1312,966,613,605,677,749,698]},"20":{"extent2000":142396,"extent2010":145723,"loss":[1020,623,952,410,668,614,873,386,615,266,405,639,998,580,1005,1008,775,971,1016,794,448,454,560,603,536]},"25":{"extent2000":134150,"extent2010":136338,"loss":[1019,620,949,409,666,612,870,383,613,265,401,634,964,548,984,989,742,949,964,762,426,432,543,584,515]},"30":{"extent2000":110190,"extent2010":110379,"loss":[1011,604,931,401,654,599,857,374,601,262,386,613,882,480,922,940,664,879,825,687,361,369,479,511,448]},"50":{"extent2000":57775,"extent2010":72706,"loss":[964,543,858,371,586,544,770,333,523,238,308,536,622,313,663,670,385,559,262,411,147,183,267,268,230]},"75":{"extent2000":43485,"extent2010":48302,"loss":[832,468,738,329,479,464,629,241,392,189,230,422,330,189,453,396,227,291,92,217,63,72,112,120,99]}},"drivers":{"Logging":[274,407,431,277,321,380,455,192,286,134,193,337,561,314,682,635,331,564,371,434,194,190,259,277,231],"Other natural disturbances":[0,0,0,0,0,1,0,0,1,1,1,1,2,0,0,0,0,0,1,2,0,0,0,0,0],"Permanent agriculture":[724,194,495,122,325,212,395,180,311,125,190,269,315,165,239,304,332,313,445,243,165,177,217,230,215],"Settlements & Infrastructure":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Shifting cultivation":[9,1,3,0,6,4,4,1,0,1,0,2,2,1,0,0,0,0,6,8,1,2,3,3,2]},"primary":[15,169,8,46,40,84,31,21,25,13,45,31,36,55,68,89,22,28,28,8,5,9,21,4],"carbon":{"agc":8719045,"agcDensity":79,"emissions":389275,"removals":548997,"netFlux":-159722}},{"name":"Narok","area":1801495,"th":{"10":{"extent2000":881149,"extent2010":941415,"loss":[4612,4747,1233,3802,2743,5321,6869,3443,2881,8396,3254,3131,3688,2846,3811,3522,4096,4563,3137,5718,1137,1822,3182,3154,1639]},"15":{"extent2000":620946,"extent2010":695648,"loss":[4610,4652,1209,3783,2725,5274,6766,3407,2848,8372,3180,3046,3469,2499,3795,3500,4020,4502,3086,5655,1056,1763,3086,3063,1499]},"20":{"extent2000":412036,"extent2010":383850,"loss":[4593,4527,1136,3714,2657,5116,6365,3241,2740,8256,3011,2771,2914,2142,3672,3363,3649,4176,2888,5309,828,1533,2733,2783,1223]},"25":{"extent2000":392507,"extent2010":354475,"loss":[4590,4512,1122,3698,2644,5085,6295,3206,2719,8233,2981,2728,2837,2090,3649,3325,3578,4115,2843,5251,792,1492,2674,2731,1183]},"30":{"extent2000":334630,"extent2010":300535,"loss":[4564,4424,1060,3620,2567,4915,6007,3068,2612,8129,2822,2542,2545,1904,3556,3192,3364,3880,2688,4975,675,1352,2486,2561,1070]},"50":{"extent2000":233535,"extent2010":194324,"loss":[4408,4194,916,3346,2314,4398,5092,2581,2158,7846,2236,2070,1799,1363,2911,2489,2604,3033,2127,4037,389,941,1840,1933,688]},"75":{"extent2000":153304,"extent2010":101148,"loss":[3578,3467,605,2735,1630,3162,3387,1602,1204,6894,1124,1260,582,239,738,807,1175,1324,848,1536,114,309,838,970,320]}},"drivers":{"Logging":[162,186,41,140,77,116,147,68,49,178,64,57,113,125,108,99,187,224,216,388,50,116,165,167,80],"Other natural disturbances":[3,0,0,1,0,2,2,1,0,5,0,2,4,0,2,0,2,28,9,13,0,0,3,12,0],"Permanent agriculture":[4330,4221,1012,3473,2479,4777,5823,2987,2536,7916,2736,2459,2400,1777,3437,3081,3144,3584,2457,4481,624,1231,2302,2366,973],"Settlements & Infrastructure":[1,0,1,0,0,1,6,0,4,0,5,2,1,1,0,0,0,2,0,5,0,2,2,3,1],"Shifting cultivation":[37,3,3,1,1,3,9,2,1,7,5,1,5,0,0,0,0,15,0,66,0,0,0,5,0],"Wildfire":[7,1,0,0,0,2,1,1,0,2,0,0,1,0,7,7,26,13,3,10,0,1,13,7,11]},"primary":[2069,235,1930,984,2119,1761,908,527,5287,466,761,939,752,1748,1507,1460,1675,1323,2586,244,614,1193,1099,389],"carbon":{"agc":26172984,"agcDensity":78,"emissions":1543791,"removals":914337,"netFlux":629454}},{"name":"Nyamira","area":89722,"th":{"10":{"extent2000":87557,"extent2010":88359,"loss":[94,82,66,94,85,78,301,139,65,115,63,116,172,88,91,178,239,361,981,1596,193,406,588,434,230]},"15":{"extent2000":84326,"extent2010":84909,"loss":[94,82,66,94,85,78,301,139,65,115,63,112,167,86,91,170,233,330,951,1558,182,381,553,414,213]},"20":{"extent2000":63103,"extent2010":63108,"loss":[94,82,65,94,83,78,298,139,64,115,62,100,139,74,89,148,212,238,853,1399,147,300,431,325,158]},"25":{"extent2000":60077,"extent2010":58259,"loss":[94,82,65,94,83,78,298,138,64,115,62,100,135,72,89,145,208,230,842,1380,144,292,421,318,150]},"30":{"extent2000":45410,"extent2010":45517,"loss":[93,80,65,94,82,78,296,137,64,115,61,98,118,67,86,134,189,185,781,1277,128,256,366,284,128]},"50":{"extent2000":13059,"extent2010":22563,"loss":[86,75,63,93,74,74,282,128,58,110,59,92,67,50,62,93,119,87,478,812,70,122,191,163,59]},"75":{"extent2000":3626,"extent2010":7915,"loss":[69,61,52,86,60,65,227,100,46,88,53,78,26,40,32,54,59,38,173,302,35,39,65,48,22]}},"drivers":{"Logging":[38,63,55,88,66,60,253,98,46,66,56,75,85,57,79,106,134,155,521,785,78,195,277,197,70],"Permanent agriculture":[47,17,9,5,15,17,40,38,17,47,5,21,33,9,7,25,46,29,251,473,47,57,86,84,54],"Settlements & Infrastructure":[7,0,1,0,1,2,2,1,0,1,0,2,1,1,0,2,9,0,9,17,4,3,2,3,4]},"carbon":{"agc":2479527,"agcDensity":55,"emissions":146703,"removals":333277,"netFlux":-186574}},{"name":"Nyandarua","area":326656,"th":{"10":{"extent2000":195677,"extent2010":211204,"loss":[396,226,689,140,152,250,619,309,127,776,748,358,212,165,422,542,711,902,613,944,249,293,458,531,1024]},"15":{"extent2000":146960,"extent2010":164299,"loss":[395,226,688,139,149,249,618,307,125,775,741,346,195,152,391,497,626,784,497,802,191,215,372,429,898]},"20":{"extent2000":101347,"extent2010":95284,"loss":[390,220,677,136,136,241,609,291,117,770,691,324,167,133,351,423,480,574,328,569,114,118,264,297,714]},"25":{"extent2000":96854,"extent2010":87414,"loss":[389,220,675,135,135,240,608,290,116,770,686,323,164,132,346,414,464,555,314,545,106,110,254,284,694]},"30":{"extent2000":86038,"extent2010":79196,"loss":[385,216,666,133,129,232,599,279,110,764,651,315,154,126,330,384,411,484,260,461,83,85,221,243,622]},"50":{"extent2000":62703,"extent2010":56263,"loss":[354,197,604,117,104,204,545,222,90,715,512,275,125,93,238,267,266,311,136,226,33,32,147,118,431]},"75":{"extent2000":31321,"extent2010":22560,"loss":[257,151,397,75,56,138,377,135,55,487,289,190,82,57,129,165,136,185,52,97,9,11,81,57,232]}},"drivers":{"Logging":[195,100,314,76,82,144,254,147,48,312,319,214,92,98,261,299,324,292,149,305,60,59,136,188,426],"Other natural disturbances":[7,1,25,0,1,0,32,4,1,130,10,8,0,0,1,0,0,2,13,0,0,0,1,0,1],"Permanent agriculture":[176,113,318,56,45,86,302,126,61,298,316,88,57,27,54,84,85,187,97,154,23,25,80,55,191],"Settlements & Infrastructure":[0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Wildfire":[1,0,3,0,0,0,2,0,0,10,1,0,2,0,14,0,0,1,1,0,0,0,2,0,2]},"primary":[18,101,1,2,7,46,19,8,54,36,10,9,3,8,25,35,75,25,15,1,4,21,1,48],"carbon":{"agc":6444760,"agcDensity":75,"emissions":212011,"removals":438138,"netFlux":-226127}},{"name":"Nyeri","area":333475,"th":{"10":{"extent2000":270928,"extent2010":292155,"loss":[254,79,522,30,63,14,315,61,92,295,331,285,370,334,475,775,666,520,364,738,62,108,445,882,424]},"15":{"extent2000":247016,"extent2010":268685,"loss":[254,79,522,30,63,14,315,61,92,295,329,284,355,317,470,759,658,511,356,722,55,98,427,835,413]},"20":{"extent2000":197337,"extent2010":209976,"loss":[253,77,517,28,61,14,312,59,90,293,319,278,324,286,450,718,627,470,323,660,44,78,389,713,375]},"25":{"extent2000":190062,"extent2010":200182,"loss":[253,77,516,28,61,14,312,59,90,293,317,277,319,282,447,713,620,464,313,645,41,75,382,693,366]},"30":{"extent2000":172310,"extent2010":181580,"loss":[252,77,512,27,59,13,310,58,89,291,312,274,299,272,429,688,595,437,288,600,35,59,362,625,338]},"50":{"extent2000":125147,"extent2010":136362,"loss":[239,70,477,24,51,11,289,54,79,272,264,254,196,218,380,570,498,341,178,418,15,23,253,383,236]},"75":{"extent2000":76754,"extent2010":45311,"loss":[161,50,328,16,25,4,221,38,47,208,150,165,108,150,288,419,374,253,102,293,7,6,108,219,140]}},"drivers":{"Logging":[101,23,136,10,11,2,122,32,49,72,148,115,152,203,363,435,398,202,73,145,9,13,94,329,147],"Other natural disturbances":[5,1,31,0,0,0,10,0,0,33,17,26,10,1,0,0,0,3,3,2,0,0,77,0,1],"Permanent agriculture":[133,47,301,14,45,11,149,21,37,151,133,110,120,65,65,248,189,225,185,433,25,45,168,282,189],"Settlements & Infrastructure":[0,0,3,0,1,0,1,0,1,1,1,0,1,0,0,1,1,1,1,2,0,0,1,5,1],"Shifting cultivation":[0,0,0,0,0,0,8,0,0,1,0,0,0,0,0,1,6,0,0,2,0,0,0,6,1],"Wildfire":[3,1,12,1,0,0,1,1,0,6,1,5,4,1,0,0,0,0,16,3,0,0,20,0,0]},"primary":[11,97,4,3,1,34,4,6,77,13,27,34,20,40,86,56,88,66,161,1,1,16,63,42],"carbon":{"agc":14178130,"agcDensity":82,"emissions":182692,"removals":794611,"netFlux":-611919}},{"name":"Samburu","area":2095972,"th":{"10":{"extent2000":202869,"extent2010":204305,"loss":[11,27,40,28,18,32,77,26,29,15,106,10,18,20,97,35,296,21,31,45,57,130,105,77,31]},"15":{"extent2000":160069,"extent2010":159614,"loss":[10,23,38,20,9,30,73,23,26,13,100,9,14,14,89,34,273,19,28,43,50,120,96,65,25]},"20":{"extent2000":105544,"extent2010":93244,"loss":[10,20,31,17,4,25,68,15,21,10,89,8,12,6,56,26,209,13,22,38,29,100,72,39,12]},"25":{"extent2000":97455,"extent2010":82037,"loss":[10,20,31,17,4,23,67,14,20,10,87,8,12,6,50,23,203,12,20,37,24,94,66,32,10]},"30":{"extent2000":84134,"extent2010":75582,"loss":[9,18,26,16,3,18,61,10,18,9,75,7,11,4,39,19,183,11,18,35,17,83,60,27,6]},"50":{"extent2000":50780,"extent2010":44883,"loss":[7,12,18,11,1,8,51,7,10,8,45,6,5,2,14,11,112,8,13,27,5,61,45,16,3]},"75":{"extent2000":18858,"extent2010":270,"loss":[3,6,8,4,1,3,23,2,5,4,8,3,2,0,1,0,19,1,1,20,0,11,11,9,1]}},"drivers":{"Logging":[0,0,0,0,0,0,0,0,1,0,1,0,0,1,0,0,0,1,3,0,2,8,3,1,0],"Other natural disturbances":[0,1,0,0,0,0,1,0,0,0,2,0,2,0,0,0,1,0,0,7,0,1,3,4,0],"Permanent agriculture":[6,9,19,13,2,13,39,8,14,6,52,5,5,1,31,14,126,6,7,14,13,47,45,10,6],"Settlements & Infrastructure":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0],"Shifting cultivation":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Wildfire":[0,3,1,0,0,0,7,0,0,0,5,0,1,1,5,2,46,3,7,5,2,24,6,11,0]},"primary":[1,3,1,0,2,4,0,2,0,0,1,0,0,0,0,4,1,0,8,0,0,4,0,0],"carbon":{"agc":5973734,"agcDensity":71,"emissions":13765,"removals":340727,"netFlux":-326962}},{"name":"Siaya","area":349855,"th":{"10":{"extent2000":238674,"extent2010":217840,"loss":[135,51,118,79,295,59,465,210,198,139,409,169,309,621,38,772,691,141,1037,296,216,250,380,404,384]},"15":{"extent2000":167345,"extent2010":170285,"loss":[135,50,117,77,292,58,462,209,198,139,403,146,252,418,36,750,683,136,1027,280,201,243,356,373,343]},"20":{"extent2000":60234,"extent2010":71010,"loss":[128,45,109,69,268,54,434,199,186,132,393,126,149,237,32,652,654,119,982,228,161,212,294,261,230]},"25":{"extent2000":52355,"extent2010":59894,"loss":[127,43,107,67,264,53,426,197,183,131,390,125,138,220,31,630,645,115,975,217,155,209,283,248,218]},"30":{"extent2000":35126,"extent2010":36992,"loss":[117,37,94,56,236,47,385,185,169,121,377,115,103,168,29,550,617,104,942,183,128,188,253,187,170]},"50":{"extent2000":7874,"extent2010":14027,"loss":[78,17,49,23,122,28,204,136,101,79,286,82,18,25,8,141,397,45,677,44,38,109,154,36,17]},"75":{"extent2000":489,"extent2010":3239,"loss":[35,4,9,5,26,7,55,77,32,25,105,30,0,0,0,0,1,0,3,1,0,0,0,0,0]}},"drivers":{"Logging":[0,0,1,0,1,0,0,1,1,1,1,1,2,1,0,12,2,2,3,17,3,3,4,3,2],"Other natural disturbances":[4,0,2,3,4,3,1,1,3,1,1,0,0,3,0,25,14,0,6,0,1,0,3,0,0],"Permanent agriculture":[108,34,87,49,225,41,380,179,159,112,375,109,98,160,28,510,599,103,928,160,124,185,244,182,165],"Settlements & Infrastructure":[1,0,1,0,0,0,1,0,0,2,0,1,1,0,0,1,0,0,1,0,0,0,0,1,1]},"carbon":{"agc":1171183,"agcDensity":33,"emissions":70660,"removals":166093,"netFlux":-95433}},{"name":"Taita Taveta","area":1716757,"th":{"10":{"extent2000":149430,"extent2010":145922,"loss":[400,56,91,20,78,19,35,80,63,123,45,56,68,241,202,84,45,92,50,530,24,52,14,183,120]},"15":{"extent2000":83482,"extent2010":96514,"loss":[311,42,39,11,31,13,26,57,31,103,37,46,53,173,155,53,38,89,48,473,20,12,5,144,86]},"20":{"extent2000":42159,"extent2010":52773,"loss":[191,28,21,4,12,5,20,39,16,83,24,27,37,109,23,32,30,81,43,325,15,5,2,108,60]},"25":{"extent2000":38082,"extent2010":47179,"loss":[164,25,19,4,9,5,18,37,14,78,22,24,36,104,23,31,29,79,41,306,14,5,2,104,58]},"30":{"extent2000":28346,"extent2010":37639,"loss":[100,14,14,3,5,3,16,32,9,63,17,17,31,86,22,27,26,74,38,239,11,4,1,90,51]},"50":{"extent2000":10276,"extent2010":15174,"loss":[31,2,5,1,0,1,6,14,1,27,5,7,17,39,15,13,12,37,28,88,3,1,1,53,25]},"75":{"extent2000":1392,"extent2010":852,"loss":[0,0,0,0,0,0,1,1,0,3,1,0,0,4,1,1,0,9,6,5,0,0,0,4,1]}},"drivers":{"Logging":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,11,6,0,0,0,0,0],"Other natural disturbances":[0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,2,0,0,0,0,0,0,0],"Permanent agriculture":[90,13,13,3,4,3,15,29,8,57,16,14,27,74,19,18,15,52,27,215,11,3,1,88,49],"Settlements & Infrastructure":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,1],"Shifting cultivation":[0,0,0,0,0,0,0,1,1,0,0,0,2,3,2,1,2,16,0,10,0,0,0,1,0],"Wildfire":[0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,7,9,3,0,3,0,0,0,0,0]},"primary":[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0],"carbon":{"agc":1395726,"agcDensity":49,"emissions":15359,"removals":94940,"netFlux":-79580}},{"name":"Tana River","area":3921742,"th":{"10":{"extent2000":261675,"extent2010":241652,"loss":[396,348,180,384,482,1428,411,1031,1609,1263,379,558,492,1392,340,832,760,500,380,594,791,504,507,605,987]},"15":{"extent2000":150198,"extent2010":156607,"loss":[392,343,178,374,478,1406,405,1015,1596,1253,375,539,442,1235,293,768,667,362,310,500,729,443,419,375,642]},"20":{"extent2000":77285,"extent2010":85214,"loss":[369,325,160,301,451,1246,358,890,1522,1176,339,498,338,918,225,574,497,267,259,417,579,379,356,257,431]},"25":{"extent2000":68381,"extent2010":77457,"loss":[365,322,157,294,446,1230,350,875,1511,1166,334,491,326,866,215,523,463,256,245,402,536,364,339,245,399]},"30":{"extent2000":60108,"extent2010":60100,"loss":[351,307,151,262,430,1149,320,800,1461,1114,312,476,309,795,204,454,426,244,230,383,477,340,319,226,358]},"50":{"extent2000":33938,"extent2010":30854,"loss":[271,226,123,163,361,874,237,551,1234,910,247,399,224,509,137,258,265,182,147,303,264,213,218,125,201]},"75":{"extent2000":7093,"extent2010":10300,"loss":[56,65,43,52,159,261,89,149,426,281,77,144,50,97,21,40,18,47,27,136,26,17,53,14,26]}},"drivers":{"Logging":[0,0,0,0,0,0,0,0,0,0,0,1,1,7,1,0,1,7,0,20,0,0,1,0,0],"Other natural disturbances":[3,6,0,1,9,7,3,6,8,5,1,5,11,35,1,9,22,13,6,34,5,6,23,4,10],"Permanent agriculture":[345,299,150,260,418,1138,313,792,1449,1105,308,462,286,733,201,442,401,218,221,304,468,332,291,222,346],"Settlements & Infrastructure":[0,2,0,0,0,1,3,1,1,2,1,0,0,0,1,1,1,4,0,18,2,0,1,1,1],"Shifting cultivation":[0,0,0,0,1,1,1,0,0,0,1,6,7,7,0,0,0,1,1,6,1,0,3,0,0],"Wildfire":[0,0,0,0,0,0,0,0,1,0,0,1,2,9,0,0,0,0,0,0,0,0,0,0,0]},"primary":[1,0,5,1,5,22,106,138,221,33,101,9,40,61,36,52,40,44,47,116,96,59,37,48],"carbon":{"agc":2878586,"agcDensity":48,"emissions":155682,"removals":140630,"netFlux":15052}},{"name":"Tharaka-Nithi","area":242573,"th":{"10":{"extent2000":118885,"extent2010":110708,"loss":[72,357,287,199,1553,337,202,434,646,389,229,38,72,90,43,50,98,44,77,27,9,17,36,75,62]},"15":{"extent2000":74843,"extent2010":83575,"loss":[52,153,159,95,644,157,121,178,285,172,165,20,33,26,39,46,78,40,74,26,8,16,22,55,39]},"20":{"extent2000":47372,"extent2010":50515,"loss":[27,27,79,24,94,9,70,29,67,64,90,7,11,6,36,36,62,37,65,21,5,15,13,38,28]},"25":{"extent2000":45222,"extent2010":46990,"loss":[25,24,73,19,79,7,63,24,56,61,84,7,10,5,36,36,61,36,63,21,5,15,13,36,26]},"30":{"extent2000":39941,"extent2010":40165,"loss":[18,16,63,10,41,2,47,14,28,54,57,6,8,4,35,34,58,35,58,18,4,15,11,28,22]},"50":{"extent2000":30984,"extent2010":31600,"loss":[5,7,45,3,4,0,20,5,2,48,15,4,3,2,31,26,52,26,34,8,2,14,6,9,11]},"75":{"extent2000":24136,"extent2010":15962,"loss":[0,1,21,2,0,0,7,0,0,39,9,1,1,0,14,10,14,4,3,2,1,13,3,2,1]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,2,0,0],"Logging":[0,0,10,0,0,0,5,0,0,32,7,0,0,0,16,11,12,2,9,1,0,0,0,0,0],"Other natural disturbances":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],"Permanent agriculture":[13,11,43,9,38,2,35,11,26,15,45,3,6,2,11,14,16,16,29,14,2,6,8,25,18],"Settlements & Infrastructure":[0,0,2,0,0,0,0,0,0,0,0,0,1,0,0,0,1,1,2,1,0,0,0,1,1],"Shifting cultivation":[3,2,1,0,0,0,0,0,0,1,0,0,0,0,8,7,29,15,17,2,1,0,0,1,3],"Wildfire":[0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"primary":[1,10,1,0,0,5,0,0,23,3,1,1,0,18,6,25,10,5,0,0,13,3,1,1],"carbon":{"agc":3802982,"agcDensity":95,"emissions":10890,"removals":87655,"netFlux":-76765}},{"name":"Trans Nzoia","area":246590,"th":{"10":{"extent2000":150458,"extent2010":148971,"loss":[468,230,1101,235,269,205,939,385,241,138,234,574,428,88,111,158,350,175,308,342,137,129,211,350,326]},"15":{"extent2000":102923,"extent2010":119935,"loss":[468,229,1096,234,267,204,937,383,240,138,232,564,391,73,103,120,258,147,252,281,105,95,155,252,249]},"20":{"extent2000":61014,"extent2010":63772,"loss":[464,219,1062,225,258,182,918,369,236,133,222,535,350,59,92,78,194,117,197,214,65,42,107,171,153]},"25":{"extent2000":57115,"extent2010":57480,"loss":[464,218,1059,225,257,179,917,367,236,132,220,531,343,57,91,72,188,113,189,208,60,39,103,161,140]},"30":{"extent2000":51443,"extent2010":49621,"loss":[462,212,1038,220,249,166,900,355,232,128,213,516,328,55,88,66,180,107,179,187,55,34,96,145,119]},"50":{"extent2000":35698,"extent2010":35455,"loss":[447,190,940,199,224,122,830,314,213,115,179,455,254,43,69,40,132,78,122,112,33,15,74,78,39]},"75":{"extent2000":23302,"extent2010":21862,"loss":[389,120,698,164,186,60,652,242,158,73,119,333,173,33,44,24,86,51,76,70,20,5,49,39,21]}},"drivers":{"Logging":[196,51,304,95,131,35,217,61,82,30,80,196,145,14,46,41,75,19,74,97,14,15,62,73,58],"Other natural disturbances":[6,0,0,2,0,0,22,12,3,3,0,3,1,0,6,0,1,0,3,0,0,0,0,0,1],"Permanent agriculture":[249,160,717,120,116,129,631,278,145,91,130,309,179,40,34,25,99,86,94,86,41,18,34,72,59],"Settlements & Infrastructure":[0,0,0,2,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0],"Shifting cultivation":[5,0,13,0,0,0,12,0,0,1,0,2,0,0,0,0,0,0,4,0,0,0,0,0,0],"Wildfire":[3,0,0,0,0,0,9,0,0,1,0,0,0,0,0,0,4,0,1,0,0,0,0,0,0]},"primary":[2,207,10,10,4,158,57,29,21,4,41,25,8,2,0,13,7,18,15,1,0,0,2,0],"carbon":{"agc":4416910,"agcDensity":86,"emissions":178501,"removals":376968,"netFlux":-198467}},{"name":"Turkana","area":6372099,"th":{"10":{"extent2000":52748,"extent2010":135934,"loss":[5,18,24,20,43,29,50,90,45,23,37,70,18,42,10,57,52,63,40,13,112,47,9,16,16]},"15":{"extent2000":28121,"extent2010":52769,"loss":[3,13,18,11,35,25,39,78,44,21,33,60,16,37,9,51,47,54,34,8,87,40,8,14,9]},"20":{"extent2000":10337,"extent2010":8285,"loss":[2,6,10,4,12,16,21,46,34,11,24,32,7,16,5,30,27,21,16,2,22,14,3,4,2]},"25":{"extent2000":8920,"extent2010":6513,"loss":[2,6,9,3,10,15,19,42,33,9,22,27,6,14,4,27,24,17,13,1,19,13,2,3,2]},"30":{"extent2000":6308,"extent2010":4536,"loss":[1,4,7,1,4,10,12,25,26,7,18,15,2,7,3,16,15,6,6,0,13,10,0,1,1]},"50":{"extent2000":1969,"extent2010":362,"loss":[0,2,2,0,0,0,1,1,2,3,6,0,0,0,0,0,2,1,0,0,0,0,0,0,0]},"75":{"extent2000":191,"extent2010":1,"loss":[0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}},"drivers":{"Logging":[0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],"Other natural disturbances":[0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Permanent agriculture":[0,2,6,1,4,10,11,24,25,6,17,15,2,7,2,16,14,6,6,0,13,10,0,1,1]},"primary":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"carbon":{"agc":323233,"agcDensity":51,"emissions":2323,"removals":52975,"netFlux":-50651}},{"name":"Uasin Gishu","area":342855,"th":{"10":{"extent2000":110890,"extent2010":121664,"loss":[591,2136,898,589,642,498,1075,829,367,159,521,588,331,729,863,794,925,526,434,285,240,204,294,346,295]},"15":{"extent2000":70679,"extent2010":81602,"loss":[591,2131,897,588,640,495,1069,827,365,159,514,578,282,570,800,724,848,457,337,212,177,135,222,289,238]},"20":{"extent2000":43461,"extent2010":42927,"loss":[589,2112,885,583,624,482,1053,812,352,157,487,559,228,439,714,637,731,353,225,135,101,76,158,238,184]},"25":{"extent2000":41354,"extent2010":39520,"loss":[589,2109,882,581,622,479,1049,809,351,156,483,556,221,432,708,626,718,344,213,128,93,73,153,234,178]},"30":{"extent2000":35964,"extent2010":33988,"loss":[588,2092,872,577,613,468,1033,799,343,154,466,549,207,411,688,594,676,315,181,105,73,57,137,221,162]},"50":{"extent2000":26440,"extent2010":24199,"loss":[568,2000,818,554,565,423,973,746,305,148,388,515,170,340,636,506,570,246,112,55,28,24,104,181,114]},"75":{"extent2000":20598,"extent2010":17345,"loss":[501,1687,677,501,459,336,828,623,206,128,260,432,129,276,562,411,457,177,67,23,9,7,78,136,75]}},"drivers":{"Logging":[264,1254,566,471,421,284,748,612,194,89,229,478,180,361,568,485,546,242,115,72,44,32,83,142,120],"Other natural disturbances":[0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],"Permanent agriculture":[305,759,285,94,187,173,265,182,132,65,225,68,21,47,118,107,128,73,63,30,26,23,53,78,38],"Settlements & Infrastructure":[17,74,19,11,4,8,17,2,14,0,9,2,4,3,0,1,1,1,1,2,1,1,1,0,4]},"primary":[28,20,46,28,24,39,85,17,6,10,37,21,32,59,38,43,18,20,7,0,0,7,9,4],"carbon":{"agc":3202495,"agcDensity":89,"emissions":305178,"removals":237877,"netFlux":67301}},{"name":"Vihiga","area":55829,"th":{"10":{"extent2000":54069,"extent2010":52961,"loss":[60,4,37,5,11,25,62,15,27,26,11,21,13,105,80,72,71,44,46,63,49,48,44,47,33]},"15":{"extent2000":44343,"extent2010":45507,"loss":[60,4,36,5,11,25,62,15,27,26,11,20,12,104,78,69,64,38,41,59,45,40,37,44,28]},"20":{"extent2000":20272,"extent2010":23469,"loss":[60,4,36,5,10,24,59,15,26,25,10,19,9,101,74,61,50,21,33,48,29,23,25,29,15]},"25":{"extent2000":18344,"extent2010":20342,"loss":[60,4,35,5,10,24,58,15,26,25,10,18,9,101,73,58,48,20,32,46,27,21,24,27,14]},"30":{"extent2000":12044,"extent2010":13224,"loss":[58,4,34,5,9,23,52,14,25,24,10,17,8,100,70,53,44,18,28,42,22,15,19,21,11]},"50":{"extent2000":3874,"extent2010":6410,"loss":[47,3,25,4,7,17,30,9,16,20,9,11,4,93,59,34,27,7,13,12,6,4,7,4,2]},"75":{"extent2000":2741,"extent2010":3691,"loss":[32,2,15,2,4,10,10,3,8,14,7,5,3,85,51,24,7,3,8,2,1,0,3,1,0]}},"drivers":{"Logging":[10,1,1,0,0,1,2,0,0,1,7,3,4,87,43,40,24,2,7,0,8,1,4,1,1],"Permanent agriculture":[37,2,22,3,8,15,38,9,19,19,3,10,3,12,25,10,17,13,14,31,11,14,14,18,8],"Settlements & Infrastructure":[8,1,4,1,1,3,7,2,3,2,0,2,1,1,1,2,2,1,6,11,3,1,2,2,2],"Shifting cultivation":[2,0,2,0,0,2,0,0,0,1,0,0,0,0,0,0,1,2,0,0,0,0,0,0,0]},"primary":[0,3,0,2,2,1,0,1,4,3,3,1,49,29,10,2,2,1,0,0,0,0,0,0],"carbon":{"agc":816634,"agcDensity":68,"emissions":17540,"removals":77700,"netFlux":-60160}},{"name":"Wajir","area":5663694,"th":{"10":{"extent2000":1799,"extent2010":782,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"15":{"extent2000":679,"extent2010":492,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"20":{"extent2000":207,"extent2010":86,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"25":{"extent2000":94,"extent2010":42,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"30":{"extent2000":32,"extent2010":27,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"50":{"extent2000":0,"extent2010":2,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"75":{"extent2000":0,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}},"drivers":{},"carbon":{"agc":1227,"agcDensity":38,"emissions":1,"removals":276,"netFlux":-275}},{"name":"West Pokot","area":951071,"th":{"10":{"extent2000":353165,"extent2010":340019,"loss":[234,656,922,1146,804,543,2695,1680,650,408,772,977,623,731,637,476,1346,549,590,434,515,760,668,518,489]},"15":{"extent2000":232009,"extent2010":244484,"loss":[217,594,906,1105,748,532,2602,1644,618,397,760,958,573,582,561,426,1222,509,543,409,428,640,516,458,442]},"20":{"extent2000":131207,"extent2010":112111,"loss":[169,462,807,927,513,477,2339,1519,501,352,708,893,444,328,393,296,894,392,417,294,261,415,299,363,345]},"25":{"extent2000":120265,"extent2010":94508,"loss":[167,454,797,909,487,470,2322,1499,484,346,698,881,420,286,359,274,846,369,400,282,235,381,269,346,324]},"30":{"extent2000":100203,"extent2010":80281,"loss":[155,413,747,830,377,436,2240,1427,431,326,664,826,373,231,297,227,734,321,360,260,199,322,211,311,287]},"50":{"extent2000":57962,"extent2010":43876,"loss":[119,293,565,573,243,313,1886,1084,297,255,521,638,217,74,142,87,399,175,259,179,59,154,107,189,178]},"75":{"extent2000":29418,"extent2010":11444,"loss":[64,130,303,278,105,135,1216,543,119,133,288,337,93,25,60,31,186,79,159,110,16,67,42,87,87]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Logging":[1,0,4,0,0,1,3,11,1,9,0,2,0,0,0,1,10,0,3,3,0,0,0,0,0],"Other natural disturbances":[0,1,6,3,7,8,53,16,3,4,5,0,1,4,0,1,2,0,1,4,2,2,8,0,0],"Permanent agriculture":[151,408,728,825,366,420,2160,1394,420,308,656,817,368,223,295,222,713,314,348,247,191,268,177,282,274],"Settlements & Infrastructure":[0,0,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,3,4,3,0,0,1,0,0],"Shifting cultivation":[0,1,1,0,0,1,9,0,0,0,0,1,0,1,0,0,2,0,1,0,2,3,0,1,2],"Wildfire":[0,1,6,1,1,3,4,1,3,0,0,1,1,0,0,1,7,3,2,2,4,48,25,27,9]},"primary":[24,92,48,20,26,279,104,15,25,47,63,29,11,19,11,90,36,68,54,4,16,13,28,32],"carbon":{"agc":7182740,"agcDensity":72,"emissions":246891,"removals":324941,"netFlux":-78050}}],"districts":[{"s":"Baringo","n":"805","e":47,"l":[0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,2,0,0,0,0]},{"s":"Baringo","n":"Baringo Central","e":24555,"l":[16,34,5,41,18,33,36,38,39,9,34,40,50,55,94,120,157,104,77,64,51,52,97,193,81]},{"s":"Baringo","n":"Baringo North","e":15803,"l":[11,20,7,60,11,26,20,68,55,8,30,66,95,184,260,239,359,241,164,110,91,192,237,258,185]},{"s":"Baringo","n":"Baringo South","e":14803,"l":[76,66,162,270,196,184,68,142,93,149,112,60,27,35,150,37,129,81,106,85,47,19,47,76,24]},{"s":"Baringo","n":"Eldama Ravine","e":45619,"l":[64,333,54,167,284,115,234,383,414,396,762,712,269,38,653,1372,1708,464,139,231,23,56,206,334,453]},{"s":"Baringo","n":"Mogotio","e":10181,"l":[3,6,4,30,10,29,44,25,31,8,19,17,12,3,14,11,41,75,15,36,6,8,10,60,14]},{"s":"Baringo","n":"Tiaty","e":2978,"l":[0,4,1,21,17,14,3,16,16,0,22,2,9,15,13,25,25,8,10,10,11,5,20,13,17]},{"s":"Bomet","n":"Bomet Central","e":16811,"l":[24,19,14,11,7,42,9,27,4,59,8,37,55,2,1,20,24,61,65,180,7,12,18,55,11]},{"s":"Bomet","n":"Bomet East","e":6751,"l":[60,26,13,9,8,22,13,15,9,23,11,18,19,0,4,12,14,25,15,59,1,2,5,22,2]},{"s":"Bomet","n":"Chepalungu","e":5265,"l":[137,30,8,7,6,34,203,19,49,1,20,82,198,3,162,3,173,78,80,20,0,0,2,1,0]},{"s":"Bomet","n":"Konoin","e":72936,"l":[171,472,498,499,302,507,581,588,196,170,237,499,537,188,195,229,191,327,672,1184,112,114,152,448,175]},{"s":"Bomet","n":"Sotik","e":18867,"l":[82,56,41,62,46,107,194,132,47,50,65,102,134,43,61,44,178,76,260,200,16,40,83,125,42]},{"s":"Bungoma","n":"Bumula","e":1035,"l":[64,15,33,32,23,49,44,28,8,36,9,83,2,0,0,0,2,2,3,2,1,1,2,1,1]},{"s":"Bungoma","n":"Kabuchai","e":1709,"l":[5,9,2,4,1,7,3,13,3,6,3,25,1,0,0,0,3,1,2,0,0,0,0,1,4]},{"s":"Bungoma","n":"Kanduyi","e":907,"l":[25,12,3,11,7,8,22,5,8,21,4,24,3,2,2,2,1,6,8,2,1,0,1,4,3]},{"s":"Bungoma","n":"Kimilili","e":1591,"l":[2,2,3,1,2,9,12,5,1,3,0,17,3,0,0,1,1,1,1,1,1,1,1,2,3]},{"s":"Bungoma","n":"Likuyani","e":1314,"l":[73,81,19,3,27,23,45,7,10,8,18,30,3,5,4,66,37,1,6,5,0,1,4,3,4]},{"s":"Bungoma","n":"Lugari","e":3201,"l":[441,212,134,1,1,29,78,160,3,50,13,37,29,5,35,76,37,14,9,7,2,4,5,10,4]},{"s":"Bungoma","n":"Mt. Elgon","e":55823,"l":[406,63,105,8,12,46,497,110,33,56,187,315,190,101,149,74,354,22,282,16,18,21,36,9,37]},{"s":"Bungoma","n":"Sirisia","e":1489,"l":[4,5,6,11,3,4,9,18,3,7,2,22,2,0,0,0,2,0,1,2,1,0,0,3,2]},{"s":"Bungoma","n":"Tongaren","e":1913,"l":[6,11,21,3,6,11,34,21,14,10,3,42,7,0,0,1,2,1,4,3,4,4,2,2,7]},{"s":"Bungoma","n":"Webute West","e":1109,"l":[6,8,5,5,3,13,2,13,2,11,4,30,5,1,0,2,1,0,1,2,1,3,0,2,5]},{"s":"Bungoma","n":"Webuye East","e":1015,"l":[1,1,1,1,1,4,2,5,0,4,1,17,2,0,0,1,4,2,5,3,2,1,2,4,4]},{"s":"Busia","n":"Budalangi","e":8856,"l":[65,23,10,5,17,19,30,12,44,76,7,11,6,5,4,74,43,15,353,3,4,20,83,12,5]},{"s":"Busia","n":"Butula","e":2401,"l":[36,22,19,25,17,20,15,15,6,17,1,18,4,2,0,0,0,0,3,2,0,0,1,4,1]},{"s":"Busia","n":"Funyula","e":3621,"l":[7,3,12,11,21,15,23,8,35,23,3,12,2,5,6,1,8,5,42,16,4,2,5,17,6]},{"s":"Busia","n":"Matayos","e":1924,"l":[9,9,10,2,5,13,14,1,17,12,3,8,2,4,1,1,4,8,38,23,3,1,3,15,10]},{"s":"Busia","n":"Nambale","e":1561,"l":[32,10,11,7,5,18,17,7,7,25,3,17,4,8,0,2,7,16,24,6,2,0,0,5,1]},{"s":"Busia","n":"Teso North","e":1809,"l":[35,3,13,14,10,9,27,13,4,20,3,33,4,1,0,1,1,4,0,4,4,1,0,5,3]},{"s":"Busia","n":"Teso South","e":1867,"l":[76,19,15,13,12,30,47,15,23,28,9,24,2,2,2,3,6,8,4,10,26,5,19,9,8]},{"s":"Elgeyo-Marakwet","n":"Keiyo North","e":10315,"l":[8,10,18,21,16,22,28,47,12,1,81,35,153,118,196,264,350,87,10,18,36,15,46,150,173]},{"s":"Elgeyo-Marakwet","n":"Keiyo South","e":36799,"l":[247,1555,419,450,311,601,776,867,314,152,455,379,300,390,668,671,697,343,219,212,230,226,291,315,212]},{"s":"Elgeyo-Marakwet","n":"Marakwet East","e":34604,"l":[12,93,20,481,87,100,1517,470,101,104,201,340,32,32,53,21,87,59,22,58,12,12,8,25,129]},{"s":"Elgeyo-Marakwet","n":"Marakwet West","e":25376,"l":[23,50,69,105,26,84,218,138,49,27,183,86,93,56,58,63,104,46,33,35,7,8,30,21,16]},{"s":"Embu","n":"Manyatta","e":19072,"l":[9,4,17,2,3,0,12,1,0,8,10,31,46,53,41,70,32,16,23,19,3,2,7,45,13]},{"s":"Embu","n":"Mbeere North","e":2461,"l":[50,5,164,15,117,9,134,10,51,22,135,11,12,8,4,11,14,7,3,7,2,1,15,17,4]},{"s":"Embu","n":"Mbeere South","e":2381,"l":[76,13,113,46,232,17,165,21,123,36,181,17,3,3,64,2,3,2,2,1,0,0,5,8,2]},{"s":"Embu","n":"Runyenjes","e":12253,"l":[6,2,18,3,5,0,6,3,1,11,4,2,3,6,6,4,5,4,17,8,1,1,2,12,5]},{"s":"Garissa","n":"Balambala","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Garissa","n":"Daadab","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Garissa","n":"Fafi","e":64,"l":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Garissa","n":"Garissa Township","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Garissa","n":"Ijara","e":239091,"l":[95,53,41,41,31,38,58,62,100,17,40,187,237,225,4,20,26,41,12,69,228,69,80,19,23]},{"s":"Garissa","n":"Lagdera","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Homa Bay","n":"Homa Bay Town","e":1437,"l":[1,0,1,0,1,1,1,1,1,2,1,1,1,0,0,0,1,1,0,0,1,0,0,1,1]},{"s":"Homa Bay","n":"Kabondo Kasipul","e":2334,"l":[6,3,2,3,8,2,6,9,16,2,5,8,4,1,0,2,4,2,1,5,4,3,7,3,4]},{"s":"Homa Bay","n":"Karachuonyo","e":2744,"l":[29,15,6,20,58,12,4,8,7,26,4,11,1,1,0,0,2,0,0,3,0,0,2,2,1]},{"s":"Homa Bay","n":"Kasipul","e":2786,"l":[25,2,1,2,14,10,3,12,11,3,2,27,12,16,15,9,5,14,10,11,7,3,8,4,5]},{"s":"Homa Bay","n":"Mbita","e":9382,"l":[8,3,8,3,13,6,15,6,8,10,1,2,7,16,103,52,22,31,20,54,29,1,17,45,54]},{"s":"Homa Bay","n":"Ndhiwa","e":14189,"l":[35,2,3,3,3,6,10,4,8,9,2,20,22,7,1,2,5,14,6,55,3,2,6,20,10]},{"s":"Homa Bay","n":"Rangwe","e":1286,"l":[2,0,1,1,6,1,1,1,4,2,0,2,3,1,0,0,1,3,0,4,3,0,2,4,3]},{"s":"Homa Bay","n":"Suba","e":15990,"l":[168,35,20,5,89,6,9,15,39,19,2,12,11,32,48,14,11,65,50,342,20,1,43,21,29]},{"s":"Homa Bay","n":"unknown 6","e":316,"l":[24,1,2,3,18,0,2,1,3,2,2,8,1,0,0,0,4,0,0,0,0,0,0,0,0]},{"s":"Isiolo","n":"Isiolo North","e":117,"l":[0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Isiolo","n":"Isiolo South","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Kajiado","n":"Kajiado Central","e":9180,"l":[82,6,11,7,78,2,16,1,71,5,40,24,7,4,0,0,0,1,0,0,0,0,0,0,0]},{"s":"Kajiado","n":"Kajiado East","e":1700,"l":[8,6,9,5,69,0,22,13,13,5,50,8,1,2,1,1,0,0,0,2,0,0,2,0,0]},{"s":"Kajiado","n":"Kajiado North","e":1056,"l":[7,1,2,2,1,2,1,1,0,1,2,1,0,1,1,4,25,25,6,0,0,0,8,0,0]},{"s":"Kajiado","n":"Kajiado South","e":5070,"l":[2,0,1,4,5,2,4,5,7,1,0,19,29,54,16,56,12,2,1,0,1,0,9,0,34]},{"s":"Kajiado","n":"Kajiado West","e":2460,"l":[16,2,2,2,5,15,7,4,6,4,3,3,2,5,4,39,16,4,4,1,1,1,0,2,2]},{"s":"Kakamega","n":"Butere","e":1686,"l":[19,8,15,9,10,14,28,9,8,9,1,10,3,1,1,0,2,1,2,2,1,2,1,3,2]},{"s":"Kakamega","n":"Ikolomani","e":2051,"l":[29,4,16,5,13,8,33,10,10,15,4,6,3,1,3,6,11,3,10,9,6,8,4,5,3]},{"s":"Kakamega","n":"Khwisero","e":1696,"l":[7,2,6,2,3,4,16,6,11,2,2,3,0,1,0,1,2,0,4,4,3,2,2,4,2]},{"s":"Kakamega","n":"Lugari","e":386,"l":[1,2,1,1,2,1,1,2,1,2,1,1,1,0,0,0,11,1,1,0,0,1,1,0,0]},{"s":"Kakamega","n":"Lurambi","e":1920,"l":[35,8,14,6,12,8,32,10,10,24,3,18,13,2,3,1,8,36,10,10,6,5,1,1,1]},{"s":"Kakamega","n":"Malava","e":3142,"l":[22,19,18,12,24,28,36,18,12,33,14,29,8,6,5,16,22,13,6,4,3,2,4,34,4]},{"s":"Kakamega","n":"Matungu","e":1038,"l":[137,43,59,66,46,34,49,23,9,24,3,50,3,0,0,0,0,0,0,0,1,0,1,3,0]},{"s":"Kakamega","n":"Mumias East","e":960,"l":[18,6,11,11,14,11,22,9,5,10,1,14,3,1,0,0,1,0,12,4,0,4,34,3,0]},{"s":"Kakamega","n":"Mumias West","e":704,"l":[17,5,13,7,14,14,21,10,7,9,3,7,1,0,0,0,0,2,1,0,0,0,3,4,1]},{"s":"Kakamega","n":"Navakholo","e":1326,"l":[24,6,18,11,9,13,17,16,9,22,4,27,2,1,2,13,9,29,4,2,1,1,9,5,3]},{"s":"Kakamega","n":"Shinyalu","e":20997,"l":[26,19,18,4,17,25,47,16,68,40,7,17,13,7,27,67,123,108,51,6,85,41,10,26,21]},{"s":"Kericho","n":"Ainamoi","e":12850,"l":[7,22,23,29,47,85,56,61,62,11,83,50,93,73,16,58,52,52,53,93,20,27,34,44,33]},{"s":"Kericho","n":"Belgut","e":39487,"l":[44,111,105,162,70,152,258,209,136,86,292,268,180,129,164,131,177,255,244,332,78,76,109,182,67]},{"s":"Kericho","n":"Bureti","e":23173,"l":[18,30,82,74,47,73,97,40,40,53,27,83,145,57,46,98,73,129,216,229,33,46,67,103,30]},{"s":"Kericho","n":"Kipkelion East","e":37436,"l":[98,214,61,197,114,366,327,182,136,96,213,675,773,1120,1322,1056,1391,429,636,213,50,67,247,287,471]},{"s":"Kericho","n":"Kipkelion West","e":11017,"l":[23,27,17,13,11,43,35,21,37,13,26,12,22,18,18,12,28,23,14,32,7,15,18,13,89]},{"s":"Kericho","n":"Sigowet/Soin","e":17277,"l":[14,20,30,73,97,124,103,135,252,22,250,49,108,28,0,54,59,59,25,57,77,58,68,54,77]},{"s":"Kiambu","n":"Gatundu North","e":12960,"l":[277,5,11,2,1,8,59,0,1,15,4,11,10,35,48,83,129,98,123,98,14,22,27,106,23]},{"s":"Kiambu","n":"Gatundu South","e":10352,"l":[157,1,5,4,2,3,42,0,1,16,2,26,48,50,27,30,26,32,41,92,11,9,13,98,52]},{"s":"Kiambu","n":"Githunguri","e":5567,"l":[137,1,7,3,2,2,18,0,2,11,4,6,9,10,7,24,24,28,40,75,20,22,13,87,15]},{"s":"Kiambu","n":"Juja","e":1414,"l":[64,3,4,7,3,10,36,0,1,6,14,8,19,6,0,5,5,3,20,25,2,2,2,2,9]},{"s":"Kiambu","n":"Kabete","e":547,"l":[15,0,0,1,0,1,1,0,1,1,0,2,1,4,2,4,1,9,8,6,4,3,3,3,0]},{"s":"Kiambu","n":"Kiambaa","e":2034,"l":[59,3,6,11,4,5,22,0,0,6,2,13,8,6,7,14,2,19,78,24,2,10,4,29,4]},{"s":"Kiambu","n":"Kiambu","e":1005,"l":[37,1,3,7,4,2,25,11,0,2,4,5,1,4,6,3,2,6,9,7,1,1,1,12,3]},{"s":"Kiambu","n":"Kikuyu","e":938,"l":[80,6,0,3,3,1,11,1,6,5,12,1,12,46,53,22,17,14,12,7,3,3,1,11,47]},{"s":"Kiambu","n":"Lari","e":24970,"l":[504,1,53,6,24,46,78,4,47,41,23,54,104,222,278,311,194,158,51,122,27,36,144,496,163]},{"s":"Kiambu","n":"Limuru","e":6510,"l":[364,11,29,11,14,22,67,11,13,62,21,56,43,75,70,72,58,62,159,164,61,28,31,216,25]},{"s":"Kiambu","n":"Ruiru","e":309,"l":[24,3,0,4,4,2,15,1,0,2,2,3,0,0,0,1,0,3,2,1,0,1,1,0,0]},{"s":"Kiambu","n":"Thika Town","e":1014,"l":[19,9,3,3,8,1,25,0,3,13,5,3,4,14,2,0,1,3,1,3,0,2,0,3,6]},{"s":"Kilifi","n":"Ganze","e":12359,"l":[5,67,82,312,173,129,62,111,230,235,94,128,43,51,40,110,82,33,86,73,19,3,23,36,19]},{"s":"Kilifi","n":"Kaloleni","e":3187,"l":[24,19,24,48,8,84,18,22,78,57,53,130,19,64,3,40,79,25,25,30,52,4,15,8,16]},{"s":"Kilifi","n":"Kilifi North","e":39858,"l":[38,109,283,358,96,511,74,273,261,1425,99,122,84,475,121,156,108,198,284,153,103,61,109,62,42]},{"s":"Kilifi","n":"Kilifi South","e":11848,"l":[146,120,85,152,14,335,72,131,154,83,98,466,47,364,31,45,196,125,109,116,286,85,112,70,34]},{"s":"Kilifi","n":"Magarini","e":70773,"l":[136,441,89,1516,405,447,334,892,923,779,149,753,553,672,659,865,840,623,708,395,782,430,333,455,228]},{"s":"Kilifi","n":"Malindi","e":18785,"l":[3,50,10,65,33,105,27,74,72,200,21,53,27,73,37,43,49,6,78,32,18,5,18,45,12]},{"s":"Kilifi","n":"Rabai","e":3365,"l":[4,24,20,24,7,68,16,21,35,38,20,105,20,80,2,4,40,20,10,17,18,2,15,24,17]},{"s":"Kirinyaga","n":"Gichugu","e":30365,"l":[4,5,57,2,2,0,42,4,17,53,11,24,91,17,45,112,96,44,32,13,4,2,7,118,18]},{"s":"Kirinyaga","n":"Kirinyaga Central","e":11522,"l":[4,8,74,2,3,0,31,9,7,18,15,1,14,10,10,15,22,31,47,39,4,0,3,5,22]},{"s":"Kirinyaga","n":"Mwea","e":298,"l":[4,1,4,2,3,0,1,0,4,1,7,0,0,0,0,0,0,0,0,1,0,0,0,0,0]},{"s":"Kirinyaga","n":"Ndia","e":5299,"l":[3,4,28,0,2,1,22,14,5,4,5,1,6,2,1,6,10,7,12,15,3,2,4,13,4]},{"s":"Kisii","n":"Bobasi","e":11989,"l":[76,3,2,0,6,9,16,5,10,9,1,2,14,2,0,5,7,1,46,189,17,14,18,23,14]},{"s":"Kisii","n":"Bomachoge Borabu","e":5387,"l":[26,0,1,0,1,2,9,1,3,4,0,1,12,2,0,0,6,1,25,182,4,3,4,9,6]},{"s":"Kisii","n":"Bomachoge Chache","e":5547,"l":[21,0,1,1,2,2,2,1,4,2,0,1,12,2,0,2,2,1,15,79,7,3,4,9,11]},{"s":"Kisii","n":"Bonchari","e":3394,"l":[9,0,1,2,0,1,1,2,1,1,0,2,2,1,0,1,2,5,9,47,3,3,3,6,7]},{"s":"Kisii","n":"Kitutu Chache North","e":5072,"l":[8,1,1,0,1,2,3,3,2,8,1,5,2,0,0,2,1,3,14,61,3,3,4,9,10]},{"s":"Kisii","n":"Kitutu Chache South","e":3255,"l":[4,0,1,0,0,0,2,0,1,1,0,2,2,2,0,1,3,1,1,23,4,2,2,4,5]},{"s":"Kisii","n":"Nyaribari Chache","e":6817,"l":[46,0,0,0,2,2,10,3,6,3,0,3,7,1,0,6,13,0,27,155,11,7,12,15,9]},{"s":"Kisii","n":"Nyaribari Masaba","e":3594,"l":[9,1,1,0,6,3,34,3,3,1,1,2,1,0,0,1,1,2,14,93,3,4,7,6,6]},{"s":"Kisii","n":"South Mugirango","e":3680,"l":[52,1,4,1,2,12,25,3,7,16,1,4,10,1,0,1,2,3,5,29,1,2,1,5,7]},{"s":"Kisumu","n":"Kisumu Central","e":1230,"l":[3,2,3,2,10,1,4,1,16,1,0,2,0,2,6,5,3,9,0,6,2,1,0,2,14]},{"s":"Kisumu","n":"Kisumu East","e":1672,"l":[2,11,3,8,59,15,21,3,34,70,0,17,3,2,0,2,6,8,0,5,1,0,0,2,2]},{"s":"Kisumu","n":"Kisumu West","e":2875,"l":[3,1,5,4,8,2,7,12,4,9,1,2,5,1,0,6,4,2,2,14,9,4,7,15,13]},{"s":"Kisumu","n":"Muhoroni","e":8857,"l":[18,24,33,21,25,33,31,33,29,12,32,31,40,28,8,25,28,16,4,19,20,6,26,5,14]},{"s":"Kisumu","n":"Nyakach","e":5798,"l":[25,23,42,28,35,64,32,7,25,39,8,15,4,2,0,8,14,2,1,4,6,1,8,3,8]},{"s":"Kisumu","n":"Nyando","e":2864,"l":[6,60,57,7,91,8,16,3,23,111,5,11,2,2,0,1,5,0,0,1,0,0,2,1,1]},{"s":"Kisumu","n":"Seme","e":2736,"l":[1,1,3,3,3,1,4,3,7,2,1,1,3,1,0,2,11,5,0,14,4,3,6,6,3]},{"s":"Kitui","n":"Kitui Central","e":2969,"l":[6,3,3,1,1,2,10,5,12,5,4,6,21,23,1,36,43,114,53,93,17,30,27,139,26]},{"s":"Kitui","n":"Kitui East","e":10479,"l":[26,16,16,7,18,24,22,40,62,18,32,21,12,35,4,51,73,74,15,20,23,18,30,89,27]},{"s":"Kitui","n":"Kitui Rural","e":155,"l":[1,1,3,0,2,1,2,3,3,1,1,2,0,0,0,1,2,1,0,0,1,0,1,0,0]},{"s":"Kitui","n":"Kitui South","e":3278,"l":[7,4,35,5,7,3,4,10,17,8,10,55,2,2,2,19,70,17,1,15,1,1,0,3,4]},{"s":"Kitui","n":"Kitui West","e":117,"l":[1,1,0,1,0,0,4,2,1,1,0,1,0,0,0,1,8,4,1,0,1,1,0,2,0]},{"s":"Kitui","n":"Mwingi Central","e":5079,"l":[38,10,8,3,31,37,29,45,69,11,5,4,2,13,1,13,30,20,7,19,29,5,9,29,15]},{"s":"Kitui","n":"Mwingi North","e":10242,"l":[12,9,12,7,66,32,41,7,46,5,21,3,1,2,1,3,1,0,1,1,2,0,2,1,1]},{"s":"Kitui","n":"Mwingi West","e":536,"l":[5,1,1,0,3,1,3,8,3,1,0,1,1,5,0,8,1,18,8,7,3,2,1,11,2]},{"s":"Kwale","n":"Kinango","e":7074,"l":[98,147,66,163,39,80,30,249,184,93,72,184,42,60,20,38,73,11,5,15,0,1,2,6,11]},{"s":"Kwale","n":"Lungalunga","e":24450,"l":[277,139,143,330,118,554,297,462,479,410,176,314,149,389,139,262,444,433,107,110,267,74,365,295,132]},{"s":"Kwale","n":"Matuga","e":35713,"l":[133,310,166,384,113,232,191,915,442,582,93,546,259,915,33,131,542,87,50,85,265,59,79,272,99]},{"s":"Kwale","n":"Msambweni","e":21678,"l":[134,88,120,135,163,146,350,501,250,473,260,293,158,574,49,61,548,318,160,163,122,114,321,345,295]},{"s":"Laikipia","n":"Laikipia East","e":3087,"l":[2,3,25,4,6,0,29,10,3,4,36,24,2,2,3,3,4,2,1,10,1,2,2,10,2]},{"s":"Laikipia","n":"Laikipia North","e":17014,"l":[0,7,190,66,11,116,6,320,6,186,90,2,2,3,19,4,10,1,15,2,7,4,1,0,1]},{"s":"Laikipia","n":"Laikipia West","e":26132,"l":[242,133,388,127,203,1038,428,243,659,459,1601,118,25,27,31,22,72,139,87,84,37,43,66,97,40]},{"s":"Lamu","n":"Lamu East","e":119233,"l":[217,183,145,135,305,151,246,158,634,359,385,455,395,720,321,221,261,260,750,161,474,263,699,138,501]},{"s":"Lamu","n":"Lamu West","e":125716,"l":[418,358,561,434,476,1086,631,1019,2067,767,563,802,414,1157,661,1431,425,339,358,519,676,271,262,184,282]},{"s":"Machakos","n":"Kangundo","e":584,"l":[2,0,0,1,2,0,9,2,0,2,1,1,1,0,0,1,1,1,2,1,5,0,1,1,0]},{"s":"Machakos","n":"Kathiani","e":613,"l":[19,1,1,8,3,0,10,1,7,11,3,2,3,0,3,4,4,12,6,12,6,3,10,7,4]},{"s":"Machakos","n":"Machakos Town","e":1536,"l":[22,5,3,8,11,3,23,1,3,17,4,2,3,18,6,12,7,11,7,12,6,6,13,10,5]},{"s":"Machakos","n":"Masinga","e":690,"l":[209,2,12,4,4,2,109,1,7,1,21,0,1,0,0,0,1,2,1,0,1,2,3,1,1]},{"s":"Machakos","n":"Matungulu","e":2808,"l":[28,2,5,6,21,8,43,9,7,40,156,14,1,3,13,0,0,5,3,6,1,5,21,6,0]},{"s":"Machakos","n":"Mavoko","e":51,"l":[0,0,0,0,0,0,3,0,2,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Machakos","n":"Mwala","e":583,"l":[16,16,10,3,24,5,22,8,29,0,25,6,1,0,0,0,0,2,3,1,1,0,1,0,0]},{"s":"Machakos","n":"Yatta","e":931,"l":[3,1,1,1,9,0,5,1,7,15,21,3,1,1,0,0,1,18,10,1,6,4,24,10,3]},{"s":"Machakos","n":"unknown 7","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Makueni","n":"Kaiti","e":3336,"l":[36,5,12,9,26,3,74,2,15,29,6,9,6,6,9,23,19,10,3,13,4,3,43,32,7]},{"s":"Makueni","n":"Kibwezi East","e":12617,"l":[20,1,17,0,18,8,0,7,5,15,6,3,2,1,4,4,6,18,0,3,0,0,1,4,3]},{"s":"Makueni","n":"Kibwezi West","e":5259,"l":[69,2,85,4,162,5,7,20,25,13,48,2,0,4,1,3,8,14,1,1,0,0,0,0,0]},{"s":"Makueni","n":"Kilome","e":997,"l":[21,22,2,6,78,1,10,4,38,3,46,10,1,0,1,1,0,0,0,2,0,0,0,2,1]},{"s":"Makueni","n":"Makueni","e":2807,"l":[52,9,60,8,71,8,66,1,29,63,33,30,12,1,0,1,2,11,1,5,4,0,0,16,3]},{"s":"Makueni","n":"Mbooni","e":4147,"l":[36,27,35,9,54,5,73,7,23,57,15,10,5,5,1,4,5,24,13,30,7,2,9,38,13]},{"s":"Mandera","n":"Banissa","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Mandera","n":"Lafey","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Mandera","n":"Mandera East","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Mandera","n":"Mandera North","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Mandera","n":"Mandera South","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Mandera","n":"Mandera West","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Mandera","n":"unknown 1","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Marsabit","n":"Laisamis","e":1076,"l":[1,1,0,1,0,1,0,0,0,0,4,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Marsabit","n":"Moyale","e":128,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0]},{"s":"Marsabit","n":"North Horr","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Marsabit","n":"Saku","e":7410,"l":[0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Meru","n":"Buuri","e":36956,"l":[25,31,58,23,15,1,80,35,2,66,55,37,105,142,221,381,296,106,27,32,6,11,83,157,280]},{"s":"Meru","n":"Central Imenti","e":13360,"l":[2,7,19,0,2,0,63,11,27,7,24,3,13,3,11,18,55,23,34,25,4,4,33,65,78]},{"s":"Meru","n":"Igembe Central","e":4336,"l":[0,1,2,0,0,0,1,0,0,2,1,1,1,0,0,3,6,3,2,2,7,9,1,5,4]},{"s":"Meru","n":"Igembe North","e":7766,"l":[0,0,1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,0,5,0,0,7,2,10,1]},{"s":"Meru","n":"Igembe South","e":5593,"l":[3,5,7,1,1,0,6,2,2,3,7,3,2,8,6,11,14,8,24,17,10,11,8,67,13]},{"s":"Meru","n":"North Imenti","e":10932,"l":[2,4,4,0,1,1,5,0,4,16,24,1,58,1,8,18,20,7,15,24,14,4,49,9,33]},{"s":"Meru","n":"South Imenti","e":28954,"l":[8,21,67,2,5,0,37,12,48,18,15,12,21,15,41,49,37,37,38,55,13,5,17,44,34]},{"s":"Meru","n":"Tigania East","e":10935,"l":[9,25,27,5,14,1,5,1,12,13,14,9,11,17,20,34,17,33,17,20,8,31,11,119,19]},{"s":"Meru","n":"Tigania West","e":1930,"l":[0,1,2,0,0,0,2,0,1,2,6,0,21,1,3,4,7,1,6,5,0,1,2,11,9]},{"s":"Meru","n":"unknown 5","e":147,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Migori","n":"Awendo","e":1835,"l":[24,4,1,1,4,2,10,4,5,7,1,14,10,3,0,0,4,1,5,7,2,3,0,3,2]},{"s":"Migori","n":"Kuria East","e":1399,"l":[21,2,3,2,5,6,27,3,5,6,1,5,4,1,1,0,1,5,7,23,5,7,12,15,7]},{"s":"Migori","n":"Kuria West","e":2372,"l":[7,4,4,1,12,6,35,3,21,7,0,20,6,1,0,0,7,1,4,41,8,3,3,15,8]},{"s":"Migori","n":"Nyatike","e":1538,"l":[20,24,4,12,5,14,7,23,9,6,6,1,1,1,0,23,38,0,0,27,0,2,0,2,1]},{"s":"Migori","n":"Rongo","e":1763,"l":[33,2,5,2,5,5,6,3,5,6,0,12,3,0,0,0,4,4,6,14,2,2,1,2,1]},{"s":"Migori","n":"Suna East","e":2118,"l":[7,1,1,1,4,4,39,2,9,1,1,3,4,2,1,7,11,1,14,43,5,2,11,58,6]},{"s":"Migori","n":"Suna West","e":538,"l":[10,3,1,1,0,2,5,1,2,0,1,1,1,0,0,0,4,0,2,6,1,0,0,7,2]},{"s":"Migori","n":"Uriri","e":3161,"l":[29,1,0,0,1,0,5,3,3,1,0,8,11,1,0,1,5,2,9,79,10,4,10,39,22]},{"s":"Mombasa","n":"Changamwe","e":116,"l":[0,2,0,1,0,0,1,1,2,3,1,1,0,0,5,8,3,1,0,0,0,0,0,0,0]},{"s":"Mombasa","n":"Jomvu","e":444,"l":[0,1,0,0,0,1,1,0,2,2,0,2,1,1,1,6,2,1,0,0,0,0,1,2,0]},{"s":"Mombasa","n":"Kisauni","e":1982,"l":[30,40,103,19,3,105,34,52,52,17,86,47,11,19,2,4,12,5,9,5,10,2,13,9,7]},{"s":"Mombasa","n":"Likoni","e":853,"l":[21,6,37,1,1,3,1,71,4,19,15,9,3,4,0,2,3,5,3,4,8,1,1,2,15]},{"s":"Mombasa","n":"Mvita","e":78,"l":[1,0,1,1,0,0,0,1,0,0,1,1,1,1,0,1,1,0,0,0,0,0,0,0,0]},{"s":"Mombasa","n":"Nyali","e":338,"l":[1,1,7,6,0,5,7,7,9,2,12,1,1,2,2,0,3,3,0,4,0,0,3,1,5]},{"s":"Murang'a","n":"Gatanga","e":17682,"l":[202,38,21,12,9,7,133,2,20,43,23,40,77,105,71,148,75,106,112,155,36,24,52,193,174]},{"s":"Murang'a","n":"Kandara","e":4822,"l":[27,2,5,3,0,0,23,0,1,3,1,3,10,3,1,6,3,16,20,32,6,3,7,45,7]},{"s":"Murang'a","n":"Kangema","e":21597,"l":[74,6,68,11,2,0,33,7,9,22,13,17,12,6,8,28,30,70,48,88,11,13,47,37,83]},{"s":"Murang'a","n":"Kigumo","e":15250,"l":[106,5,60,11,0,4,54,1,18,35,11,26,59,18,29,77,69,115,77,150,13,18,48,120,87]},{"s":"Murang'a","n":"Kiharu","e":8057,"l":[46,4,33,8,9,6,20,3,20,9,17,4,7,2,1,7,14,20,33,29,5,4,19,64,20]},{"s":"Murang'a","n":"Maragwa","e":2142,"l":[66,23,11,3,7,7,26,2,11,7,14,3,11,19,13,26,6,7,20,36,18,14,28,38,12]},{"s":"Murang'a","n":"Mathioya","e":13670,"l":[45,4,41,13,4,3,22,2,11,14,14,16,5,2,3,16,18,39,50,60,8,7,15,50,28]},{"s":"Nairobi","n":"Dagoretti North","e":259,"l":[4,0,0,0,1,1,3,0,0,7,1,1,0,0,0,1,0,0,1,0,1,1,0,0,0]},{"s":"Nairobi","n":"Dagoretti South","e":156,"l":[4,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,1,1,0,0,1,0,1,0]},{"s":"Nairobi","n":"Embakasi Central","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Nairobi","n":"Embakasi East","e":2,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Nairobi","n":"Embakasi North","e":1,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Nairobi","n":"Embakasi South","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Nairobi","n":"Embakasi West","e":2,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Nairobi","n":"Kamukunji","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Nairobi","n":"Kasarani","e":26,"l":[0,0,0,1,0,0,0,0,0,0,1,0,0,2,0,0,0,0,0,0,0,0,0,1,0]},{"s":"Nairobi","n":"Kibra","e":33,"l":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0]},{"s":"Nairobi","n":"Langata","e":2460,"l":[83,0,0,2,4,4,8,2,1,7,13,14,11,11,1,36,8,0,4,1,3,1,0,5,7]},{"s":"Nairobi","n":"Makadara","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Nairobi","n":"Mathare","e":3,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Nairobi","n":"Roysambu","e":220,"l":[6,0,0,0,1,0,1,1,0,1,0,1,0,1,0,0,0,1,1,1,0,1,0,1,0]},{"s":"Nairobi","n":"Ruaraka","e":3,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Nairobi","n":"Starehe","e":20,"l":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Nairobi","n":"Westlands","e":2057,"l":[32,1,3,3,3,4,12,2,4,13,7,3,4,5,2,15,17,10,16,9,3,2,2,9,11]},{"s":"Nakuru","n":"Bahati","e":6095,"l":[52,68,2,48,47,60,147,65,15,141,46,13,46,28,36,37,25,18,2,18,2,2,6,23,23]},{"s":"Nakuru","n":"Gilgil","e":13958,"l":[23,23,53,44,33,23,56,35,55,37,46,26,7,11,3,14,25,22,17,62,23,87,7,13,17]},{"s":"Nakuru","n":"Kuresoi North","e":16800,"l":[82,785,134,246,74,701,203,210,118,71,254,350,476,503,293,377,390,131,61,52,21,36,76,73,203]},{"s":"Nakuru","n":"Kuresoi South","e":19463,"l":[607,1673,303,1112,324,916,392,189,81,177,434,143,39,22,12,50,97,101,128,199,45,41,50,122,45]},{"s":"Nakuru","n":"Molo","e":22422,"l":[711,1249,207,537,326,842,375,255,207,267,567,412,183,153,181,389,723,440,209,122,29,41,136,120,242]},{"s":"Nakuru","n":"Naivasha","e":12767,"l":[121,246,34,526,118,251,125,248,348,445,244,131,13,7,8,7,29,17,10,34,12,51,30,31,20]},{"s":"Nakuru","n":"Nakuru Town East","e":1990,"l":[0,2,0,6,0,0,7,131,3,0,20,0,0,0,1,0,6,1,0,1,0,2,1,1,1]},{"s":"Nakuru","n":"Nakuru Town West","e":1175,"l":[0,2,0,1,0,0,4,1,1,0,6,2,0,0,1,0,0,2,0,15,0,2,0,3,1]},{"s":"Nakuru","n":"Njoro","e":20118,"l":[294,799,64,290,253,431,204,94,207,249,288,108,50,15,283,160,150,219,128,44,12,11,168,37,39]},{"s":"Nakuru","n":"Rongai","e":2063,"l":[2,13,2,12,11,7,6,6,5,3,56,4,24,27,27,13,15,8,7,4,14,4,9,2,1]},{"s":"Nakuru","n":"Subukia","e":6547,"l":[38,129,33,29,40,201,119,46,17,131,120,57,30,5,31,65,70,90,8,38,3,11,50,41,47]},{"s":"Nandi","n":"Aldai","e":23518,"l":[171,9,102,13,68,50,71,37,85,31,31,98,95,57,82,105,76,89,207,33,62,91,96,71,65]},{"s":"Nandi","n":"Chesumei","e":14825,"l":[190,62,139,17,52,42,130,40,98,14,48,54,74,43,175,195,168,73,153,51,55,37,32,50,50]},{"s":"Nandi","n":"Emgwen","e":14487,"l":[267,23,178,10,45,35,79,28,62,37,49,85,69,63,153,92,84,108,197,32,71,53,47,85,67]},{"s":"Nandi","n":"Mosop","e":9250,"l":[128,34,37,7,30,18,65,36,39,24,30,60,6,13,27,26,50,17,35,21,14,8,9,17,18]},{"s":"Nandi","n":"Nandi Hills","e":21616,"l":[164,345,372,286,291,349,301,138,192,93,123,210,473,179,375,395,181,447,137,348,94,140,184,180,147]},{"s":"Nandi","n":"Tinderet","e":26494,"l":[91,131,104,68,168,105,210,95,124,63,105,106,165,125,112,127,104,145,95,202,64,40,111,108,102]},{"s":"Narok","n":"Emurua Dikirr","e":1098,"l":[12,12,3,3,7,4,27,4,7,3,3,4,4,2,2,1,4,5,2,4,0,1,1,2,1]},{"s":"Narok","n":"Kilgoris","e":59650,"l":[1021,140,251,147,376,168,2482,201,464,280,226,436,1363,1367,2509,1821,1227,1562,1119,2309,314,710,889,599,336]},{"s":"Narok","n":"Narok East","e":6911,"l":[84,27,7,14,96,118,102,133,108,28,27,45,48,22,8,36,53,44,42,210,23,31,54,85,27]},{"s":"Narok","n":"Narok North","e":135969,"l":[1966,2944,427,2428,1304,3022,2118,1843,1259,6915,753,1395,803,355,848,1113,1821,1850,1286,1687,194,381,1193,1352,465]},{"s":"Narok","n":"Narok South","e":106881,"l":[1303,1132,297,915,732,1405,1009,741,594,834,1325,342,215,100,110,166,186,368,206,714,112,180,278,473,178]},{"s":"Narok","n":"Narok West","e":24121,"l":[178,168,75,114,53,199,269,147,181,69,488,320,111,58,78,54,74,51,32,52,32,50,71,49,63]},{"s":"Nyamira","n":"Borabu","e":11473,"l":[31,58,52,85,61,50,223,90,40,50,53,69,84,54,83,97,109,163,470,502,58,165,243,181,39]},{"s":"Nyamira","n":"Kitutu Masaba","e":16048,"l":[41,11,5,2,7,11,33,26,11,30,3,11,14,7,0,21,50,5,119,469,30,30,60,68,53]},{"s":"Nyamira","n":"North Mugirango","e":7052,"l":[3,4,3,2,8,2,5,9,7,3,2,4,4,2,3,7,11,9,72,58,17,32,24,10,12]},{"s":"Nyamira","n":"West Mugirango","e":10837,"l":[17,7,6,5,6,15,34,12,6,31,3,14,16,3,1,9,19,7,120,247,24,29,39,25,23]},{"s":"Nyandarua","n":"Kinangop","e":24419,"l":[123,4,346,8,6,40,70,54,25,46,89,136,89,57,202,190,146,154,44,58,9,15,104,20,307]},{"s":"Nyandarua","n":"Kipipiri","e":22797,"l":[65,35,156,4,11,10,119,49,26,203,107,14,12,4,10,41,25,83,56,42,8,5,16,7,130]},{"s":"Nyandarua","n":"Ndaragwa","e":26557,"l":[32,19,111,10,10,30,93,27,12,161,152,25,36,7,31,38,113,65,39,60,9,11,48,17,40]},{"s":"Nyandarua","n":"Ol Jorok","e":6017,"l":[102,89,32,54,48,61,122,89,19,145,183,71,6,49,72,77,74,95,68,131,35,31,33,90,107]},{"s":"Nyandarua","n":"Ol Kalou","e":6246,"l":[62,70,21,58,54,91,195,61,28,209,121,69,10,9,16,39,52,88,53,170,22,23,20,109,38]},{"s":"Nyeri","n":"Kieni","e":83553,"l":[70,33,333,9,40,8,159,26,23,142,203,156,111,175,280,308,293,204,111,210,7,16,123,297,132]},{"s":"Nyeri","n":"Mathira","e":27481,"l":[70,23,93,7,11,1,58,15,25,33,36,18,96,24,31,129,92,52,41,192,9,14,80,168,47]},{"s":"Nyeri","n":"Mukurweini","e":4583,"l":[9,2,12,1,2,2,13,1,9,6,7,2,8,2,2,7,8,0,17,25,3,5,10,45,6]},{"s":"Nyeri","n":"Nyeri Town","e":5124,"l":[5,5,9,2,4,1,1,8,12,10,12,4,9,5,7,10,3,6,14,28,2,10,15,36,9]},{"s":"Nyeri","n":"Othaya","e":25913,"l":[43,7,37,6,0,1,39,2,11,38,25,29,14,9,18,49,74,103,56,45,10,8,23,33,60]},{"s":"Nyeri","n":"Tetu","e":25657,"l":[54,7,28,2,1,1,40,6,9,63,29,64,61,57,91,185,125,72,49,99,4,6,111,47,84]},{"s":"Samburu","n":"Samburu East","e":33378,"l":[4,4,7,3,1,6,22,2,3,1,35,2,2,1,19,6,76,4,6,17,11,11,6,9,0]},{"s":"Samburu","n":"Samburu North","e":35968,"l":[2,8,11,6,2,6,20,4,7,2,30,1,6,1,17,11,86,6,7,15,2,64,41,9,5]},{"s":"Samburu","n":"Samburu West","e":14789,"l":[3,6,9,7,0,6,19,4,7,6,10,4,2,2,3,3,21,1,5,3,3,8,12,9,2]},{"s":"Siaya","n":"Alego Usonga","e":9656,"l":[11,10,7,8,8,9,34,18,35,17,114,16,27,41,5,297,491,23,557,28,32,73,118,40,26]},{"s":"Siaya","n":"Bondo","e":11888,"l":[85,19,71,35,192,21,325,136,111,92,255,76,60,112,22,230,91,51,303,79,73,106,108,89,114]},{"s":"Siaya","n":"Gem","e":5797,"l":[6,2,8,2,15,5,12,16,6,4,4,11,11,8,0,13,23,13,31,45,17,8,20,37,14]},{"s":"Siaya","n":"Rarieda","e":1610,"l":[4,0,2,4,4,5,1,4,4,2,1,3,1,2,0,2,2,0,0,1,1,1,1,2,6]},{"s":"Siaya","n":"Ugenya","e":4624,"l":[6,5,2,5,10,3,3,4,5,4,1,6,2,3,1,8,8,7,40,25,4,0,4,11,6]},{"s":"Siaya","n":"Ugunja","e":1551,"l":[5,2,5,2,6,4,9,7,9,3,1,3,2,1,0,1,2,9,11,4,1,0,2,7,4]},{"s":"Taita Taveta","n":"Mwatate","e":6209,"l":[63,12,3,1,1,0,7,14,1,8,3,12,10,43,4,6,2,26,8,107,5,1,1,55,23]},{"s":"Taita Taveta","n":"Taveta","e":828,"l":[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,10,8,0,0,0,0,1]},{"s":"Taita Taveta","n":"Voi","e":16234,"l":[17,1,4,0,1,3,2,9,4,28,5,3,16,27,5,17,19,35,5,40,3,1,0,21,10]},{"s":"Taita Taveta","n":"Wundanyi","e":5075,"l":[19,1,7,2,2,0,6,9,3,28,9,1,5,16,12,4,5,13,14,84,4,2,0,14,17]},{"s":"Tana River","n":"Bura","e":836,"l":[0,0,0,0,0,0,0,1,1,0,0,2,1,8,8,44,19,8,2,1,0,1,4,4,7]},{"s":"Tana River","n":"Galole","e":6390,"l":[2,1,0,1,0,3,23,20,21,5,1,1,19,122,6,20,78,20,32,23,66,67,45,14,42]},{"s":"Tana River","n":"Garsen","e":52882,"l":[349,306,150,262,430,1146,297,779,1439,1108,311,473,289,665,190,390,329,217,195,359,411,273,269,208,309]},{"s":"Tharaka-Nithi","n":"Chuka/Igambang'Ombe","e":15620,"l":[4,2,27,2,4,0,21,7,2,39,21,3,6,1,14,11,19,7,9,2,1,0,3,5,5]},{"s":"Tharaka-Nithi","n":"Igembe South","e":1733,"l":[5,4,4,2,16,0,7,3,10,5,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Tharaka-Nithi","n":"Maara","e":20978,"l":[2,2,26,3,1,0,8,1,0,8,3,2,2,3,21,22,39,28,48,16,3,14,8,23,17]},{"s":"Tharaka-Nithi","n":"Tharaka","e":1611,"l":[7,9,7,4,20,2,11,3,16,2,23,1,0,0,0,0,1,0,0,0,0,0,0,0,0]},{"s":"Trans Nzoia","n":"Cherangany","e":9344,"l":[148,92,586,46,25,97,299,154,79,47,80,126,29,4,2,6,25,16,38,20,7,5,7,37,36]},{"s":"Trans Nzoia","n":"Endebess","e":28710,"l":[123,39,152,44,71,9,217,43,121,46,106,120,206,32,71,27,117,56,57,36,21,2,21,41,23]},{"s":"Trans Nzoia","n":"Kiminini","e":3214,"l":[13,6,43,8,6,21,50,24,5,10,5,30,30,2,12,14,11,7,42,29,7,8,36,34,29]},{"s":"Trans Nzoia","n":"Kwanza","e":1384,"l":[3,1,16,4,4,1,12,7,2,9,1,8,1,0,1,12,16,3,18,3,7,4,26,13,4]},{"s":"Trans Nzoia","n":"Saboti","e":8302,"l":[174,73,234,117,142,36,321,121,24,13,17,229,61,16,2,5,7,23,23,99,12,13,6,17,25]},{"s":"Trans Nzoia","n":"unknown 4","e":488,"l":[1,1,6,1,1,1,1,7,1,2,3,3,1,1,0,1,2,1,1,0,1,1,0,2,1]},{"s":"Turkana","n":"Loima","e":5225,"l":[0,2,1,0,1,0,0,0,0,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0]},{"s":"Turkana","n":"Turkana Central","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Turkana","n":"Turkana East","e":45,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Turkana","n":"Turkana North","e":18,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Turkana","n":"Turkana South","e":835,"l":[0,1,5,1,2,10,11,25,25,6,14,15,2,7,2,16,14,6,6,0,12,9,0,0,1]},{"s":"Turkana","n":"Turkana West","e":155,"l":[0,1,0,0,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Turkana","n":"unknown 2","e":29,"l":[0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uasin Gishu","n":"Ainabkoi","e":7352,"l":[30,378,129,149,147,83,170,181,57,29,93,101,55,87,88,139,82,41,42,35,26,29,24,14,30]},{"s":"Uasin Gishu","n":"Kapseret","e":3509,"l":[314,782,362,36,180,71,121,35,120,38,169,52,10,52,16,21,30,14,32,17,13,7,5,2,8]},{"s":"Uasin Gishu","n":"Kesses","e":20874,"l":[185,848,362,378,260,255,651,551,144,72,166,374,135,263,563,426,546,246,91,40,18,12,101,198,112]},{"s":"Uasin Gishu","n":"Moiben","e":1686,"l":[2,18,6,11,4,34,58,19,14,6,28,10,4,5,14,3,10,4,3,3,7,4,3,3,6]},{"s":"Uasin Gishu","n":"Soy","e":1042,"l":[46,49,7,1,8,13,21,6,2,5,6,6,1,1,4,1,3,3,6,7,7,1,1,3,3]},{"s":"Uasin Gishu","n":"Turbo","e":1501,"l":[10,16,6,2,12,11,12,8,6,5,5,6,2,3,3,3,5,7,7,4,2,3,2,1,3]},{"s":"Vihiga","n":"Emuhaya","e":1466,"l":[3,0,5,1,0,3,7,3,4,1,1,1,0,0,0,0,1,0,1,3,0,2,1,3,1]},{"s":"Vihiga","n":"Hamisi","e":5983,"l":[32,2,14,1,6,9,19,2,8,16,7,8,6,98,67,46,35,15,19,9,15,8,13,10,5]},{"s":"Vihiga","n":"Luanda","e":1024,"l":[3,0,4,1,0,2,9,5,4,1,0,3,1,0,0,1,2,1,0,0,0,1,1,1,1]},{"s":"Vihiga","n":"Sabatia","e":2045,"l":[15,1,8,1,2,6,11,2,8,5,2,4,1,1,3,4,6,1,6,20,5,4,3,4,2]},{"s":"Vihiga","n":"Vihiga","e":1526,"l":[5,0,3,0,1,3,7,2,2,2,1,1,0,1,0,2,1,1,3,11,2,1,2,3,2]},{"s":"Wajir","n":"Eldas","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Wajir","n":"Tarbaj","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Wajir","n":"Wajir East","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Wajir","n":"Wajir North","e":32,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Wajir","n":"Wajir South","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Wajir","n":"Wajir West","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"West Pokot","n":"Kacheliba","e":14544,"l":[19,70,130,85,93,84,183,154,149,41,13,109,26,48,48,64,53,71,23,9,21,88,70,68,23]},{"s":"West Pokot","n":"Kapenguria","e":14659,"l":[58,41,172,31,38,36,234,134,66,96,38,151,58,56,67,40,94,62,43,18,22,52,32,111,55]},{"s":"West Pokot","n":"Pokot South","e":41851,"l":[61,128,274,338,117,144,1160,528,83,98,274,378,172,18,18,23,137,50,108,89,12,16,13,46,58]},{"s":"West Pokot","n":"Sigor","e":27939,"l":[16,171,169,375,128,170,644,607,129,88,338,187,116,109,158,95,442,134,182,145,144,165,88,77,142]},{"s":"West Pokot","n":"unknown 3","e":1209,"l":[1,2,2,2,1,2,19,5,4,3,1,1,1,0,6,5,10,4,4,0,0,1,7,9,8]}]}</script>
+<script>
+(function () {
+  "use strict";
+
+  var DATA = JSON.parse(document.getElementById('payload').textContent);
+  var YEARS = DATA.meta.years;
+  var PYEARS = DATA.meta.primaryYears;
+  var STATES = DATA.states;
+
+  // Order drivers by national share, largest first, then hand out the categorical
+  // slots in that fixed order: the dominant driver gets slot 1. This also makes the
+  // stack read largest-at-the-baseline.
+  var DRIVERS = DATA.meta.drivers.slice().sort(function (a, b) {
+    var sa = DATA.countryDrivers[a].reduce(function (x, y) { return x + y; }, 0);
+    var sb = DATA.countryDrivers[b].reduce(function (x, y) { return x + y; }, 0);
+    return sb - sa;
+  });
+  var DCOLORS = {};
+  DRIVERS.forEach(function (d, i) { DCOLORS[d] = 'var(--d' + (i + 1) + ')'; });
+
+  var state = { th: '30', metric: 'abs', sel: 'Narok' };
+
+  // ---------- helpers ----------
+
+  var nf = function (n) { return Math.round(n).toLocaleString('en-US'); };
+  var nf1 = function (n) { return n.toFixed(1); };
+
+  function compact(n) {
+    if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+    if (n >= 1e3) return Math.round(n / 1e3) + 'k';
+    return String(Math.round(n));
+  }
+
+  function css(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  function el(tag, attrs, text) {
+    var n = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function sum(a) { return a.reduce(function (x, y) { return x + (y || 0); }, 0); }
+
+  function byName(n) {
+    for (var i = 0; i < STATES.length; i++) if (STATES[i].name === n) return STATES[i];
+    return null;
+  }
+
+  // rounded-top bar path, 4px radius on the data end, anchored to baseline
+  function barPath(x, y, w, h, r) {
+    r = Math.min(r, w / 2, h);
+    if (h <= 0.5) return '';
+    return 'M' + x + ',' + (y + h) +
+           'L' + x + ',' + (y + r) +
+           'Q' + x + ',' + y + ' ' + (x + r) + ',' + y +
+           'L' + (x + w - r) + ',' + y +
+           'Q' + (x + w) + ',' + y + ' ' + (x + w) + ',' + (y + r) +
+           'L' + (x + w) + ',' + (y + h) + 'Z';
+  }
+
+  // ---------- tooltip ----------
+
+  var tip = document.getElementById('tip');
+
+  function showTip(evt, html) {
+    tip.innerHTML = html;
+    tip.style.opacity = '1';
+    tip.style.left = evt.clientX + 'px';
+    tip.style.top = (evt.clientY - 12) + 'px';
+  }
+  function hideTip() { tip.style.opacity = '0'; }
+
+  function hoverable(node, html) {
+    node.addEventListener('mousemove', function (e) { showTip(e, html); });
+    node.addEventListener('mouseleave', hideTip);
+  }
+
+  // ---------- nice axis ----------
+
+  function niceMax(v) {
+    if (v <= 0) return 1;
+    var mag = Math.pow(10, Math.floor(Math.log10(v)));
+    var norm = v / mag;
+    // steps whose quarters are themselves round, so the four ticks read cleanly
+    var step = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 4 ? 4 : norm <= 5 ? 5 : 10;
+    return step * mag;
+  }
+
+  function ticks(max, count) {
+    var out = [];
+    for (var i = 0; i <= count; i++) out.push(max * i / count);
+    return out;
+  }
+
+  // ---------- threshold explainer ----------
+
+  function renderExplainer() {
+    document.getElementById('explainer-title').textContent =
+      'What does Canopy cover >' + state.th + '% mean?';
+    document.getElementById('ex-th-a').textContent = state.th;
+    document.getElementById('ex-th-b').textContent = state.th;
+  }
+
+  // ---------- tiles ----------
+
+  function renderTiles() {
+    var c = DATA.country[state.th];
+    var tot = sum(c.loss);
+    var peakI = c.loss.indexOf(Math.max.apply(null, c.loss));
+    var host = document.getElementById('tiles');
+
+    var items = [
+      { k: 'Tree cover, 2000', v: compact(c.extent2000), u: 'ha',
+        s: nf1(100 * c.extent2000 / DATA.meta.countryArea) + '% of Kenya’s land area' },
+      { k: 'Lost, 2001–2025', v: compact(tot), u: 'ha',
+        s: nf1(100 * tot / c.extent2000) + '% of the 2000 extent', accent: true },
+      { k: 'Peak year', v: String(YEARS[peakI]), u: '',
+        s: nf(c.loss[peakI]) + ' ha — ' + nf1(c.loss[peakI] / (sum(c.loss.slice(0, 5)) / 5)) + '× the 2001–05 average' },
+      { k: 'Most recent year', v: compact(c.loss[c.loss.length - 1]), u: 'ha',
+        s: '2025, against ' + nf(c.loss[c.loss.length - 2]) + ' ha in 2024' }
+    ];
+
+    host.innerHTML = items.map(function (it) {
+      return '<div class="tile' + (it.accent ? ' accent' : '') + '">' +
+        '<div class="tile-k">' + it.k + '</div>' +
+        '<div class="tile-v">' + it.v + (it.u ? '<span class="unit">' + it.u + '</span>' : '') + '</div>' +
+        '<div class="tile-sub">' + it.s + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  // ---------- annual national loss ----------
+
+  // Drivers are attributed only at 30% canopy. At that setting each bar is split by
+  // driver; at any other threshold the split would be borrowed from a different
+  // population, so the bars stay solid and the note says why.
+  function renderAnnual() {
+    var host = document.getElementById('annual');
+    host.innerHTML = '';
+    var c = DATA.country[state.th];
+    var stacked = state.th === '30';
+    var W = host.clientWidth || 800;
+    var narrow = W < 560;
+    var H = narrow ? 250 : 340;
+    var m = { t: 16, r: 6, b: 34, l: narrow ? 38 : 52 };
+    var iw = W - m.l - m.r, ih = H - m.t - m.b;
+
+    var max = niceMax(Math.max.apply(null, c.loss));
+    var svg = el('svg', { width: W, height: H, role: 'img',
+      'aria-label': 'Annual tree cover loss in Kenya, ' + YEARS[0] + ' to ' +
+        YEARS[YEARS.length - 1] + (stacked ? ', split by dominant driver' : '') });
+
+    ticks(max, 4).forEach(function (t) {
+      var y = m.t + ih - (t / max) * ih;
+      svg.appendChild(el('line', { x1: m.l, x2: m.l + iw, y1: y, y2: y,
+        stroke: css('--rule'), 'stroke-width': 1, fill: 'none' }));
+      svg.appendChild(el('text', { x: m.l - 8, y: y + 3.5, 'text-anchor': 'end',
+        fill: css('--ink-3'), 'font-family': css('--f-mono'), 'font-size': narrow ? 9.5 : 10.5 },
+        t === 0 ? '0' : compact(t)));
+    });
+
+    var peakI = c.loss.indexOf(Math.max.apply(null, c.loss));
+    var lastI = c.loss.length - 1;
+    var slot = iw / YEARS.length;
+    var bw = Math.max(3, slot - (narrow ? 2 : 4));
+    var GAP = 2;
+
+    c.loss.forEach(function (total, i) {
+      var x = m.l + i * slot + (slot - bw) / 2;
+      var hot = i === peakI || i === lastI;
+      var tipHtml = '<b>' + YEARS[i] + '</b> &nbsp;<span class="tk">' + nf(total) + ' ha</span>';
+
+      if (stacked) {
+        var parts = DRIVERS.map(function (d) {
+          return { d: d, v: DATA.countryDrivers[d][i] || 0, c: DCOLORS[d] };
+        }).filter(function (p) { return p.v > 0; });
+        var attributed = parts.reduce(function (a, p) { return a + p.v; }, 0);
+        var residual = total - attributed;
+        if (residual > total * 0.005) {
+          parts.push({ d: 'Unattributed', v: residual, c: css('--graphite-2') });
+        }
+        var denom = parts.reduce(function (a, p) { return a + p.v; }, 0) || 1;
+
+        var acc = 0;
+        parts.forEach(function (p, k) {
+          var frac = p.v / denom;
+          var h = frac * (total / max) * ih;
+          var y = m.t + ih - (acc / denom) * (total / max) * ih - h;
+          acc += p.v;
+          var isTop = k === parts.length - 1;
+          svg.appendChild(isTop
+            ? el('path', { d: barPath(x, y, bw, h, 4), fill: p.c })
+            : el('rect', { x: x, y: y, width: bw, height: Math.max(0.6, h - GAP), fill: p.c }));
+        });
+
+        parts.slice().sort(function (a, b) { return b.v - a.v; }).slice(0, 4).forEach(function (p) {
+          tipHtml += '<br>' + p.d + ' <span class="tk">' +
+            Math.round(100 * p.v / denom) + '%</span>';
+        });
+      } else {
+        var h = (total / max) * ih;
+        svg.appendChild(el('path', { d: barPath(x, m.t + ih - h, bw, h, 4),
+          fill: hot ? css('--ember') : css('--graphite') }));
+      }
+
+      if (hot) {
+        svg.appendChild(el('rect', { x: x, y: m.t + ih + 2, width: bw, height: 2.5,
+          fill: css('--ember'), rx: 1 }));
+      }
+
+      if (hot) tipHtml += '<br><span class="tk">' + (i === peakI ? 'peak year' : 'most recent') + '</span>';
+      var hit = el('rect', { x: m.l + i * slot, y: m.t, width: slot, height: ih, fill: 'transparent' });
+      hoverable(hit, tipHtml);
+      svg.appendChild(hit);
+
+      var showYear = narrow ? (i % 6 === 0 || i === lastI) : (i % 3 === 0 || i === lastI);
+      if (showYear) {
+        svg.appendChild(el('text', { x: m.l + i * slot + slot / 2, y: H - 11,
+          'text-anchor': 'middle', fill: css('--ink-3'),
+          'font-family': css('--f-mono'), 'font-size': narrow ? 9.5 : 10.5 },
+          narrow ? "'" + String(YEARS[i]).slice(2) : YEARS[i]));
+      }
+    });
+
+    svg.appendChild(el('line', { x1: m.l, x2: m.l + iw, y1: m.t + ih, y2: m.t + ih,
+      stroke: css('--rule-2'), 'stroke-width': 1 }));
+    host.appendChild(svg);
+
+    // legend + copy
+    var lg = document.getElementById('annual-legend');
+    if (stacked) {
+      var grand = DRIVERS.reduce(function (a, d) { return a + sum(DATA.countryDrivers[d]); }, 0);
+      lg.innerHTML = DRIVERS.map(function (d) {
+        return '<span class="lg"><i style="background:' + DCOLORS[d] + '"></i>' + d +
+          ' <b>' + nf1(100 * sum(DATA.countryDrivers[d]) / grand) + '%</b></span>';
+      }).join('');
+      lg.style.display = '';
+    } else {
+      lg.style.display = 'none';
+    }
+  }
+
+  // ---------- drivers stacked ----------
+
+  // ---------- state ranking ----------
+
+  function rankValues() {
+    return STATES.map(function (s) {
+      var t = s.th[state.th];
+      var loss = sum(t.loss);
+      return {
+        name: s.name,
+        loss: loss,
+        extent: t.extent2000,
+        pct: t.extent2000 > 0 ? 100 * loss / t.extent2000 : 0
+      };
+    }).filter(function (r) {
+      return state.metric === 'abs' ? r.loss > 0 : r.extent >= 10000;
+    }).sort(function (a, b) {
+      return state.metric === 'abs' ? b.loss - a.loss : b.pct - a.pct;
+    });
+  }
+
+  function renderRank() {
+    var rows = rankValues();
+    var max = rows.length ? (state.metric === 'abs' ? rows[0].loss : rows[0].pct) : 1;
+    var host = document.getElementById('rank');
+    host.innerHTML = '';
+
+    rows.forEach(function (r) {
+      var v = state.metric === 'abs' ? r.loss : r.pct;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'row';
+      btn.setAttribute('aria-current', r.name === state.sel ? 'true' : 'false');
+      btn.innerHTML =
+        '<span class="row-top"><span class="row-name">' + r.name + '</span>' +
+        '<span class="row-val">' + (state.metric === 'abs' ? nf(r.loss) + ' ha' : nf1(r.pct) + '%') +
+        '</span></span>' +
+        '<span class="row-track"><span class="row-fill" style="width:' +
+        (100 * v / max).toFixed(1) + '%"></span></span>';
+      btn.addEventListener('click', function () {
+        state.sel = r.name;
+        renderRank();
+        renderDetail();
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        document.getElementById('states-head').scrollIntoView({
+          block: 'start',
+          behavior: reduce ? 'auto' : 'smooth'
+        });
+      });
+      host.appendChild(btn);
+    });
+
+    document.getElementById('rank-th').textContent = '2001–25 · >' + state.th + '% canopy' +
+      (state.metric === 'pct' ? ' · counties over 10,000 ha' : '');
+  }
+
+  // ---------- state detail ----------
+
+  function renderDetail() {
+    var s = byName(state.sel);
+    var host = document.getElementById('detail');
+    if (!s) { host.innerHTML = ''; return; }
+
+    var t = s.th[state.th];
+    var loss = sum(t.loss);
+    var pct = t.extent2000 > 0 ? 100 * loss / t.extent2000 : 0;
+    var peakI = t.loss.indexOf(Math.max.apply(null, t.loss));
+
+    var html = '';
+    html += '<div class="detail-head">' +
+      '<h3 class="detail-name">' + s.name + '</h3>' +
+      '<div class="detail-meta">>' + state.th + '% canopy<br>' +
+      nf(t.extent2000) + ' ha forest in 2000</div></div>';
+
+    html += '<div class="minis">' +
+      '<div><div class="mini-k">Lost 2001–25</div><div class="mini-v">' + nf(loss) +
+        '</div><div class="mini-n">hectares</div></div>' +
+      '<div><div class="mini-k">Share of extent</div><div class="mini-v" style="color:var(--ember)">' +
+        nf1(pct) + '%</div><div class="mini-n">of its 2000 forest</div></div>' +
+      '<div><div class="mini-k">Worst year</div><div class="mini-v">' + YEARS[peakI] +
+        '</div><div class="mini-n">' + nf(t.loss[peakI]) + ' ha</div></div>' +
+      '</div>';
+
+    // driver composition
+    var dr = s.drivers || {};
+    var dtot = DRIVERS.reduce(function (a, d) { return a + sum(dr[d] || []); }, 0);
+    html += '<div class="sub-h">Dominant drivers <span>30% canopy · 2001–25</span></div>';
+    if (dtot > 0) {
+      var segs = DRIVERS.map(function (d) { return { d: d, v: sum(dr[d] || []) }; })
+        .filter(function (x) { return x.v > 0; })
+        .sort(function (a, b) { return b.v - a.v; });
+      html += '<div class="compbar">' + segs.map(function (x) {
+        return '<i style="background:' + DCOLORS[x.d] + ';flex:' + x.v.toFixed(2) + '" ' +
+          'title="' + x.d + ': ' + nf(x.v) + ' ha"></i>';
+      }).join('') + '</div>';
+      html += '<div class="legend" style="margin-top:11px;padding-top:11px">' +
+        segs.slice(0, 4).map(function (x) {
+          return '<span class="lg"><i style="background:' + DCOLORS[x.d] + '"></i>' + x.d +
+            ' <b>' + Math.round(100 * x.v / dtot) + '%</b></span>';
+        }).join('') + '</div>';
+    } else {
+      html += '<div class="note">No driver attribution for this county — loss below the 1 km mapping threshold.</div>';
+    }
+
+    // primary forest
+    html += '<div class="sub-h">Humid tropical primary forest <span>30% canopy · 2002–25</span></div>';
+    if (s.primary && sum(s.primary) > 0) {
+      html += '<div id="pf-host" class="chart-host"></div>';
+    } else {
+      html += '<div class="note">Outside the humid tropical primary forest layer — not an absence of old-growth, just outside this dataset’s scope.</div>';
+    }
+
+    // districts
+    var ds = DATA.districts.filter(function (d) { return d.s === s.name; })
+      .map(function (d) { return { n: d.n, v: sum(d.l) }; })
+      .sort(function (a, b) { return b.v - a.v; }).slice(0, 8);
+    html += '<div class="sub-h">Worst sub-counties <span>30% canopy · top ' + ds.length + ' of ' +
+      DATA.districts.filter(function (d) { return d.s === s.name; }).length + '</span></div>';
+    if (ds.length) {
+      var dmax = ds[0].v || 1;
+      html += '<div class="dlist">' + ds.map(function (d) {
+        return '<div class="drow"><span class="n">' + d.n + '</span>' +
+          '<span class="v">' + nf(d.v) + ' ha</span>' +
+          '<span class="t"><i style="width:' + (100 * d.v / dmax).toFixed(1) + '%"></i></span></div>';
+      }).join('') + '</div>';
+    } else {
+      html += '<div class="note">No sub-county records for this county.</div>';
+    }
+
+    // carbon
+    if (s.carbon) {
+      var nfx = s.carbon.netFlux;
+      var isSink = nfx < 0;
+      html += '<div class="sub-h">Forest carbon balance <span>annual average, 2001–25</span></div>';
+      html += '<div class="minis" style="margin-bottom:0">' +
+        '<div><div class="mini-k">Net flux</div><div class="mini-v" style="color:' +
+          (isSink ? 'var(--canopy)' : 'var(--ember)') + '">' +
+          (isSink ? '−' : '+') + compact(Math.abs(nfx)) + '</div>' +
+          '<div class="mini-n">t CO₂e/yr — net ' + (isSink ? 'sink' : 'source') + '</div></div>' +
+        '<div><div class="mini-k">Emissions</div><div class="mini-v">' + compact(s.carbon.emissions) +
+          '</div><div class="mini-n">t CO₂e/yr</div></div>' +
+        '<div><div class="mini-k">Carbon density</div><div class="mini-v">' + nf(s.carbon.agcDensity) +
+          '</div><div class="mini-n">t C/ha in 2000</div></div>' +
+        '</div>';
+    }
+
+    host.innerHTML = html;
+    if (s.primary && sum(s.primary) > 0) renderPrimary(s);
+  }
+
+  function renderPrimary(s) {
+    var host = document.getElementById('pf-host');
+    if (!host) return;
+    var W = host.clientWidth || 420;
+    var H = 120;
+    var m = { t: 10, r: 4, b: 20, l: 44 };
+    var iw = W - m.l - m.r, ih = H - m.t - m.b;
+    var vals = s.primary;
+    var max = niceMax(Math.max.apply(null, vals));
+
+    var svg = el('svg', { width: W, height: H, role: 'img',
+      'aria-label': 'Humid tropical primary forest loss in ' + s.name + ', 2002 to 2025' });
+
+    [0, max].forEach(function (t) {
+      var y = m.t + ih - (t / max) * ih;
+      svg.appendChild(el('line', { x1: m.l, x2: m.l + iw, y1: y, y2: y,
+        stroke: css('--rule'), 'stroke-width': 1 }));
+      svg.appendChild(el('text', { x: m.l - 7, y: y + 3.5, 'text-anchor': 'end',
+        fill: css('--ink-3'), 'font-family': css('--f-mono'), 'font-size': 9.5 },
+        t === 0 ? '0' : compact(t)));
+    });
+
+    var slot = iw / vals.length;
+    var bw = Math.max(2.5, slot - 2);
+    vals.forEach(function (v, i) {
+      var h = (v / max) * ih;
+      var x = m.l + i * slot + (slot - bw) / 2;
+      svg.appendChild(el('path', { d: barPath(x, m.t + ih - h, bw, h, 2.5),
+        fill: css('--graphite') }));
+      var hit = el('rect', { x: m.l + i * slot, y: m.t, width: slot, height: ih, fill: 'transparent' });
+      hoverable(hit, '<b>' + PYEARS[i] + '</b><br>' + nf(v) + ' ha primary');
+      svg.appendChild(hit);
+    });
+
+    [0, vals.length - 1].forEach(function (i) {
+      svg.appendChild(el('text', { x: m.l + i * slot + slot / 2, y: H - 6,
+        'text-anchor': i === 0 ? 'start' : 'end', fill: css('--ink-3'),
+        'font-family': css('--f-mono'), 'font-size': 9.5 }, PYEARS[i]));
+    });
+
+    svg.appendChild(el('line', { x1: m.l, x2: m.l + iw, y1: m.t + ih, y2: m.t + ih,
+      stroke: css('--rule-2'), 'stroke-width': 1 }));
+    host.appendChild(svg);
+  }
+
+  // ---------- controls ----------
+
+  function buildThresholds() {
+    var host = document.getElementById('th-chips');
+    DATA.meta.thresholds.forEach(function (t) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.id = 'th-' + t;
+      b.textContent = '>' + t + '%';
+      b.setAttribute('aria-pressed', String(t) === state.th ? 'true' : 'false');
+      b.addEventListener('click', function () {
+        state.th = String(t);
+        host.querySelectorAll('.chip').forEach(function (c) {
+          c.setAttribute('aria-pressed', c === b ? 'true' : 'false');
+        });
+        renderExplainer(); renderTiles(); renderAnnual(); renderRank(); renderDetail();
+      });
+      host.appendChild(b);
+    });
+  }
+
+  document.getElementById('metric-chips').addEventListener('click', function (e) {
+    var b = e.target.closest('.chip');
+    if (!b) return;
+    state.metric = b.dataset.metric;
+    this.querySelectorAll('.chip').forEach(function (c) {
+      c.setAttribute('aria-pressed', c === b ? 'true' : 'false');
+    });
+    renderRank();
+  });
+
+  // ---------- boot ----------
+
+  buildThresholds();
+  renderExplainer();
+  renderTiles();
+  renderAnnual();
+  renderRank();
+  renderDetail();
+
+  var rt;
+  window.addEventListener('resize', function () {
+    clearTimeout(rt);
+    rt = setTimeout(function () {
+      renderAnnual(); renderDetail();
+    }, 140);
+  });
+
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  if (mq.addEventListener) {
+    mq.addEventListener('change', function () {
+      renderAnnual(); renderDetail();
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

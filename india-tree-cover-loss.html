@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Tree cover loss in India, 2001-2025, by state, district and driver. Hansen/UMD data via Global Nature Watch, dataset v20260427.">
+<title>India Tree Cover Loss</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<style>
+:root {
+  color-scheme: light;
+
+  --ground:      #f6f8f5;
+  --surface:     #ffffff;
+  --surface-2:   #eef2ed;
+  --ink:         #15201b;
+  --ink-2:       #4a5a52;
+  --ink-3:       #7b8a82;
+  --rule:        #dde4dc;
+  --rule-2:      #c9d3c8;
+
+  --canopy:      #1f6f5c;
+  --canopy-soft: #e3f0eb;
+  --ember:       #b84a26;
+  --graphite:    #3f4d46;
+  --graphite-2:  #97a79f;
+
+  --d1: #2a78d6;
+  --d2: #eb6834;
+  --d3: #1baf7a;
+  --d4: #eda100;
+  --d5: #e87ba4;
+  --d6: #008300;
+  --d7: #4a3aa7;
+
+  --shadow: 0 1px 2px rgba(21,32,27,.05), 0 8px 24px -16px rgba(21,32,27,.18);
+
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-sans: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ground:      #111512;
+    --surface:     #181d19;
+    --surface-2:   #1f2620;
+    --ink:         #e7ebe6;
+    --ink-2:       #a9b6ad;
+    --ink-3:       #7d8b82;
+    --rule:        #28302b;
+    --rule-2:      #38423a;
+
+    --canopy:      #43a086;
+    --canopy-soft: #18312a;
+    --ember:       #e08256;
+    --graphite:    #93a79d;
+    --graphite-2:  #5b6b62;
+
+    --d1: #3987e5;
+    --d2: #d95926;
+    --d3: #199e70;
+    --d4: #c98500;
+    --d5: #d55181;
+    --d6: #008300;
+    --d7: #9085e9;
+
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.6);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground:      #111512;
+  --surface:     #181d19;
+  --surface-2:   #1f2620;
+  --ink:         #e7ebe6;
+  --ink-2:       #a9b6ad;
+  --ink-3:       #7d8b82;
+  --rule:        #28302b;
+  --rule-2:      #38423a;
+
+  --canopy:      #43a086;
+  --canopy-soft: #18312a;
+  --ember:       #e08256;
+  --graphite:    #93a79d;
+  --graphite-2:  #5b6b62;
+
+  --d1: #3987e5;
+  --d2: #d95926;
+  --d3: #199e70;
+  --d4: #c98500;
+  --d5: #d55181;
+  --d6: #008300;
+  --d7: #9085e9;
+
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.6);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--f-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 0 64px;
+}
+
+/* ---------- masthead ---------- */
+
+.mast { padding-block: 44px 26px; }
+
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--canopy);
+  margin: 0 0 14px;
+}
+
+h1 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 6.1vw, 4.35rem);
+  line-height: 1.04;
+  letter-spacing: -.035em;
+  margin: 0 0 18px;
+  max-width: none;
+}
+h1 em { font-style: normal; color: var(--ember); }
+
+.standfirst {
+  font-size: 1.0625rem;
+  color: var(--ink-2);
+  margin: 0;
+}
+.standfirst strong { color: var(--ember); font-weight: 600; }
+
+/* ---------- control bar ---------- */
+
+.controls {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin-block: 26px 12px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 3px solid var(--canopy);
+  border-radius: 3px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 28px;
+}
+
+.ctl-head { display: flex; flex-direction: column; gap: 3px; }
+
+.ctl-title {
+  font-family: var(--f-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -.015em;
+  color: var(--ink);
+}
+
+.ctl-hint { font-size: 12.5px; color: var(--ink-3); }
+
+.ctl-label {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.chip {
+  font-family: var(--f-mono);
+  font-size: 13px;
+  padding: 7px 13px;
+  border: 1px solid var(--rule-2);
+  background: var(--surface);
+  color: var(--ink-2);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.chip:hover { border-color: var(--canopy); color: var(--ink); }
+.chip[aria-pressed="true"] {
+  background: var(--canopy);
+  border-color: var(--canopy);
+  color: #fff;
+  font-weight: 500;
+}
+:root[data-theme="dark"] .chip[aria-pressed="true"],
+.chip[aria-pressed="true"] { color: #fff; }
+
+:focus-visible { outline: 2px solid var(--canopy); outline-offset: 2px; }
+
+/* ---------- stat tiles ---------- */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.tile { background: var(--surface); padding: 18px 20px 20px; }
+
+.tile-k {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 10px;
+}
+.tile-v {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 2.1rem;
+  line-height: 1;
+  letter-spacing: -.025em;
+  font-variant-numeric: tabular-nums;
+}
+.tile-v .unit {
+  font-family: var(--f-mono);
+  font-size: .78rem;
+  letter-spacing: 0;
+  color: var(--ink-3);
+  margin-left: 5px;
+}
+.tile-sub { margin-top: 9px; font-size: 12.5px; color: var(--ink-2); }
+.tile.accent .tile-v { color: var(--ember); }
+
+/* ---------- sections ---------- */
+
+section { margin-top: 46px; }
+
+.sec-head { margin-bottom: 18px; }
+
+h2 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  margin: 0 0 7px;
+  letter-spacing: -.02em;
+}
+.sec-head p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 20px;
+}
+
+.chart-host { width: 100%; }
+.chart-host svg { display: block; max-width: 100%; }
+
+/* ---------- legend ---------- */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 16px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+.lg { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink-2); }
+.lg i { width: 11px; height: 11px; border-radius: 2px; flex: none; display: block; }
+.lg b { font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-3); font-weight: 500; }
+
+/* ---------- two-column band ---------- */
+
+.band {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  gap: 20px;
+  align-items: start;
+}
+
+/* state ranking */
+
+.rank-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 14px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+  flex-wrap: wrap;
+}
+
+/* ---------- threshold explainer ---------- */
+
+.explainer {
+  margin-bottom: 30px;
+  padding: 18px 20px;
+  background: var(--surface-2);
+  border-radius: 3px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+.explainer h2 {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--canopy);
+  margin: 0;
+}
+.explainer p { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+.explainer p strong { color: var(--ink); font-weight: 600; }
+.explainer-std {
+  margin-top: 4px !important;
+  font-size: 14px !important;
+}
+.explainer-std strong { color: var(--canopy) !important; }
+.explainer-note {
+  margin-top: 4px !important;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule-2);
+  font-family: var(--f-mono);
+  font-size: 11.5px !important;
+  color: var(--ink-3) !important;
+}
+
+.rank-list { display: flex; flex-direction: column; }
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3px;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 2px;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+}
+.row:hover { background: var(--surface-2); }
+.row[aria-current="true"] { background: var(--canopy-soft); }
+
+.row-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.row-name { font-size: 13.5px; font-weight: 500; }
+.row[aria-current="true"] .row-name { color: var(--canopy); }
+.row-val {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+.row-track { height: 5px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
+.row[aria-current="true"] .row-track { background: color-mix(in srgb, var(--canopy) 18%, transparent); }
+.row-fill { display: block; height: 100%; background: var(--graphite); border-radius: 0 2px 2px 0; }
+.row[aria-current="true"] .row-fill { background: var(--canopy); }
+
+/* detail panel */
+
+#states-head { scroll-margin-top: 108px; }
+
+.detail-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--rule);
+}
+.detail-name {
+  font-family: var(--f-display);
+  font-size: 1.45rem;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  margin: 0;
+  font-weight: 600;
+}
+.detail-meta { font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-3); text-align: right; }
+
+.minis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.mini-k {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 5px;
+}
+.mini-v {
+  font-family: var(--f-mono);
+  font-size: 1.05rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.mini-n { font-size: 11.5px; color: var(--ink-3); margin-top: 3px; line-height: 1.35; }
+
+.sub-h {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 22px 0 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+}
+.sub-h span { letter-spacing: 0; text-transform: none; font-size: 11px; }
+
+.compbar { display: flex; height: 26px; border-radius: 2px; overflow: hidden; gap: 2px; }
+.compbar i { display: block; height: 100%; }
+
+.dlist { display: flex; flex-direction: column; gap: 6px; }
+.drow { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: baseline; }
+.drow .n { font-size: 13px; }
+.drow .v { font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.drow .t { grid-column: 1 / -1; height: 5px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
+.drow .t i { display: block; height: 100%; background: var(--graphite); border-radius: 0 2px 2px 0; }
+
+.note {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  background: var(--surface-2);
+  border-left: 2px solid var(--rule-2);
+  padding: 9px 12px;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ---------- cautions ---------- */
+
+.cautions {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 26px 24px;
+}
+.caution-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 34px;
+  margin-top: 4px;
+}
+.caution h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 6px;
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+}
+.caution h3 b {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ember);
+  font-weight: 500;
+  flex: none;
+}
+.caution p { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+
+.cites {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-size: 12px;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+.cites p { margin: 0 0 7px; }
+.cites .how {
+  font-family: var(--f-sans);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--rule);
+}
+.cites .how b { color: var(--ink); }
+.cites .how sub { font-size: .75em; }
+.cites a { color: var(--canopy); text-decoration: none; border-bottom: 1px solid var(--rule-2); }
+.cites a:hover { border-bottom-color: var(--canopy); }
+
+/* ---------- tooltip ---------- */
+
+#tip {
+  position: fixed;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -100%);
+  background: var(--ink);
+  color: var(--ground);
+  padding: 7px 10px;
+  border-radius: 3px;
+  font-family: var(--f-mono);
+  font-size: 11.5px;
+  line-height: 1.45;
+  white-space: nowrap;
+  box-shadow: var(--shadow);
+  transition: opacity .1s;
+}
+#tip b { font-weight: 600; }
+#tip .tk { color: var(--graphite-2); }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 980px) {
+  .band { grid-template-columns: minmax(0, 1fr); }
+  .tiles { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 620px) {
+  .wrap { padding-inline: 16px; }
+  .tiles { grid-template-columns: 1fr; }
+  .minis { grid-template-columns: 1fr 1fr; }
+  .caution-grid { grid-template-columns: 1fr; }
+  .controls { position: static; }
+  #states-head { scroll-margin-top: 16px; }
+  .detail-meta { text-align: left; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">Hansen / UMD · Global Nature Watch · Dataset v20260427 · 2001–2025</p>
+    <h1>India has lost <em>7.4%</em> of its tree cover this century</h1>
+    <p class="standfirst">
+      2.43 million hectares of canopy came down between 2001 and 2025, but the loss is
+      not spread evenly. <strong>Eight northeastern states hold 35% of India's forest and account
+      for 74% of its loss</strong>, and most of that is shifting cultivation on a rotational
+      cycle rather than permanent clearing. Read the caveats before quoting any number here.
+    </p>
+
+  </header>
+
+  <div class="controls">
+    <div class="ctl-head">
+      <span class="ctl-title">Canopy cover</span>
+      <span class="ctl-hint">Every figure on this page responds to this setting</span>
+    </div>
+    <div class="chips" id="th-chips" role="group" aria-label="Canopy density threshold"></div>
+  </div>
+
+  <aside class="explainer">
+    <h2 id="explainer-title">What does Canopy cover &gt;30% mean?</h2>
+    <p>
+      <strong>How thick did the tree cover have to be in 2000 for a patch of land to count as
+      forest at all?</strong> Every 30 m square of India has a score for how much of it sat under
+      canopy that year — 5%, 40%, 90%. The threshold is where you draw the line. At
+      &gt;<span id="ex-th-a">30</span>%, only squares that were at least
+      <span id="ex-th-b">30</span>% covered are counted; the rest are ignored.
+    </p>
+    <p>
+      It defines forest. It says nothing about how much was later lost. Set the line low and
+      patchy scrub counts too, so the totals grow; set it high and only dense forest counts.
+    </p>
+    <p class="explainer-std"><strong>&gt;30% is the standard that gets published.</strong></p>
+    <p class="explainer-note">
+      India's own Forest Survey uses &gt;10%, so that chip is the closest match to Indian official
+      figures. Drivers and primary forest are only measured at &gt;30%.
+    </p>
+  </aside>
+
+  <div class="tiles" id="tiles"></div>
+
+  <section>
+    <div class="sec-head">
+      <h2>Annual loss</h2>
+      <p>Driver attribution is only available at &gt;30% canopy cover, so the split shows at that setting alone.</p>
+    </div>
+    <div class="panel">
+      <div class="chart-host" id="annual"></div>
+      <div class="legend" id="annual-legend"></div>
+    </div>
+  </section>
+
+
+  <section>
+    <div class="sec-head" id="states-head">
+      <h2>State by state</h2>
+      <p>Select a state to see its drivers, its districts, and its carbon balance.</p>
+    </div>
+    <div class="band">
+      <div class="panel">
+        <div class="rank-head">
+          <div class="chips" id="metric-chips" role="group" aria-label="Ranking metric">
+            <button class="chip" type="button" id="m-abs" data-metric="abs" aria-pressed="true">Hectares lost</button>
+            <button class="chip" type="button" id="m-pct" data-metric="pct" aria-pressed="false">% of extent</button>
+          </div>
+          <span class="ctl-label" id="rank-th"></span>
+        </div>
+        <div class="rank-list" id="rank"></div>
+      </div>
+      <div class="panel" id="detail"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Before you quote these figures</h2>
+      <p>Four things this dataset does not say, each of which is routinely misread.</p>
+    </div>
+    <div class="cautions">
+      <div class="caution-grid">
+        <div class="caution">
+          <h3><b>01</b> Loss is not deforestation</h3>
+          <p>
+            "Tree cover" is any vegetation over 5 m — natural forest and plantation alike — and
+            "loss" is canopy removal from any cause: harvesting, fire, disease, storm damage.
+            Much of it regrows. Permanence is not in this measurement.
+          </p>
+        </div>
+        <div class="caution">
+          <h3><b>02</b> Shifting cultivation is a cycle, not a clearance</h3>
+          <p>
+            61% of driver-attributed loss is shifting cultivation — largely <i>jhum</i> in the
+            northeast, where land is cleared, cropped and left to regrow. It registers as loss
+            every rotation. Reading it as forest destroyed double-counts the same hillsides.
+          </p>
+        </div>
+        <div class="caution">
+          <h3><b>03</b> The early years are not comparable to the late ones</h3>
+          <p>
+            Satellite inputs and methods changed between 2011 and 2015, improving detection. Part
+            of the apparent rise from a 54,000 ha/yr average in 2001–05 to 124,000 ha/yr in
+            2021–25 is the instrument getting better, not only the forest getting worse.
+          </p>
+        </div>
+        <div class="caution">
+          <h3><b>04</b> Primary forest here means humid tropical only</h3>
+          <p>
+            The primary-forest layer covers 23 states with humid tropical forest — the Western
+            Ghats, the northeast, the islands. Himalayan temperate and dry deciduous forests are
+            outside its scope, so a blank is not an absence of old-growth.
+          </p>
+        </div>
+      </div>
+
+      <div class="cites">
+        <p class="how">
+          <b>How this was compiled.</b> Tree cover and its loss come from the University of
+          Maryland's GLAD laboratory working with Google, derived from Landsat imagery at 30 m;
+          a pixel is recorded as lost where a stand-replacing disturbance clears at least half
+          its canopy. Humid tropical primary forest follows Turubanova et al.'s definition —
+          mature natural forest never completely cleared and regrown in recent history. Dominant
+          drivers were mapped by WRI with Google DeepMind, which assigns each 1 km cell the
+          single driver responsible for the majority of its loss across the whole period. Carbon
+          emissions, removals and net flux are modelled from Harris et al., revised by Gibbs et
+          al., covering CO<sub>2</sub>, CH<sub>4</sub> and N<sub>2</sub>O across multiple carbon
+          pools, with a negative net flux indicating a sink. Administrative boundaries are
+          GADM 4.1.
+        </p>
+        <p><b>Tree cover and loss</b> — Hansen, M.C., P.V. Potapov, R. Moore, et al. 2013. "High-Resolution Global Maps of 21st-Century Forest Cover Change." <i>Science</i> 342: 850–53.</p>
+        <p><b>Primary forest</b> — Turubanova, S., P.V. Potapov, A. Tyukavina, M.C. Hansen. 2018. <i>Environmental Research Letters</i> 13(7): 074028.</p>
+        <p><b>Drivers</b> — Sims, M., R. Stanimirova, A. Raichuk, M. Neumann, et al. 2025. "Global Drivers of Forest Loss at 1 km Resolution." <i>Environmental Research Letters</i> 20(7): 074027.</p>
+        <p><b>Carbon flux</b> — Harris, N.L., D.A. Gibbs, A. Baccini, et al. 2021, <i>Nature Climate Change</i> 11: 234–240; revised in Gibbs, D.A., M. Rose, et al. 2025, <i>ESSD</i> 17(3): 1217–1243.</p>
+        <p style="margin-top:12px">Compiled from the Global Nature Watch country download for India, dataset version v20260427. Explore the source data at <a href="https://www.globalnaturewatch.org" target="_blank" rel="noopener">globalnaturewatch.org</a>.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<script id="payload" type="application/json">{"meta":{"version":"v20260427","years":[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025],"primaryYears":[2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025],"thresholds":[10,15,20,25,30,50,75],"countryArea":297835740,"drivers":["Hard commodities","Logging","Other natural disturbances","Permanent agriculture","Settlements & Infrastructure","Shifting cultivation","Wildfire"]},"country":{"10":{"extent2000":42557274,"extent2010":37109757,"loss":[58358,49435,45397,69044,58482,63493,70490,81834,77331,48989,88663,93660,83146,143619,117630,177258,193979,139031,127502,143399,135664,124595,154598,140223,133246]},"15":{"extent2000":38580562,"extent2010":32908978,"loss":[57845,48858,44857,68055,57704,62603,69460,80674,76140,48374,86631,91658,80667,139827,114956,172920,188819,134316,123461,139019,132215,121040,148473,135509,128317]},"20":{"extent2000":37367904,"extent2010":32328842,"loss":[57591,48547,44577,67596,57312,62144,68944,80070,75568,48051,85787,90663,79322,137933,113667,170721,186537,132137,121641,137036,130682,119405,145765,133318,126036]},"25":{"extent2000":35451732,"extent2010":31153562,"loss":[57032,48060,44053,66768,56710,61364,68122,79106,74630,47668,84262,89399,78037,136076,112421,168628,184381,129979,119893,135112,129233,117813,142879,131042,123650]},"30":{"extent2000":32620760,"extent2010":28594312,"loss":[56792,47839,43831,66411,56419,61012,67731,78641,74155,47442,83415,88012,75407,132072,109678,164151,179260,125295,115904,130855,125753,114224,136713,126044,118595]},"50":{"extent2000":24786693,"extent2010":18810594,"loss":[52810,43425,39485,59468,50570,54005,60096,70105,66373,43118,71168,76670,65144,115294,98230,145646,159639,108303,101388,114860,112830,100605,117272,109623,102537]},"75":{"extent2000":12167801,"extent2010":9570247,"loss":[40440,31377,28023,42434,35762,37348,39111,46933,44641,30433,43936,50955,35888,61181,57179,83841,90766,56143,53809,61342,64436,53391,60169,59038,54863]}},"countryDrivers":{"Hard commodities":[192,162,224,635,395,422,592,656,640,582,568,1166,370,535,509,853,2975,690,817,949,1179,1390,1506,1267,1214],"Logging":[5636,3873,4082,5768,5161,5447,6476,6379,5435,4085,6146,6782,6944,10110,8774,12299,8637,5570,5879,6980,5538,5154,6478,6010,5941],"Other natural disturbances":[1321,1354,1338,2480,2928,1509,1737,2640,1284,1679,1555,3468,530,1326,880,1162,1464,1013,1136,1321,919,1008,954,896,1373],"Permanent agriculture":[17467,15862,14128,25210,20030,24958,31628,36869,34107,19808,46234,35796,14371,27058,15525,28286,30069,23979,22507,25528,25110,27698,41073,35565,38471],"Settlements & Infrastructure":[502,428,503,1049,964,1385,1899,1741,1594,1174,2336,1858,641,1077,750,1869,1937,1414,1428,1535,1576,1828,2662,2106,2139],"Shifting cultivation":[29148,24467,22381,29154,25430,25590,23603,28337,29170,18867,24612,35470,51916,91149,82968,119395,133847,92199,83699,94163,91075,76617,83337,78519,68507],"Wildfire":[156,159,58,276,110,292,233,498,315,119,179,326,52,211,43,66,100,200,150,128,146,298,374,1393,537]},"countryPrimary":[8615,8256,14204,11134,11175,12972,16047,13974,9261,13505,15038,11686,18279,17494,24375,23806,15515,14468,16993,18335,16878,17739,18186,17812],"states":[{"name":"Andaman and Nicobar","area":761087,"th":{"10":{"extent2000":690583,"extent2010":687881,"loss":[1411,1889,1634,212,3545,818,797,1740,840,776,98,696,483,1395,73,163,288,109,166,998,124,87,81,138,90]},"15":{"extent2000":688657,"extent2010":684205,"loss":[1411,1888,1634,212,3543,818,796,1739,840,776,98,695,481,1384,73,162,288,108,166,990,123,86,80,136,89]},"20":{"extent2000":687423,"extent2010":683258,"loss":[1411,1887,1632,212,3541,818,795,1738,839,775,98,693,479,1374,73,161,287,108,165,982,123,85,80,135,89]},"25":{"extent2000":686295,"extent2010":681334,"loss":[1411,1887,1632,212,3540,818,795,1738,839,775,98,693,478,1369,73,161,286,107,164,977,123,85,79,134,88]},"30":{"extent2000":684397,"extent2010":679436,"loss":[1410,1886,1631,211,3539,818,794,1738,838,775,98,692,476,1358,73,160,285,107,163,965,122,85,79,133,88]},"50":{"extent2000":675926,"extent2010":665406,"loss":[1406,1875,1626,210,3513,813,780,1732,831,769,98,682,467,1297,72,156,281,105,156,912,120,82,76,127,84]},"75":{"extent2000":646073,"extent2010":633977,"loss":[1378,1833,1591,200,3370,789,714,1690,787,725,95,648,448,1119,67,130,250,89,128,702,102,68,61,98,71]}},"drivers":{"Hard commodities":[0,5,5,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Logging":[628,834,803,21,595,156,40,42,87,31,7,10,98,55,0,0,0,7,20,79,3,5,6,8,2],"Other natural disturbances":[568,553,589,76,1665,341,303,842,299,309,35,339,199,713,41,36,165,36,16,163,38,14,13,16,26],"Permanent agriculture":[94,224,113,78,783,173,279,367,307,290,25,217,112,380,18,97,103,50,105,589,57,42,52,83,46],"Settlements & Infrastructure":[1,16,12,2,69,13,63,33,46,54,1,12,1,10,6,23,8,6,11,24,3,4,2,4,4],"Shifting cultivation":[80,220,77,11,354,23,49,64,54,36,9,18,9,44,2,2,4,6,3,45,4,13,3,17,4],"Wildfire":[15,13,9,10,20,99,29,365,11,25,2,56,8,118,4,0,5,1,5,47,13,0,3,4,5]},"primary":[170,169,112,699,479,384,1345,263,197,41,454,320,661,50,57,198,41,40,321,62,29,29,37,38],"carbon":{"agc":88508200,"agcDensity":129,"emissions":455287,"removals":2457742,"netFlux":-2002455}},{"name":"Andhra Pradesh","area":16004981,"th":{"10":{"extent2000":1716644,"extent2010":1524974,"loss":[890,739,1645,1396,1267,1561,1955,3051,2756,1086,3558,1541,1597,2459,1460,3120,3450,3456,2627,1888,1129,1627,4272,4022,2895]},"15":{"extent2000":1498509,"extent2010":1258302,"loss":[877,725,1604,1367,1244,1523,1912,2977,2685,1065,3465,1483,1456,2296,1376,2905,3247,2964,2397,1730,1046,1508,3914,3705,2580]},"20":{"extent2000":1410649,"extent2010":1225329,"loss":[867,708,1573,1345,1218,1484,1876,2909,2639,1040,3401,1449,1385,2223,1340,2800,3157,2762,2288,1663,1005,1455,3740,3552,2435]},"25":{"extent2000":1299843,"extent2010":1156909,"loss":[842,681,1517,1309,1190,1431,1826,2823,2584,1022,3312,1404,1323,2147,1300,2697,3078,2515,2175,1595,966,1400,3569,3394,2264]},"30":{"extent2000":1105913,"extent2010":999013,"loss":[836,676,1500,1298,1181,1414,1809,2792,2552,1012,3264,1355,1120,1905,1147,2351,2825,2100,1905,1403,854,1242,2957,2870,1697]},"50":{"extent2000":745727,"extent2010":514926,"loss":[685,522,1178,1009,958,1066,1415,2239,2097,856,2668,1079,850,1511,913,1841,2332,1608,1480,1092,667,972,2236,2145,1193]},"75":{"extent2000":254490,"extent2010":142020,"loss":[486,344,669,547,619,556,720,1249,1213,494,1323,603,309,531,326,571,896,521,535,402,237,339,746,739,371]}},"drivers":{"Hard commodities":[0,0,2,0,2,1,2,10,1,1,1,2,9,3,1,7,1,3,0,1,1,1,10,15,2],"Logging":[74,35,153,110,101,81,61,195,150,26,178,81,83,88,97,148,181,186,65,37,25,23,63,75,50],"Other natural disturbances":[7,3,6,5,9,3,5,4,5,2,6,2,0,1,2,2,0,1,1,3,0,1,1,1,1],"Permanent agriculture":[477,399,856,854,640,868,1245,1853,1650,646,2496,821,537,977,615,1369,1613,1159,938,729,459,736,1731,1566,945],"Settlements & Infrastructure":[10,3,8,8,16,27,24,23,16,10,13,4,1,4,1,3,8,19,10,6,9,2,19,7,14],"Shifting cultivation":[126,145,367,245,360,364,377,644,648,276,503,371,459,790,416,807,1008,724,876,619,353,473,1119,1189,673],"Wildfire":[3,1,2,4,1,17,1,3,13,0,3,0,0,0,1,2,0,0,6,1,0,0,2,0,1]},"primary":[95,231,178,248,182,256,383,406,168,459,238,171,323,126,327,561,387,363,225,143,193,424,468,257],"carbon":{"agc":91949901,"agcDensity":83,"emissions":977782,"removals":4733541,"netFlux":-3755759}},{"name":"Arunachal Pradesh","area":1486664,"th":{"10":{"extent2000":1201478,"extent2010":1187678,"loss":[3166,2260,2673,6133,2962,3948,3656,3985,4290,2360,7578,7872,3959,6216,5904,8042,9183,4682,4639,6087,7545,6344,5062,5233,6058]},"15":{"extent2000":1188531,"extent2010":1167628,"loss":[3147,2248,2660,6062,2946,3932,3639,3974,4282,2351,7542,7795,3917,6139,5837,7952,9092,4605,4535,6006,7455,6263,4990,5181,5988]},"20":{"extent2000":1183593,"extent2010":1164473,"loss":[3140,2244,2657,6039,2941,3926,3630,3969,4279,2348,7515,7760,3890,6094,5797,7904,9030,4558,4477,5955,7406,6213,4954,5155,5955]},"25":{"extent2000":1179155,"extent2010":1154573,"loss":[3130,2239,2651,5992,2934,3920,3622,3964,4276,2344,7497,7724,3868,6054,5763,7853,8972,4525,4432,5908,7367,6171,4923,5129,5926]},"30":{"extent2000":1170756,"extent2010":1143970,"loss":[3121,2235,2646,5964,2929,3914,3616,3960,4273,2340,7480,7689,3838,6008,5717,7788,8907,4474,4374,5853,7308,6112,4877,5088,5873]},"50":{"extent2000":1119796,"extent2010":1063174,"loss":[3030,2181,2591,5713,2862,3834,3530,3885,4222,2291,7281,7411,3627,5567,5297,7245,8298,4114,3971,5447,6908,5733,4600,4850,5588]},"75":{"extent2000":1014498,"extent2010":926848,"loss":[2730,1989,2361,5025,2598,3502,3222,3551,3958,2076,6604,6631,3047,4538,4340,5973,6812,3306,3126,4492,5873,4797,3897,4227,4893]}},"drivers":{"Hard commodities":[38,45,81,317,48,95,195,163,137,74,148,601,67,86,116,179,215,111,212,339,264,277,204,186,243],"Logging":[113,87,107,222,129,217,164,111,157,65,102,184,154,155,180,292,380,117,88,168,202,235,197,127,181],"Other natural disturbances":[144,122,140,957,283,299,329,287,163,151,180,1197,124,198,335,579,522,395,395,388,324,278,215,248,482],"Permanent agriculture":[1050,940,1415,2513,1100,1711,1568,1916,2584,1278,5681,4353,1096,1784,1667,2841,2672,1351,1284,2049,3322,2739,2065,2533,3018],"Settlements & Infrastructure":[28,15,12,68,38,72,25,51,54,31,79,36,19,29,26,69,78,39,33,48,45,113,61,68,57],"Shifting cultivation":[1728,1018,876,1846,1317,1496,1319,1422,1151,728,1274,1271,2354,3717,3363,3810,5019,2459,2355,2852,3141,2462,2133,1919,1881],"Wildfire":[1,0,2,3,0,0,0,0,2,0,0,0,0,0,1,1,15,0,0,0,0,0,0,1,0]},"primary":[1046,1330,2722,1391,1978,1986,2036,2477,1193,3969,4055,1732,2604,2513,3710,4014,1959,1779,2736,3841,3040,2532,2931,3420],"carbon":{"agc":156549174,"agcDensity":134,"emissions":2795086,"removals":1512825,"netFlux":1282261}},{"name":"Assam","area":7849222,"th":{"10":{"extent2000":3164942,"extent2010":3010456,"loss":[6772,8181,5558,13118,8434,9268,12379,16165,16102,10665,14689,17144,9422,23528,13990,26396,18828,15621,11931,19340,19939,19647,18786,16867,18098]},"15":{"extent2000":3004208,"extent2010":2805435,"loss":[6729,8127,5518,12997,8354,9175,12250,16028,16007,10569,14523,16933,9292,23245,13826,26087,18548,15350,11718,19002,19603,19322,18443,16570,17767]},"20":{"extent2000":2949702,"extent2010":2771686,"loss":[6707,8098,5500,12940,8317,9138,12206,15956,15968,10523,14450,16843,9212,23062,13724,25918,18419,15216,11622,18840,19450,19171,18284,16433,17612]},"25":{"extent2000":2865900,"extent2010":2713885,"loss":[6680,8074,5481,12876,8282,9100,12166,15901,15926,10478,14386,16757,9139,22912,13648,25758,18308,15107,11538,18698,19316,19044,18149,16305,17472]},"30":{"extent2000":2750129,"extent2010":2565495,"loss":[6662,8055,5467,12846,8258,9071,12132,15860,15886,10445,14324,16660,8973,22553,13450,25390,18009,14803,11315,18341,18956,18726,17792,15980,17125]},"50":{"extent2000":2290014,"extent2010":2050613,"loss":[6264,7613,5154,12107,7709,8431,11402,14981,15126,9731,13426,15408,8134,20419,12367,23338,16529,13287,10277,16577,17238,17030,16090,14431,15406]},"75":{"extent2000":1335357,"extent2010":1104260,"loss":[4779,5566,3813,9028,5497,6072,8399,11147,11411,6912,9532,10935,4643,10583,7154,13358,9428,7124,5646,8756,9474,9143,8924,7983,8443]}},"drivers":{"Hard commodities":[16,13,23,38,36,21,62,32,43,63,46,94,36,41,44,47,40,34,78,71,103,100,219,112,82],"Logging":[286,237,223,425,420,457,501,655,746,595,881,722,303,662,463,903,487,333,217,394,631,658,534,598,517],"Other natural disturbances":[143,236,262,837,547,415,588,672,304,547,673,1215,24,75,117,115,135,87,103,296,83,112,254,145,143],"Permanent agriculture":[3517,4901,3342,8049,4902,4933,7243,9355,9135,5974,8182,7856,2203,6101,2757,4723,3256,3019,2554,4013,5105,4783,4472,4590,5600],"Settlements & Infrastructure":[41,48,46,122,123,165,149,217,298,219,262,212,83,107,58,164,128,135,94,133,154,158,121,160,158],"Shifting cultivation":[2542,2491,1503,3172,2096,2908,3438,4745,5193,2874,4051,6111,6285,15457,9985,19410,13939,11173,8253,13403,12854,12841,12122,10288,10557],"Wildfire":[2,18,3,45,14,25,5,9,1,23,14,63,11,48,0,0,0,5,0,1,1,39,55,67,29]},"primary":[1829,1424,3820,2402,2211,3560,4468,4733,2648,2983,3981,1768,3926,3035,4927,3659,2448,2120,3082,4159,3913,3452,3239,3396],"carbon":{"agc":253334950,"agcDensity":92,"emissions":7372014,"removals":10711573,"netFlux":-3339559}},{"name":"Bihar","area":9423251,"th":{"10":{"extent2000":392645,"extent2010":471778,"loss":[156,49,34,89,118,79,56,104,313,135,72,128,22,24,6,12,39,11,6,26,14,14,65,56,61]},"15":{"extent2000":257627,"extent2010":316711,"loss":[153,46,33,84,115,76,54,100,301,128,69,117,17,18,4,10,38,10,5,23,12,12,52,50,54]},"20":{"extent2000":233146,"extent2010":299505,"loss":[151,44,32,82,112,73,50,93,291,123,67,111,16,16,3,10,38,9,5,21,11,11,48,47,51]},"25":{"extent2000":194110,"extent2010":277084,"loss":[144,40,30,72,106,69,49,88,262,115,65,101,15,15,2,8,37,9,4,20,10,9,43,43,48]},"30":{"extent2000":153843,"extent2010":205562,"loss":[142,40,30,72,105,68,48,87,260,113,64,98,13,12,1,7,37,8,3,15,9,8,36,38,44]},"50":{"extent2000":87361,"extent2010":91520,"loss":[107,27,21,44,78,47,33,57,160,80,45,58,7,7,0,3,33,6,2,3,5,1,16,25,37]},"75":{"extent2000":31624,"extent2010":32206,"loss":[40,8,9,12,25,18,13,23,31,32,19,27,1,2,0,0,13,1,0,2,2,0,4,5,14]}},"drivers":{"Hard commodities":[10,1,6,2,2,4,2,8,4,6,8,6,0,0,0,1,4,2,0,8,1,6,10,2,3],"Logging":[1,1,2,1,2,1,3,1,2,3,2,2,1,2,0,2,3,0,2,0,1,0,0,5,8],"Other natural disturbances":[13,3,6,2,11,9,5,12,7,14,13,15,3,1,0,2,21,1,0,2,4,0,10,8,15],"Permanent agriculture":[38,8,6,21,43,18,13,32,144,35,18,30,4,5,0,2,1,4,0,4,2,1,7,11,6],"Settlements & Infrastructure":[1,1,0,0,7,0,1,3,5,1,7,5,0,0,0,0,1,1,0,0,0,0,1,0,0],"Shifting cultivation":[0,0,0,6,0,0,4,1,0,2,0,0,0,0,0,0,1,0,0,0,0,0,6,4,0],"Wildfire":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,10]},"primary":[0,1,0,3,4,1,3,4,4,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0],"carbon":{"agc":15024037,"agcDensity":98,"emissions":27078,"removals":686279,"netFlux":-659201}},{"name":"Chandigarh","area":11812,"th":{"10":{"extent2000":930,"extent2010":1202,"loss":[0,0,0,1,1,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]},"15":{"extent2000":848,"extent2010":1105,"loss":[0,0,0,1,1,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]},"20":{"extent2000":809,"extent2010":1089,"loss":[0,0,0,1,1,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]},"25":{"extent2000":753,"extent2010":1018,"loss":[0,0,0,1,1,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]},"30":{"extent2000":702,"extent2010":935,"loss":[0,0,0,1,1,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]},"50":{"extent2000":469,"extent2010":579,"loss":[0,0,0,1,1,3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"75":{"extent2000":108,"extent2010":115,"loss":[0,0,0,1,1,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}},"drivers":{"Permanent agriculture":[0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],"Settlements & Infrastructure":[0,0,0,1,1,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"carbon":{"agc":45252,"agcDensity":64,"emissions":250,"removals":7861,"netFlux":-7611}},{"name":"Chhattisgarh","area":13543151,"th":{"10":{"extent2000":3860126,"extent2010":3395316,"loss":[2875,2271,1452,2613,2697,2756,2372,2215,2380,1502,7998,3956,1813,2108,1725,2777,2078,2902,2599,1405,1879,2564,4044,4261,3901]},"15":{"extent2000":3431970,"extent2010":2844755,"loss":[2792,2179,1393,2484,2587,2617,2259,2111,2290,1436,7616,3717,1738,2020,1662,2723,2011,2832,2534,1348,1833,2500,3772,4022,3636]},"20":{"extent2000":3276037,"extent2010":2791189,"loss":[2770,2153,1373,2448,2558,2572,2227,2077,2262,1411,7520,3640,1698,1969,1619,2675,1977,2789,2492,1310,1805,2455,3643,3908,3506]},"25":{"extent2000":3055622,"extent2010":2677445,"loss":[2651,2062,1309,2324,2452,2442,2129,1962,2175,1366,7200,3464,1634,1886,1567,2626,1932,2741,2445,1264,1758,2411,3480,3776,3344]},"30":{"extent2000":2663571,"extent2010":2284391,"loss":[2622,2031,1288,2282,2415,2395,2096,1932,2149,1346,7079,3350,1521,1729,1476,2533,1859,2650,2361,1187,1699,2328,3186,3535,3058]},"50":{"extent2000":1472428,"extent2010":748728,"loss":[1993,1342,774,1238,1469,1361,1373,1145,1508,822,4344,1906,1052,1133,1051,1988,1391,2030,1808,815,1300,1812,2269,2581,2048]},"75":{"extent2000":89636,"extent2010":26537,"loss":[897,337,139,161,243,195,288,184,415,158,701,444,111,77,102,175,133,157,153,54,97,141,169,232,132]}},"drivers":{"Hard commodities":[6,2,7,19,16,19,33,16,16,10,21,15,12,16,32,77,65,48,37,33,35,49,95,160,133],"Logging":[591,238,258,331,134,280,115,100,86,183,246,265,136,169,63,123,43,127,89,70,93,67,54,36,124],"Other natural disturbances":[22,5,25,19,28,17,35,31,22,16,24,19,1,1,0,3,2,9,8,4,2,3,4,3,21],"Permanent agriculture":[1573,985,546,1463,1682,1662,1230,1398,1125,830,6089,2360,273,471,299,355,431,397,404,410,272,351,1293,947,1165],"Settlements & Infrastructure":[1,2,3,4,5,44,7,14,7,10,19,12,3,9,13,5,33,6,8,4,4,3,16,17,18],"Shifting cultivation":[181,673,354,260,434,240,554,226,800,154,383,265,1038,1025,1044,1953,1267,2049,1800,626,1268,1844,1677,2338,1504],"Wildfire":[13,3,1,28,2,6,4,1,2,5,3,10,1,0,0,0,1,1,1,17,12,1,7,9,41]},"primary":[16,11,7,13,14,16,17,18,9,13,12,3,7,9,35,13,29,12,13,9,19,9,24,18],"carbon":{"agc":245365972,"agcDensity":92,"emissions":1180299,"removals":9852894,"netFlux":-8672595}},{"name":"Dadra and Nagar Haveli","area":49152,"th":{"10":{"extent2000":7196,"extent2010":1921,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"15":{"extent2000":3567,"extent2010":898,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"20":{"extent2000":3116,"extent2010":631,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"25":{"extent2000":1392,"extent2010":438,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"30":{"extent2000":457,"extent2010":259,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"50":{"extent2000":1,"extent2010":1,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"75":{"extent2000":0,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}},"drivers":{},"carbon":{"agc":42615,"agcDensity":93,"emissions":9,"removals":3425,"netFlux":-3417}},{"name":"Daman and Diu","area":8354,"th":{"10":{"extent2000":816,"extent2010":143,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"15":{"extent2000":259,"extent2010":39,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"20":{"extent2000":226,"extent2010":17,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"25":{"extent2000":25,"extent2010":6,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"30":{"extent2000":18,"extent2010":3,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"50":{"extent2000":0,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"75":{"extent2000":0,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}},"drivers":{},"carbon":{"agc":1442,"agcDensity":81,"emissions":2,"removals":4868,"netFlux":-4867}},{"name":"Goa","area":369568,"th":{"10":{"extent2000":198726,"extent2010":165110,"loss":[7,6,12,15,45,38,58,80,67,8,130,41,28,34,14,104,84,77,55,74,37,38,131,61,64]},"15":{"extent2000":178016,"extent2010":142351,"loss":[7,6,12,14,43,36,57,75,64,8,120,39,24,30,13,97,80,68,52,70,35,33,109,52,52]},"20":{"extent2000":172993,"extent2010":138907,"loss":[7,5,11,14,42,34,57,73,63,7,117,38,23,29,13,93,77,66,50,68,34,31,105,49,50]},"25":{"extent2000":160996,"extent2010":134449,"loss":[7,5,11,14,39,30,55,71,62,5,114,36,22,28,12,88,70,60,47,64,30,28,95,45,45]},"30":{"extent2000":146466,"extent2010":116826,"loss":[7,5,11,14,39,30,55,70,62,5,112,35,19,24,12,81,60,50,42,59,28,24,78,35,35]},"50":{"extent2000":87149,"extent2010":55155,"loss":[6,3,5,10,26,19,46,55,51,2,95,27,9,15,9,42,28,26,18,23,12,8,23,9,13]},"75":{"extent2000":26048,"extent2010":17751,"loss":[4,1,2,5,9,7,17,21,20,0,29,10,2,4,4,9,10,10,7,3,2,1,4,1,1]}},"drivers":{"Hard commodities":[0,2,4,1,10,13,23,32,29,4,81,10,1,2,0,7,4,4,1,2,2,2,4,2,7],"Logging":[0,0,0,3,3,3,2,4,1,0,0,2,0,0,0,8,12,1,4,13,4,0,4,0,1],"Other natural disturbances":[0,0,1,0,0,0,0,2,0,0,2,1,0,2,0,2,2,2,0,0,1,0,2,0,0],"Permanent agriculture":[4,1,4,5,14,10,16,18,15,1,16,11,11,13,7,49,29,28,24,38,20,17,56,26,19],"Settlements & Infrastructure":[0,0,0,0,0,0,1,1,2,0,3,1,1,0,1,6,5,4,2,3,0,3,5,3,4],"Shifting cultivation":[1,0,1,1,5,2,7,5,7,0,2,1,1,1,1,3,7,8,4,1,0,0,0,0,0],"Wildfire":[0,0,0,0,1,0,1,0,4,0,2,0,0,0,0,0,0,0,3,1,1,0,2,0,0]},"primary":[1,2,2,12,5,10,13,11,0,10,8,2,3,2,8,15,15,15,21,17,3,14,1,1],"carbon":{"agc":14679143,"agcDensity":100,"emissions":22301,"removals":611353,"netFlux":-589051}},{"name":"Gujarat","area":18572013,"th":{"10":{"extent2000":168453,"extent2010":59158,"loss":[12,3,3,5,6,5,8,19,10,5,10,21,18,10,0,0,0,1,1,0,2,0,39,7,9]},"15":{"extent2000":82478,"extent2010":26229,"loss":[11,3,3,5,6,5,8,19,9,5,10,18,13,9,0,0,0,1,1,0,1,0,16,3,4]},"20":{"extent2000":69116,"extent2010":18857,"loss":[11,3,3,5,6,5,8,19,9,5,9,17,10,8,0,0,0,0,0,0,1,0,13,2,3]},"25":{"extent2000":37329,"extent2010":12197,"loss":[10,3,2,5,5,4,7,19,9,4,9,15,7,7,0,0,0,0,0,0,0,0,4,2,2]},"30":{"extent2000":17927,"extent2010":7023,"loss":[10,2,2,4,5,4,7,19,8,4,9,15,4,6,0,0,0,0,0,0,0,0,2,1,0]},"50":{"extent2000":969,"extent2010":60,"loss":[7,1,1,3,2,2,4,13,5,2,5,6,0,1,0,0,0,0,0,0,0,0,0,0,0]},"75":{"extent2000":91,"extent2010":2,"loss":[1,0,0,1,0,0,1,5,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Logging":[0,0,0,0,0,0,0,1,0,0,1,2,1,0,0,0,0,0,0,0,0,0,0,0,0],"Other natural disturbances":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Permanent agriculture":[4,1,1,0,1,2,5,14,4,2,5,6,1,3,0,0,0,0,0,0,0,0,0,1,0],"Settlements & Infrastructure":[0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0]},"carbon":{"agc":1628856,"agcDensity":91,"emissions":4152,"removals":425513,"netFlux":-421362}},{"name":"Haryana","area":4402444,"th":{"10":{"extent2000":50010,"extent2010":50461,"loss":[26,17,18,56,30,47,51,30,56,43,20,52,3,2,0,1,0,0,9,3,2,1,16,15,18]},"15":{"extent2000":47675,"extent2010":45505,"loss":[26,16,18,54,29,46,49,29,54,41,19,50,3,2,0,1,0,0,8,2,2,1,15,14,16]},"20":{"extent2000":46392,"extent2010":44884,"loss":[25,16,16,51,25,43,44,25,52,40,19,49,2,2,0,1,0,0,7,2,2,1,14,14,14]},"25":{"extent2000":44665,"extent2010":43454,"loss":[25,15,16,51,24,43,44,25,52,40,18,49,2,2,0,1,0,0,7,2,2,1,14,13,14]},"30":{"extent2000":42648,"extent2010":40008,"loss":[25,15,16,50,24,42,44,25,51,40,18,48,2,2,0,1,0,0,7,2,2,1,13,12,13]},"50":{"extent2000":33018,"extent2010":28438,"loss":[20,9,11,40,16,30,29,17,43,33,12,41,1,1,0,1,0,0,6,1,2,1,7,9,10]},"75":{"extent2000":16610,"extent2010":12038,"loss":[14,5,4,26,8,15,13,9,31,20,8,23,1,1,0,0,0,0,3,1,1,0,4,6,6]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,2,1,3],"Logging":[0,0,0,1,0,0,1,0,6,1,0,1,0,0,0,0,0,0,0,0,0,0,3,1,3],"Other natural disturbances":[0,1,2,1,0,2,1,1,7,1,0,4,0,0,0,1,0,0,0,0,0,0,0,0,0],"Permanent agriculture":[10,6,5,26,10,22,22,12,17,27,9,26,2,1,0,0,0,0,0,1,2,0,6,6,5],"Settlements & Infrastructure":[0,0,2,5,5,6,4,3,8,3,3,3,0,0,0,0,0,0,6,1,0,0,0,1,1]},"carbon":{"agc":4202737,"agcDensity":99,"emissions":8649,"removals":192621,"netFlux":-183972}},{"name":"Himachal Pradesh","area":5518857,"th":{"10":{"extent2000":1554230,"extent2010":1386813,"loss":[352,344,89,727,339,210,368,263,438,224,55,732,74,62,18,16,87,187,180,82,136,218,366,533,588]},"15":{"extent2000":1479494,"extent2010":1277760,"loss":[350,342,89,723,336,207,364,261,435,222,54,726,71,60,17,16,86,183,173,78,131,212,349,504,566]},"20":{"extent2000":1454336,"extent2010":1262964,"loss":[348,341,88,721,335,206,362,260,431,221,53,723,69,59,16,16,86,183,171,77,129,209,341,494,559]},"25":{"extent2000":1418375,"extent2010":1198412,"loss":[347,340,88,718,333,205,360,259,429,220,53,720,68,58,15,15,86,181,168,75,128,207,327,472,546]},"30":{"extent2000":1367101,"extent2010":1147923,"loss":[344,338,88,716,332,204,358,258,429,219,53,717,65,55,13,14,85,177,162,72,122,202,308,444,525]},"50":{"extent2000":1075539,"extent2010":784168,"loss":[306,312,79,669,303,175,321,237,394,200,45,647,49,38,7,9,70,153,130,55,97,166,210,292,380]},"75":{"extent2000":548231,"extent2010":355045,"loss":[197,225,52,482,216,114,211,168,312,146,31,456,21,15,1,3,44,101,59,22,42,78,74,97,156]}},"drivers":{"Hard commodities":[0,1,0,6,2,2,2,2,4,2,2,6,3,9,5,5,17,6,2,4,3,7,34,62,67],"Logging":[85,47,18,174,67,37,72,46,107,20,5,76,10,4,1,0,26,19,28,15,29,41,40,56,77],"Other natural disturbances":[67,40,14,63,33,29,43,37,31,44,6,75,2,1,0,0,10,32,32,2,9,37,12,8,28],"Permanent agriculture":[48,69,17,87,52,29,81,41,55,32,15,115,12,19,3,1,7,22,17,14,33,31,67,108,108],"Settlements & Infrastructure":[11,14,8,71,42,42,39,29,58,27,5,61,6,7,3,6,4,24,48,25,26,33,118,117,138],"Shifting cultivation":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Wildfire":[65,36,10,66,15,11,17,27,59,23,3,51,4,1,0,0,20,52,11,2,6,26,6,63,60]},"carbon":{"agc":152454526,"agcDensity":112,"emissions":128877,"removals":3754902,"netFlux":-3626025}},{"name":"Jharkhand","area":8003984,"th":{"10":{"extent2000":1165336,"extent2010":744317,"loss":[669,105,51,214,315,518,271,424,900,461,219,409,299,331,188,284,608,305,317,356,210,150,720,604,450]},"15":{"extent2000":904607,"extent2010":498754,"loss":[662,99,47,201,304,502,256,387,874,425,205,373,224,248,148,244,489,247,253,289,176,121,576,479,356]},"20":{"extent2000":836921,"extent2010":469995,"loss":[660,96,45,196,300,495,252,377,864,413,202,362,208,225,140,230,461,232,238,273,166,113,538,449,333]},"25":{"extent2000":716769,"extent2010":428239,"loss":[647,92,42,186,289,481,242,355,849,390,193,344,185,199,124,212,404,209,216,248,153,102,469,400,296]},"30":{"extent2000":556330,"extent2010":316745,"loss":[645,90,41,183,287,475,239,344,843,381,188,332,133,142,91,167,306,161,169,199,122,80,360,300,217]},"50":{"extent2000":109017,"extent2010":29748,"loss":[574,39,18,101,224,356,158,153,698,208,125,172,16,17,14,29,41,24,22,41,22,9,57,43,32]},"75":{"extent2000":2053,"extent2010":1163,"loss":[327,8,4,23,88,111,42,26,240,63,36,27,0,1,0,0,0,0,0,0,0,0,0,0,0]}},"drivers":{"Hard commodities":[4,2,2,17,15,27,17,20,81,47,16,46,6,7,3,11,15,13,7,14,5,4,16,16,18],"Logging":[14,4,3,7,5,12,8,24,21,8,7,20,15,8,11,22,33,9,28,30,15,3,16,18,22],"Other natural disturbances":[0,0,0,1,1,0,1,1,1,4,1,2,0,1,0,0,2,0,0,0,0,0,0,0,1],"Permanent agriculture":[443,42,21,98,192,328,147,179,513,230,116,167,51,68,34,48,87,46,46,51,37,20,101,98,95],"Settlements & Infrastructure":[1,0,1,1,1,0,5,1,3,2,1,2,5,8,1,3,6,4,1,0,0,0,6,2,1],"Shifting cultivation":[121,27,5,32,49,57,41,85,166,62,29,44,44,42,33,77,152,84,78,99,63,50,213,160,68],"Wildfire":[4,0,0,1,1,4,1,1,14,2,2,4,0,0,0,1,0,0,0,0,0,0,1,0,1]},"primary":[1,0,1,1,2,2,5,4,2,1,3,0,1,1,6,5,4,2,7,0,1,6,5,6],"carbon":{"agc":48229168,"agcDensity":87,"emissions":140627,"removals":2165837,"netFlux":-2025210}},{"name":"Karnataka","area":19137914,"th":{"10":{"extent2000":2741138,"extent2010":2409140,"loss":[1786,1043,1292,1461,2370,1229,4394,2605,2389,918,1928,2808,2736,2909,1865,4325,4080,4519,3241,3616,3340,4040,6803,4370,4775]},"15":{"extent2000":2582050,"extent2010":2181454,"loss":[1777,1033,1274,1435,2335,1199,4311,2558,2358,912,1871,2726,2561,2701,1753,4029,3787,4214,2979,3311,3094,3730,6266,4032,4402]},"20":{"extent2000":2507158,"extent2010":2148290,"loss":[1771,1028,1266,1424,2311,1180,4272,2535,2342,909,1836,2689,2453,2584,1683,3848,3618,4040,2830,3136,2962,3554,5978,3845,4207]},"25":{"extent2000":2417109,"extent2010":2070927,"loss":[1757,1015,1239,1394,2270,1145,4185,2479,2303,902,1786,2622,2316,2432,1598,3638,3392,3843,2654,2913,2794,3344,5617,3620,3963]},"30":{"extent2000":2276203,"extent2010":1881782,"loss":[1751,1008,1227,1381,2246,1130,4145,2455,2286,898,1745,2546,2119,2230,1480,3310,3060,3537,2412,2619,2537,2985,5021,3248,3547]},"50":{"extent2000":1758403,"extent2010":1016701,"loss":[1622,896,1041,1169,1909,914,3525,2045,2004,827,1432,2158,1373,1461,976,2140,1955,2453,1626,1730,1675,1954,3374,2152,2398]},"75":{"extent2000":573872,"extent2010":97610,"loss":[1181,495,568,611,858,396,1539,795,984,484,499,985,261,281,163,410,361,451,369,371,361,381,740,422,596]}},"drivers":{"Hard commodities":[0,5,2,4,2,2,6,7,3,0,1,1,3,2,7,4,19,7,12,21,32,31,21,5,6],"Logging":[428,196,255,305,761,287,1061,356,391,141,282,369,509,488,273,574,394,321,335,407,328,285,441,233,221],"Other natural disturbances":[21,48,14,28,15,35,27,16,58,4,46,16,4,4,2,2,6,60,26,22,13,17,13,6,3],"Permanent agriculture":[1140,654,828,911,1323,719,2778,1892,1613,671,1235,1961,1470,1622,1133,2596,2435,2918,1890,2006,2040,2506,4283,2827,3069],"Settlements & Infrastructure":[32,21,20,44,46,20,101,72,97,33,111,86,62,57,51,99,155,152,98,105,77,105,142,100,113],"Shifting cultivation":[37,28,26,25,21,15,61,41,48,14,9,28,30,20,3,15,24,41,26,33,29,16,83,58,109],"Wildfire":[5,2,2,3,1,0,12,3,2,2,0,0,0,0,0,0,4,11,2,0,1,3,1,0,2]},"primary":[252,228,235,550,158,505,221,352,193,210,331,241,193,111,210,212,296,205,227,250,193,393,229,343],"carbon":{"agc":241521386,"agcDensity":106,"emissions":1569371,"removals":12685860,"netFlux":-11116489}},{"name":"Kerala","area":3770052,"th":{"10":{"extent2000":2878531,"extent2010":2649875,"loss":[755,1060,1825,1623,1492,1944,4487,3171,1078,209,5079,3961,3003,4079,2842,7598,10182,6730,7771,7170,5563,6881,13307,10924,10932]},"15":{"extent2000":2813974,"extent2010":2514752,"loss":[753,1054,1812,1614,1484,1932,4454,3146,1069,208,5039,3928,2961,4019,2814,7517,10092,6635,7704,7104,5508,6786,13094,10763,10754]},"20":{"extent2000":2777102,"extent2010":2469728,"loss":[750,1047,1803,1605,1476,1915,4424,3124,1062,207,4999,3892,2913,3959,2785,7432,10012,6550,7644,7058,5461,6717,12927,10629,10614]},"25":{"extent2000":2725406,"extent2010":2397171,"loss":[746,1038,1790,1590,1465,1899,4376,3099,1054,206,4951,3846,2880,3919,2763,7370,9941,6485,7585,7008,5420,6645,12774,10516,10498]},"30":{"extent2000":2598221,"extent2010":2276879,"loss":[744,1031,1778,1580,1458,1885,4344,3076,1048,204,4909,3787,2800,3823,2710,7187,9722,6273,7418,6850,5299,6468,12375,10203,10173]},"50":{"extent2000":2207800,"extent2010":1738745,"loss":[696,926,1597,1429,1322,1661,3871,2772,936,183,4418,3404,2431,3344,2418,6315,8734,5386,6607,6142,4762,5685,10778,8912,8899]},"75":{"extent2000":1138792,"extent2010":655109,"loss":[424,473,939,778,680,793,1842,1336,421,72,2100,1834,1143,1600,1295,2797,4188,2474,3310,3079,2418,2713,4792,4236,4152]}},"drivers":{"Hard commodities":[0,2,0,0,1,1,1,3,0,0,4,3,1,1,1,6,4,4,36,24,11,8,16,36,11],"Logging":[144,229,359,291,219,240,434,332,85,4,468,552,620,887,867,851,865,405,484,313,318,477,580,429,439],"Other natural disturbances":[6,21,41,14,21,12,19,22,4,0,15,50,6,8,1,1,3,56,187,38,5,5,7,8,8],"Permanent agriculture":[485,633,1065,992,925,1190,2977,2151,777,168,3350,2513,1933,2434,1645,5721,7997,5330,6149,5977,4569,5301,10420,8806,8835],"Settlements & Infrastructure":[28,61,140,162,172,221,550,401,97,19,871,414,130,274,110,530,631,370,455,441,351,600,1148,783,742],"Shifting cultivation":[55,33,73,50,69,165,227,85,58,6,57,68,68,174,70,54,187,76,56,28,30,48,158,100,82],"Wildfire":[0,0,1,0,1,1,2,0,0,0,1,2,0,1,1,0,1,0,2,0,0,0,0,2,2]},"primary":[69,199,169,92,149,352,124,54,4,192,183,124,176,204,104,206,199,595,245,83,220,189,180,155],"carbon":{"agc":273629271,"agcDensity":105,"emissions":2984928,"removals":15286377,"netFlux":-12301449}},{"name":"Lakshadweep","area":3482,"th":{"10":{"extent2000":0,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"15":{"extent2000":0,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"20":{"extent2000":0,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"25":{"extent2000":0,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"30":{"extent2000":0,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"50":{"extent2000":0,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"75":{"extent2000":0,"extent2010":0,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}},"drivers":{},"carbon":{"agc":0,"agcDensity":0,"emissions":0,"removals":0,"netFlux":0}},{"name":"Madhya Pradesh","area":30805388,"th":{"10":{"extent2000":2304158,"extent2010":1696733,"loss":[707,469,430,647,827,995,660,668,609,234,946,586,584,638,387,557,445,351,110,328,41,122,462,410,442]},"15":{"extent2000":1780316,"extent2010":1233434,"loss":[684,437,402,609,771,946,613,617,561,216,878,499,513,569,356,510,409,329,105,317,34,105,360,334,359]},"20":{"extent2000":1636998,"extent2010":1177046,"loss":[679,433,397,601,763,936,601,606,554,212,869,480,484,540,343,493,392,319,101,309,32,94,314,297,330]},"25":{"extent2000":1377056,"extent2010":1091786,"loss":[636,394,353,537,710,856,540,567,517,205,820,441,453,510,321,460,356,302,96,303,30,89,270,264,293]},"30":{"extent2000":1078088,"extent2010":866767,"loss":[631,386,346,527,697,839,527,555,508,202,803,401,374,435,271,386,274,269,87,287,26,75,202,187,233]},"50":{"extent2000":441158,"extent2010":166114,"loss":[397,213,170,254,345,424,244,300,327,139,469,151,136,182,95,149,100,127,45,195,14,24,71,47,73]},"75":{"extent2000":15065,"extent2010":6822,"loss":[185,94,47,64,52,56,38,28,45,18,46,17,2,6,1,3,2,7,0,1,0,0,1,1,1]}},"drivers":{"Hard commodities":[1,2,6,5,12,18,2,4,5,2,4,3,6,8,7,26,17,13,4,19,0,1,6,3,1],"Logging":[209,134,127,230,292,476,303,282,201,98,430,193,238,243,196,295,164,170,61,228,8,38,74,63,85],"Other natural disturbances":[9,3,4,5,15,13,6,5,5,0,5,3,0,5,0,0,0,0,0,0,0,1,0,1,0],"Permanent agriculture":[230,156,152,210,301,225,157,209,220,88,212,109,48,108,39,33,53,45,15,27,14,32,91,102,113],"Settlements & Infrastructure":[2,1,2,1,2,2,3,2,4,0,0,0,0,0,0,0,3,1,2,1,3,0,2,2,0],"Shifting cultivation":[6,13,3,8,2,39,10,3,5,0,31,32,43,40,21,27,34,30,1,3,0,1,15,12,20],"Wildfire":[3,0,0,0,3,1,0,0,0,0,41,0,1,1,0,0,0,2,1,1,0,0,5,1,8]},"carbon":{"agc":99373636,"agcDensity":92,"emissions":184097,"removals":5011544,"netFlux":-4827447}},{"name":"Maharashtra","area":30733894,"th":{"10":{"extent2000":2429364,"extent2010":1638466,"loss":[1114,795,638,1811,1027,997,1033,1124,1904,506,2429,1602,867,1232,561,1355,1225,1353,1471,1027,757,1074,2640,2135,1680]},"15":{"extent2000":1806355,"extent2010":1214221,"loss":[1062,754,597,1705,975,925,959,1054,1787,471,2252,1457,736,1119,517,1231,1128,1206,1353,924,680,982,2244,1882,1407]},"20":{"extent2000":1677774,"extent2010":1165919,"loss":[1050,746,588,1683,961,907,941,1033,1758,459,2214,1409,684,1063,494,1161,1073,1139,1298,885,646,940,2119,1789,1329]},"25":{"extent2000":1408072,"extent2010":1100022,"loss":[970,699,535,1574,902,826,863,964,1632,430,2071,1306,602,979,454,1071,986,1031,1213,818,593,873,1920,1632,1201]},"30":{"extent2000":1073403,"extent2010":879200,"loss":[954,688,519,1547,887,809,842,940,1599,423,2022,1223,466,828,395,885,804,806,1027,676,485,737,1497,1334,920]},"50":{"extent2000":535224,"extent2010":206943,"loss":[708,430,275,954,521,397,495,541,925,252,1134,542,159,344,207,363,273,287,476,309,214,379,708,656,415]},"75":{"extent2000":12215,"extent2010":4436,"loss":[313,64,33,177,78,42,55,53,108,27,99,63,6,12,5,7,3,7,14,8,4,8,12,10,9]}},"drivers":{"Hard commodities":[5,3,2,7,7,3,2,2,8,0,10,2,2,2,1,3,5,3,2,2,9,4,29,37,18],"Logging":[23,176,99,319,108,140,144,171,455,116,307,238,124,256,129,190,240,225,368,172,84,142,247,235,146],"Other natural disturbances":[15,27,7,23,7,16,3,28,14,6,11,5,4,19,3,4,4,3,27,5,2,1,4,2,2],"Permanent agriculture":[646,337,337,918,613,420,552,549,844,214,1450,788,198,366,135,518,353,396,414,378,291,374,958,846,644],"Settlements & Infrastructure":[2,0,0,1,0,1,0,1,5,0,4,1,1,3,0,3,1,3,5,3,4,3,2,1,1],"Shifting cultivation":[15,78,35,191,81,130,81,121,168,56,128,71,105,159,123,154,192,164,191,106,69,133,185,128,82],"Wildfire":[0,0,5,14,0,41,10,0,9,2,3,0,0,2,0,1,6,6,7,0,20,74,52,76,15]},"primary":[5,2,10,38,8,46,23,28,19,74,86,18,49,20,107,70,80,71,35,33,21,24,15,27],"carbon":{"agc":94457682,"agcDensity":88,"emissions":454296,"removals":4536396,"netFlux":-4082100}},{"name":"Manipur","area":2232074,"th":{"10":{"extent2000":1764568,"extent2010":1773767,"loss":[4396,4282,4906,5313,4925,5418,4316,5928,6240,4364,6358,8968,12930,17237,16301,22562,20576,15660,14916,16802,17894,13379,14832,16052,15290]},"15":{"extent2000":1741042,"extent2010":1750044,"loss":[4375,4265,4873,5288,4898,5395,4300,5912,6218,4349,6335,8907,12772,17022,16090,22272,20285,15387,14681,16516,17592,13128,14565,15808,15058]},"20":{"extent2000":1732529,"extent2010":1740012,"loss":[4356,4251,4853,5272,4881,5379,4289,5900,6206,4342,6314,8861,12641,16884,15962,22101,20093,15246,14562,16372,17439,13010,14446,15671,14945]},"25":{"extent2000":1718106,"extent2010":1724455,"loss":[4346,4247,4843,5263,4871,5370,4282,5894,6194,4337,6301,8832,12534,16731,15812,21929,19919,15075,14414,16190,17268,12864,14278,15524,14804]},"30":{"extent2000":1703678,"extent2010":1708039,"loss":[4335,4239,4828,5252,4859,5354,4275,5885,6180,4330,6288,8796,12432,16592,15670,21748,19752,14925,14276,16025,17090,12717,14105,15352,14673]},"50":{"extent2000":1611548,"extent2010":1614146,"loss":[4192,4142,4660,5103,4680,5173,4142,5765,5999,4231,6099,8354,11447,15357,14495,20233,18248,13673,13139,14680,15742,11673,12914,14225,13640]},"75":{"extent2000":1202142,"extent2010":1250333,"loss":[3347,3468,3677,4184,3765,4181,3459,4945,4924,3622,5116,6740,7468,9981,9643,13773,12143,8782,8601,9187,10283,7532,8454,9456,9416]}},"drivers":{"Hard commodities":[9,2,20,5,6,6,6,18,18,14,4,24,42,52,86,76,77,96,35,53,186,228,139,57,51],"Logging":[290,238,322,359,256,401,291,397,436,341,390,684,949,1121,1105,2014,1092,681,954,966,892,567,873,899,902],"Other natural disturbances":[20,11,12,26,23,19,26,49,30,29,41,26,34,49,225,142,59,42,47,91,98,187,112,75,60],"Permanent agriculture":[212,132,272,344,399,311,402,534,564,450,475,532,430,796,1071,808,735,546,632,769,693,634,739,903,1485],"Settlements & Infrastructure":[36,13,24,41,46,60,53,95,125,60,103,133,49,81,71,180,139,88,64,134,106,127,180,176,192],"Shifting cultivation":[3745,3820,4158,4446,4108,4531,3475,4762,4985,3419,5251,7358,10910,14462,13077,18505,17638,13465,12538,14002,15097,10943,12045,13217,11784],"Wildfire":[0,3,1,2,3,3,7,5,2,3,2,2,4,7,17,14,4,2,1,4,11,27,11,19,191]},"primary":[1472,1345,1491,1329,1234,1249,2041,1596,1386,1579,1862,2570,3118,3888,4881,3711,2646,2652,3047,3166,2423,2732,3261,3961],"carbon":{"agc":202765894,"agcDensity":119,"emissions":6402062,"removals":4290883,"netFlux":2111179}},{"name":"Meghalaya","area":2251624,"th":{"10":{"extent2000":1795673,"extent2010":1731908,"loss":[4653,3712,2246,5836,4350,5303,6698,7342,5218,6678,5747,6033,8875,20129,18146,22594,24649,15825,14070,14425,11951,12385,13546,12004,10695]},"15":{"extent2000":1751142,"extent2010":1674603,"loss":[4646,3704,2242,5824,4340,5292,6683,7326,5207,6662,5730,5974,8712,19711,17842,22112,24131,15468,13801,14144,11726,12183,13337,11804,10533]},"20":{"extent2000":1736197,"extent2010":1659841,"loss":[4639,3697,2239,5815,4334,5285,6674,7315,5201,6652,5721,5949,8643,19565,17729,21955,23959,15347,13718,14040,11638,12105,13260,11728,10469]},"25":{"extent2000":1720660,"extent2010":1632490,"loss":[4635,3693,2237,5807,4328,5279,6663,7305,5194,6643,5712,5926,8589,19460,17649,21846,23838,15257,13656,13961,11579,12039,13194,11666,10408]},"30":{"extent2000":1683889,"extent2010":1592784,"loss":[4629,3687,2234,5797,4320,5272,6651,7292,5184,6631,5699,5874,8432,19099,17347,21444,23413,14943,13401,13710,11369,11839,13002,11466,10241]},"50":{"extent2000":1527312,"extent2010":1354302,"loss":[4526,3586,2176,5627,4185,5117,6457,7079,5050,6444,5532,5543,7779,17559,16147,19885,21730,13758,12498,12756,10591,11076,12229,10727,9587]},"75":{"extent2000":852278,"extent2010":676737,"loss":[3514,2656,1676,4302,3125,3919,4970,5469,3914,4983,4284,3846,4165,8442,8523,10598,11569,7051,6674,7014,6037,6568,7568,6418,5898]}},"drivers":{"Hard commodities":[59,27,26,105,62,74,99,131,103,155,127,185,124,193,119,169,177,154,181,138,248,316,222,202,193],"Logging":[551,274,161,796,402,661,1129,1186,930,1297,1070,718,1309,2268,2099,2338,2015,1155,896,1099,851,1007,1061,977,1170],"Other natural disturbances":[23,14,8,58,21,20,27,31,20,43,35,47,29,37,28,21,38,15,20,26,26,68,22,22,24],"Permanent agriculture":[1144,953,371,1148,1060,1177,1399,1659,1028,1480,1420,1422,1120,3119,2272,2744,2833,1826,1560,1507,1200,1316,1467,1411,1304],"Settlements & Infrastructure":[94,53,65,174,94,223,286,255,215,276,310,242,110,215,165,277,216,160,150,150,156,212,210,171,153],"Shifting cultivation":[2734,2349,1594,3492,2657,3091,3689,4013,2866,3355,2714,3226,5732,13247,12647,15884,18122,11630,10590,10785,8881,8910,10016,8678,7389],"Wildfire":[1,0,0,1,0,0,0,0,7,0,0,1,0,1,7,5,2,0,0,0,0,0,0,0,0]},"primary":[1122,769,2021,1438,1740,2161,2246,1319,1805,1427,1221,1693,2931,3574,4020,4685,2829,2666,2743,2663,3057,3243,2807,2509],"carbon":{"agc":171394939,"agcDensity":102,"emissions":5718439,"removals":6255558,"netFlux":-537119}},{"name":"Mizoram","area":2125177,"th":{"10":{"extent2000":1983906,"extent2010":1869167,"loss":[5029,4520,3927,5143,4945,3826,1689,3855,4398,3019,3396,7006,10792,18637,23161,35188,42850,26199,24409,25541,28676,20174,19938,22822,19455]},"15":{"extent2000":1965993,"extent2010":1853486,"loss":[4995,4495,3912,5113,4923,3815,1685,3848,4388,3010,3376,6930,10632,18343,22814,34654,42197,25703,23937,25006,28192,19777,19596,22441,19129]},"20":{"extent2000":1956649,"extent2010":1847467,"loss":[4983,4484,3904,5098,4911,3808,1683,3843,4382,3007,3366,6882,10521,18160,22605,34308,41828,25413,23699,24716,27928,19575,19422,22239,18959]},"25":{"extent2000":1948530,"extent2010":1836892,"loss":[4976,4478,3899,5090,4904,3802,1682,3837,4377,3003,3359,6851,10445,18027,22453,34058,41550,25190,23510,24506,27723,19424,19285,22069,18817]},"30":{"extent2000":1931961,"extent2010":1810239,"loss":[4955,4465,3889,5071,4891,3795,1681,3831,4370,2997,3349,6810,10327,17759,22109,33606,40992,24751,23095,24060,27274,19098,18999,21755,18524]},"50":{"extent2000":1854913,"extent2010":1738254,"loss":[4850,4387,3796,4924,4735,3704,1662,3758,4287,2946,3263,6425,9544,16388,20500,31146,38211,22729,21303,22020,25299,17627,17687,20229,17197]},"75":{"extent2000":1475285,"extent2010":1356091,"loss":[3836,3578,3151,4041,3890,3173,1502,3178,3661,2516,2782,5029,6262,10235,13275,20639,25878,14117,13432,13693,16542,11209,11651,13403,11248]}},"drivers":{"Hard commodities":[4,13,7,7,12,4,11,6,7,6,3,7,13,27,28,84,2167,83,50,47,87,85,93,48,33],"Logging":[95,46,95,88,70,60,70,106,71,60,61,246,168,312,441,1044,414,139,229,317,116,143,87,176,93],"Other natural disturbances":[4,9,16,9,9,13,20,11,23,8,15,22,27,43,37,85,283,65,52,63,72,63,45,62,38],"Permanent agriculture":[99,94,111,144,131,181,151,172,331,168,166,180,210,389,380,678,622,389,478,554,701,607,639,514,497],"Settlements & Infrastructure":[8,10,14,8,14,33,16,33,56,23,23,53,19,27,50,151,74,59,83,83,122,86,70,61,74],"Shifting cultivation":[4724,4276,3630,4793,4634,3474,1399,3489,3857,2716,3060,6269,9877,16946,21169,31562,37420,24013,22200,22994,26174,18112,18063,20891,17785],"Wildfire":[0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"primary":[479,377,465,571,510,297,541,605,368,425,562,656,791,973,1728,2174,1031,888,959,1278,832,939,1067,881],"carbon":{"agc":214010669,"agcDensity":111,"emissions":8231198,"removals":8088916,"netFlux":142282}},{"name":"NCT of Delhi","area":150220,"th":{"10":{"extent2000":783,"extent2010":464,"loss":[0,0,0,1,1,1,3,3,1,1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},"15":{"extent2000":534,"extent2010":286,"loss":[0,0,0,1,1,1,3,3,1,1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},"20":{"extent2000":463,"extent2010":266,"loss":[0,0,0,1,1,1,3,3,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},"25":{"extent2000":371,"extent2010":225,"loss":[0,0,0,1,1,1,3,3,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},"30":{"extent2000":263,"extent2010":122,"loss":[0,0,0,1,1,1,3,3,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},"50":{"extent2000":35,"extent2010":14,"loss":[0,0,0,0,0,1,2,1,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},"75":{"extent2000":3,"extent2010":1,"loss":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}},"drivers":{"Permanent agriculture":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Settlements & Infrastructure":[0,0,0,0,1,1,1,2,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},"carbon":{"agc":15604,"agcDensity":59,"emissions":188,"removals":6171,"netFlux":-5983}},{"name":"Nagaland","area":1659961,"th":{"10":{"extent2000":1357616,"extent2010":1375524,"loss":[12555,7922,7273,10033,9011,7127,5042,6630,7366,4889,6878,11655,12451,20718,18514,21625,21922,15784,12055,16350,13681,10579,11417,8842,8271]},"15":{"extent2000":1337899,"extent2010":1353400,"loss":[12483,7869,7235,9968,8957,7101,5019,6604,7334,4868,6833,11477,12176,20294,18114,21211,21454,15395,11799,15977,13394,10372,11186,8665,8104]},"20":{"extent2000":1330963,"extent2010":1345938,"loss":[12422,7817,7209,9920,8919,7080,5005,6582,7303,4852,6805,11333,12034,20085,17921,20998,21203,15186,11659,15773,13252,10273,11080,8589,8031]},"25":{"extent2000":1323040,"extent2010":1329511,"loss":[12385,7795,7189,9888,8896,7064,4994,6567,7284,4838,6783,11242,11902,19879,17728,20784,20968,14975,11515,15583,13109,10177,10970,8505,7953]},"30":{"extent2000":1310343,"extent2010":1316866,"loss":[12333,7759,7162,9845,8864,7045,4974,6539,7250,4820,6749,11113,11716,19591,17451,20453,20558,14666,11280,15283,12885,10002,10805,8370,7827]},"50":{"extent2000":1237704,"extent2010":1231878,"loss":[11999,7515,6985,9547,8576,6848,4823,6343,7015,4682,6522,10155,10380,17367,15579,18331,18142,12725,9916,13332,11480,8972,9788,7617,7137]},"75":{"extent2000":939431,"extent2010":936179,"loss":[10087,6130,5822,7852,6991,5791,4004,5288,5680,3884,5430,7653,6553,10947,9954,12228,11590,7691,6160,7988,7323,5758,6509,4993,4663]}},"drivers":{"Hard commodities":[6,6,4,9,12,13,7,13,24,15,19,16,11,29,13,34,49,26,21,37,42,60,61,94,53],"Logging":[1449,624,659,1035,932,560,474,782,728,481,794,1345,1425,2253,1842,2380,1361,822,770,1482,986,656,782,665,592],"Other natural disturbances":[23,15,13,48,43,72,28,97,51,46,45,86,22,71,55,70,79,65,34,45,48,72,50,71,54],"Permanent agriculture":[893,682,461,1161,952,1169,488,1035,1014,695,1329,1346,723,1543,1041,1202,1131,786,635,891,859,904,939,962,1195],"Settlements & Infrastructure":[61,46,41,82,116,74,119,84,113,105,188,243,57,138,135,144,187,108,75,129,200,102,133,128,118],"Shifting cultivation":[9893,6376,5980,7500,6799,5147,3850,4506,5308,3469,4361,8052,9470,15542,14356,16615,17745,12851,9743,12695,10737,8135,8837,6448,5808],"Wildfire":[0,0,0,0,0,5,0,0,1,2,3,2,2,3,1,1,2,5,1,2,8,70,2,1,2]},"primary":[1445,1005,1695,1548,1475,770,1376,1144,919,1144,1388,1410,2109,2193,2809,2551,1531,1073,1657,1566,1365,1777,1430,1127],"carbon":{"agc":160614334,"agcDensity":123,"emissions":6710131,"removals":2578022,"netFlux":4132108}},{"name":"Odisha","area":15563802,"th":{"10":{"extent2000":3776619,"extent2010":2871816,"loss":[3110,4230,5605,4761,3807,4495,6221,6212,5005,2547,6041,4325,6896,9692,5022,10857,13168,12779,10118,11696,6242,10235,16287,11505,11313]},"15":{"extent2000":3395657,"extent2010":2414203,"loss":[3065,4133,5518,4645,3733,4394,6090,6103,4920,2483,5858,4114,6362,8940,4629,9960,12048,11726,9227,10678,5782,9413,14594,10377,10118]},"20":{"extent2000":3251213,"extent2010":2359152,"loss":[3044,4086,5483,4596,3695,4347,6031,6057,4878,2458,5797,4030,6090,8569,4435,9543,11553,11242,8851,10219,5554,9031,13827,9879,9598]},"25":{"extent2000":3018419,"extent2010":2248464,"loss":[2997,4007,5412,4498,3632,4263,5932,5980,4822,2417,5664,3921,5858,8217,4247,9153,11096,10777,8498,9786,5348,8672,13105,9392,9091]},"30":{"extent2000":2680194,"extent2010":1916558,"loss":[2977,3976,5382,4462,3602,4226,5886,5939,4790,2394,5593,3779,5353,7491,3867,8340,10130,9792,7759,8873,4889,7915,11660,8401,8165]},"50":{"extent2000":1567786,"extent2010":557374,"loss":[2502,2976,4355,3307,2763,3104,4518,4691,3947,1778,4216,2647,3495,4716,2391,5193,6379,6159,4827,5543,3193,5048,6924,5148,5019]},"75":{"extent2000":104806,"extent2010":31907,"loss":[1360,1173,1851,1190,1113,1011,1433,1567,1551,652,1561,846,216,245,118,262,382,491,316,331,185,273,391,333,330]}},"drivers":{"Hard commodities":[22,18,15,49,103,85,83,116,100,92,26,89,17,42,34,79,60,47,53,58,23,129,110,73,90],"Logging":[293,192,205,141,133,106,145,116,115,112,113,196,191,158,60,159,234,330,188,250,120,212,248,127,130],"Other natural disturbances":[8,6,8,31,3,8,8,14,17,41,7,13,14,10,3,1,4,8,17,2,1,15,8,22,7],"Permanent agriculture":[958,1536,1716,1917,1350,1768,2354,2568,1807,1097,3065,1674,1018,1594,669,1609,1982,1971,1508,2213,1065,2283,3456,2649,2625],"Settlements & Infrastructure":[2,4,3,5,8,5,12,26,11,8,7,6,1,1,1,12,3,5,17,4,3,6,35,18,14],"Shifting cultivation":[1533,2085,3281,2152,1899,2131,3137,2928,2601,924,2226,1516,4056,5639,3091,6464,7829,7415,5953,6299,3655,5233,7758,5444,5233],"Wildfire":[12,4,5,12,6,10,20,16,33,7,4,15,1,2,0,0,4,2,10,31,13,23,20,35,30]},"primary":[446,1081,747,638,598,902,828,810,276,724,459,808,1178,584,1255,1502,1711,1394,1341,770,1301,1657,1305,1182],"carbon":{"agc":252534379,"agcDensity":94,"emissions":3065653,"removals":7130999,"netFlux":-4065346}},{"name":"Puducherry","area":54733,"th":{"10":{"extent2000":8611,"extent2010":8860,"loss":[2,2,1,2,5,2,15,18,8,2,5,5,5,4,3,31,11,13,12,20,18,28,42,24,45]},"15":{"extent2000":8011,"extent2010":7252,"loss":[2,2,1,2,5,2,15,17,8,2,5,5,5,4,3,30,10,12,11,19,17,26,40,23,43]},"20":{"extent2000":7811,"extent2010":6939,"loss":[2,2,1,2,5,2,15,17,8,2,5,5,5,4,3,29,10,11,10,19,16,25,39,23,42]},"25":{"extent2000":7529,"extent2010":6505,"loss":[1,2,1,2,5,2,14,17,8,2,5,5,5,4,3,28,10,11,10,18,16,24,38,23,41]},"30":{"extent2000":6911,"extent2010":5557,"loss":[1,2,1,2,5,2,14,16,8,2,5,4,5,4,3,27,9,10,9,17,16,22,37,22,39]},"50":{"extent2000":5125,"extent2010":2610,"loss":[1,1,1,2,4,2,13,15,7,2,5,4,5,4,2,22,7,8,6,14,12,14,29,17,32]},"75":{"extent2000":1258,"extent2010":130,"loss":[1,0,0,0,0,1,4,5,1,0,1,1,1,1,1,6,2,2,1,4,2,4,6,3,7]}},"drivers":{"Logging":[0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0],"Permanent agriculture":[1,1,1,2,4,2,12,15,7,1,5,3,5,4,2,23,8,8,9,15,14,19,34,21,36],"Settlements & Infrastructure":[0,0,0,0,0,0,2,2,1,0,0,0,0,0,0,2,1,2,1,0,1,2,3,1,3]},"carbon":{"agc":584701,"agcDensity":85,"emissions":7001,"removals":56189,"netFlux":-49187}},{"name":"Punjab","area":5022577,"th":{"10":{"extent2000":93790,"extent2010":92112,"loss":[106,83,89,119,151,92,108,97,89,121,51,147,22,35,2,1,0,11,13,14,28,29,57,119,115]},"15":{"extent2000":88135,"extent2010":82215,"loss":[105,82,88,117,149,91,105,95,88,120,50,144,21,32,2,1,0,11,11,12,26,27,51,106,104]},"20":{"extent2000":84645,"extent2010":81176,"loss":[104,81,86,114,145,89,101,92,86,118,48,142,20,32,2,1,0,10,10,10,23,24,46,100,95]},"25":{"extent2000":80630,"extent2010":78303,"loss":[104,81,85,113,144,88,100,91,85,116,48,140,19,31,2,1,0,10,9,10,20,23,41,94,89]},"30":{"extent2000":74700,"extent2010":69345,"loss":[102,80,85,113,143,87,99,89,84,115,48,138,17,29,2,1,0,8,7,7,17,19,35,80,76]},"50":{"extent2000":47188,"extent2010":42314,"loss":[91,66,71,91,121,72,74,64,69,96,37,110,11,22,1,1,0,5,3,4,10,10,19,46,47]},"75":{"extent2000":14595,"extent2010":8755,"loss":[62,34,37,48,70,43,35,27,34,47,17,55,3,8,0,0,0,0,0,1,3,3,6,15,16]}},"drivers":{"Hard commodities":[0,0,0,0,0,2,1,0,1,0,0,2,0,2,0,0,0,0,0,0,0,0,0,4,1],"Logging":[1,3,0,5,2,1,4,3,2,2,1,6,4,2,0,0,0,1,2,2,5,5,10,33,25],"Other natural disturbances":[3,16,2,8,10,3,10,6,9,2,1,7,0,0,0,0,0,0,0,0,0,0,0,1,0],"Permanent agriculture":[21,27,37,52,56,38,46,42,41,48,22,73,5,21,1,1,0,2,3,4,8,9,20,35,42],"Settlements & Infrastructure":[2,6,6,5,5,21,12,7,5,4,4,6,5,2,0,1,0,6,2,0,2,4,4,4,2],"Wildfire":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"carbon":{"agc":5742584,"agcDensity":77,"emissions":31547,"removals":365032,"netFlux":-333485}},{"name":"Rajasthan","area":34190101,"th":{"10":{"extent2000":46299,"extent2010":21423,"loss":[15,19,15,27,21,14,40,37,35,8,20,21,0,0,0,0,0,0,0,0,0,0,4,0,45]},"15":{"extent2000":27617,"extent2010":10502,"loss":[14,18,15,26,20,14,39,37,34,8,20,19,0,0,0,0,0,0,0,0,0,0,4,0,43]},"20":{"extent2000":22609,"extent2010":7815,"loss":[14,18,14,26,20,13,38,36,33,7,20,19,0,0,0,0,0,0,0,0,0,0,4,0,41]},"25":{"extent2000":13789,"extent2010":5357,"loss":[14,17,14,25,20,12,37,35,33,7,19,19,0,0,0,0,0,0,0,0,0,0,4,0,38]},"30":{"extent2000":12039,"extent2010":4116,"loss":[14,17,14,25,20,12,37,35,33,7,19,18,0,0,0,0,0,0,0,0,0,0,3,0,35]},"50":{"extent2000":2335,"extent2010":379,"loss":[11,11,12,20,16,10,29,29,28,4,9,15,0,0,0,0,0,0,0,0,0,0,1,0,27]},"75":{"extent2000":539,"extent2010":12,"loss":[6,5,7,12,10,4,6,12,20,2,2,6,0,0,0,0,0,0,0,0,0,0,0,0,4]}},"drivers":{"Logging":[0,0,1,1,0,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4],"Other natural disturbances":[0,4,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],"Permanent agriculture":[3,3,2,5,9,4,28,26,29,2,5,6,0,0,0,0,0,0,0,0,0,0,2,0,30],"Settlements & Infrastructure":[0,0,0,1,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Wildfire":[0,0,2,2,2,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},"carbon":{"agc":1093217,"agcDensity":91,"emissions":5329,"removals":75591,"netFlux":-70262}},{"name":"Sikkim","area":708308,"th":{"10":{"extent2000":272100,"extent2010":279957,"loss":[43,10,16,58,28,11,100,125,141,83,298,89,27,26,7,61,74,76,182,166,108,149,349,263,242]},"15":{"extent2000":261455,"extent2010":268647,"loss":[41,9,16,58,27,11,99,123,140,81,296,87,25,23,6,55,66,69,166,148,100,132,325,252,232]},"20":{"extent2000":259945,"extent2010":266691,"loss":[39,9,15,57,27,11,99,122,139,81,295,86,25,23,6,54,65,68,164,146,99,131,322,250,229]},"25":{"extent2000":257823,"extent2010":258010,"loss":[38,9,15,57,27,11,98,122,138,80,294,86,24,22,6,49,63,66,160,140,97,128,319,248,227]},"30":{"extent2000":250451,"extent2010":253761,"loss":[36,9,15,57,26,11,97,121,137,79,291,84,22,21,6,47,59,62,154,132,90,124,308,241,220]},"50":{"extent2000":210073,"extent2010":184899,"loss":[26,8,12,50,23,10,85,109,121,71,269,74,15,15,6,36,39,48,121,105,74,92,241,206,185]},"75":{"extent2000":107422,"extent2010":81639,"loss":[14,4,7,34,13,6,47,63,82,54,195,51,6,4,2,10,14,17,46,43,31,36,88,98,79]}},"drivers":{"Hard commodities":[0,0,0,0,0,0,1,1,0,0,9,0,0,0,0,0,0,0,1,2,12,21,132,97,51],"Logging":[10,0,3,3,2,1,10,6,19,10,8,4,2,1,0,3,3,3,4,5,7,3,7,13,4],"Other natural disturbances":[9,2,4,17,8,2,19,51,42,21,190,35,5,7,6,15,18,21,68,77,32,51,60,66,69],"Permanent agriculture":[1,1,0,2,0,1,3,4,4,2,5,2,2,3,0,2,4,2,6,1,1,1,1,0,1],"Settlements & Infrastructure":[2,2,0,14,10,3,35,39,37,28,26,19,6,5,0,14,19,33,63,39,31,37,105,56,89],"Shifting cultivation":[0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0],"Wildfire":[0,0,0,0,0,0,10,2,6,0,10,1,0,0,0,10,12,2,3,2,1,7,1,5,1]},"primary":[1,2,11,4,3,15,26,19,11,62,20,6,3,3,6,6,13,23,24,12,46,55,60,32],"carbon":{"agc":30783985,"agcDensity":123,"emissions":53730,"removals":383293,"netFlux":-329563}},{"name":"Tamil Nadu","area":13028083,"th":{"10":{"extent2000":1607798,"extent2010":1390633,"loss":[2194,1217,612,1325,1013,1720,1831,1403,491,108,1370,1799,738,1129,1104,1494,1766,2302,2547,1527,1423,1253,2647,3417,2947]},"15":{"extent2000":1476595,"extent2010":1206327,"loss":[2187,1209,607,1311,1007,1707,1817,1393,486,107,1352,1770,706,1092,1076,1441,1697,2207,2401,1449,1370,1200,2501,3288,2770]},"20":{"extent2000":1412455,"extent2010":1171218,"loss":[2180,1197,601,1295,1000,1698,1801,1380,480,106,1328,1747,685,1068,1061,1406,1657,2148,2280,1395,1329,1169,2419,3212,2661]},"25":{"extent2000":1341990,"extent2010":1105030,"loss":[2157,1182,590,1274,990,1685,1780,1358,470,103,1308,1712,668,1052,1048,1386,1630,2107,2198,1359,1304,1142,2335,3141,2573]},"30":{"extent2000":1230520,"extent2010":998607,"loss":[2152,1177,587,1268,986,1675,1769,1350,467,103,1298,1695,643,1023,1022,1341,1582,2027,2064,1291,1256,1100,2187,3015,2413]},"50":{"extent2000":923308,"extent2010":560199,"loss":[2046,1081,519,1106,913,1546,1615,1214,411,92,1135,1486,552,882,911,1161,1355,1684,1618,1047,1050,928,1704,2556,1882]},"75":{"extent2000":402272,"extent2010":203889,"loss":[1777,814,345,758,682,1101,1102,828,246,51,700,984,305,460,482,538,647,814,753,428,474,414,689,1510,828]}},"drivers":{"Hard commodities":[1,0,0,0,5,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,2],"Logging":[105,90,67,411,191,339,271,88,26,2,103,162,132,171,183,149,100,146,541,146,83,82,229,419,250],"Other natural disturbances":[63,45,19,20,13,23,34,15,11,0,28,41,5,9,9,15,5,21,22,13,7,4,7,19,11],"Permanent agriculture":[1633,794,376,637,641,1075,1148,1041,350,83,937,1210,442,751,774,1097,1367,1641,1301,1039,1091,952,1672,1561,1937],"Settlements & Infrastructure":[55,27,35,30,49,94,90,78,30,3,66,75,13,17,21,62,77,52,52,46,36,33,44,35,48],"Shifting cultivation":[18,17,10,11,8,15,26,21,7,0,19,10,12,23,16,7,10,39,15,18,16,14,47,46,25],"Wildfire":[27,21,7,59,21,42,81,10,5,3,44,43,12,22,7,3,12,102,89,16,10,7,174,920,122]},"primary":[128,70,494,113,382,311,251,66,1,170,124,137,138,184,140,136,272,538,285,221,143,235,1090,434],"carbon":{"agc":105673213,"agcDensity":86,"emissions":805975,"removals":6234143,"netFlux":-5428167}},{"name":"Telangana","area":11471215,"th":{"10":{"extent2000":1139909,"extent2010":790240,"loss":[1152,1207,1507,1641,1772,2404,3012,5587,6809,1524,8684,6619,1476,3204,412,657,457,706,1005,422,354,289,1231,1554,1754]},"15":{"extent2000":970654,"extent2010":648170,"loss":[1115,1141,1437,1518,1664,2246,2837,5265,6383,1428,8094,6344,1396,3106,387,607,432,652,944,390,331,269,1089,1448,1591]},"20":{"extent2000":920978,"extent2010":632837,"loss":[1095,1099,1382,1460,1608,2166,2749,5120,6192,1381,7859,6205,1341,3033,371,567,422,621,882,365,306,250,1028,1353,1448]},"25":{"extent2000":845132,"extent2010":595933,"loss":[1039,1027,1280,1352,1521,2033,2605,4823,5844,1309,7389,5968,1264,2932,352,514,408,582,828,333,280,220,929,1242,1297]},"30":{"extent2000":663617,"extent2010":503343,"loss":[1024,1011,1258,1318,1483,1975,2552,4700,5680,1274,7144,5630,1015,2598,275,413,355,461,700,272,228,168,689,987,969]},"50":{"extent2000":431620,"extent2010":198576,"loss":[708,597,766,733,863,1147,1577,2990,3620,838,4380,3789,568,1674,187,270,246,312,428,163,150,101,410,626,491]},"75":{"extent2000":59026,"extent2010":25821,"loss":[223,78,124,84,110,119,131,246,335,93,377,358,11,45,17,26,23,31,27,13,10,6,25,22,10]}},"drivers":{"Hard commodities":[2,1,3,2,19,11,14,2,33,3,10,18,8,6,0,19,2,21,37,20,46,1,5,3,2],"Logging":[7,2,2,9,23,59,42,26,11,6,31,50,16,39,5,11,13,22,19,9,6,7,9,49,6],"Other natural disturbances":[47,47,96,46,1,15,3,13,13,0,1,3,0,0,0,0,0,0,0,0,0,0,1,0,0],"Permanent agriculture":[771,902,1080,1152,1401,1796,2438,4590,5514,1244,7033,5409,957,2465,244,350,294,363,603,211,160,148,625,756,932],"Settlements & Infrastructure":[3,0,1,1,2,9,2,2,0,0,3,2,0,0,0,0,0,0,0,0,0,0,0,0,0],"Shifting cultivation":[6,11,4,55,15,30,26,18,45,8,12,70,27,65,22,31,44,52,38,30,15,12,44,141,24],"Wildfire":[0,0,0,0,0,3,0,0,0,1,0,7,0,2,0,0,0,0,0,0,0,0,0,37,0]},"primary":[0,2,4,9,3,1,5,10,1,3,3,1,3,5,8,6,13,8,4,2,1,7,3,1],"carbon":{"agc":49121572,"agcDensity":74,"emissions":706424,"removals":2686157,"netFlux":-1979732}},{"name":"Tripura","area":1053619,"th":{"10":{"extent2000":757362,"extent2010":665365,"loss":[3098,1896,1224,2918,1503,6188,5809,5293,5030,3367,2554,2107,2960,6093,4749,5940,16554,8249,11695,12547,12176,11801,14460,11385,10245]},"15":{"extent2000":726046,"extent2010":624128,"loss":[3096,1893,1220,2912,1499,6173,5793,5278,5012,3355,2544,2099,2847,5809,4477,5671,15881,7859,11216,12068,11617,11417,14061,11079,9942]},"20":{"extent2000":714363,"extent2010":616958,"loss":[3094,1891,1219,2907,1496,6164,5781,5265,5002,3347,2537,2094,2830,5779,4454,5640,15824,7824,11174,12021,11565,11353,13999,11033,9878]},"25":{"extent2000":701385,"extent2010":603249,"loss":[3093,1889,1218,2905,1495,6156,5775,5256,4994,3340,2531,2091,2814,5762,4443,5622,15801,7804,11152,11998,11537,11314,13967,11003,9833]},"30":{"extent2000":669293,"extent2010":569718,"loss":[3089,1888,1216,2900,1493,6144,5763,5246,4980,3332,2522,2082,2661,5394,4096,5226,14964,7260,10569,11376,10866,10823,13523,10638,9485]},"50":{"extent2000":582053,"extent2010":434984,"loss":[3047,1826,1168,2792,1432,5921,5542,4987,4734,3155,2387,1972,2436,5019,3830,4841,14216,6809,10003,10805,10248,10107,12728,10042,8809]},"75":{"extent2000":210174,"extent2010":154537,"loss":[2709,1487,890,2117,1100,4445,4112,3451,3283,2208,1588,1386,727,1742,1423,1884,6039,2566,4074,4348,3959,3473,4496,3822,2832]}},"drivers":{"Hard commodities":[1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,2,0,0,1,2,0,0,8,0],"Logging":[76,49,48,113,59,266,243,203,254,132,121,71,48,69,40,41,105,55,106,139,133,181,255,207,170],"Other natural disturbances":[2,2,2,4,1,28,7,25,2,5,4,2,3,23,5,2,11,15,38,37,12,26,28,29,17],"Permanent agriculture":[1380,986,733,1815,896,3978,3666,3824,3356,2265,1796,1280,1201,1548,530,1114,1598,1252,1423,1638,1955,3172,4373,2914,3757],"Settlements & Infrastructure":[31,41,37,119,30,145,152,161,182,164,118,79,23,20,23,61,52,45,38,45,80,70,68,69,87],"Shifting cultivation":[1596,805,394,841,505,1719,1687,1025,1179,758,478,645,1384,3732,3498,4007,13194,5892,8963,9516,8683,7373,8798,7409,5451]},"primary":[3,1,1,1,8,9,0,2,2,2,2,5,4,1,7,31,1,9,6,13,3,9,12,4],"carbon":{"agc":61483529,"agcDensity":92,"emissions":3505772,"removals":3466792,"netFlux":38980}},{"name":"Uttar Pradesh","area":24075134,"th":{"10":{"extent2000":599914,"extent2010":596463,"loss":[557,171,125,303,316,447,433,303,434,303,569,555,91,173,112,152,44,86,20,9,5,9,123,145,106]},"15":{"extent2000":509796,"extent2010":482370,"loss":[546,163,119,289,286,430,412,283,405,275,541,524,81,153,99,142,42,80,17,8,4,8,98,127,89]},"20":{"extent2000":490903,"extent2010":465436,"loss":[540,157,113,272,261,402,373,254,366,242,511,483,77,138,93,136,42,76,14,7,3,8,92,120,80]},"25":{"extent2000":442886,"extent2010":441506,"loss":[524,149,106,256,246,386,358,242,353,231,491,456,72,114,80,124,40,72,13,7,3,7,80,113,69]},"30":{"extent2000":359975,"extent2010":369931,"loss":[522,147,105,254,244,382,353,240,349,228,483,446,63,104,68,115,39,66,11,6,3,6,71,99,57]},"50":{"extent2000":217560,"extent2010":181228,"loss":[392,97,65,151,132,250,189,125,206,99,294,260,27,18,11,9,21,13,2,4,2,3,28,47,11]},"75":{"extent2000":29301,"extent2010":16255,"loss":[183,46,23,61,58,94,65,42,65,22,109,109,4,1,1,1,2,5,0,1,0,0,1,5,1]}},"drivers":{"Hard commodities":[0,1,1,1,1,1,8,0,5,3,5,5,0,0,10,0,23,1,0,3,1,1,6,4,1],"Logging":[1,1,2,3,17,13,15,3,14,26,81,16,31,72,37,102,7,48,6,0,0,0,9,48,34],"Other natural disturbances":[20,10,5,15,25,13,26,35,17,28,50,45,1,10,0,0,1,9,0,0,0,0,8,5,2],"Permanent agriculture":[283,58,42,116,107,208,160,107,178,112,181,198,14,16,18,10,6,4,4,1,1,3,16,32,17],"Settlements & Infrastructure":[7,5,2,10,7,13,19,9,16,7,26,16,1,0,0,1,1,3,1,0,0,0,5,8,0],"Shifting cultivation":[0,0,0,0,0,0,0,0,0,0,2,0,2,0,0,0,0,0,0,0,0,0,2,0,0],"Wildfire":[0,0,0,1,0,0,0,0,0,0,3,1,3,1,2,0,0,0,0,0,0,0,21,0,0]},"primary":[0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0],"carbon":{"agc":40588360,"agcDensity":113,"emissions":85799,"removals":1499877,"netFlux":-1414077}},{"name":"Uttarakhand","area":5257312,"th":{"10":{"extent2000":2149822,"extent2010":2006708,"loss":[343,553,290,832,688,1210,1056,1757,987,735,888,1438,552,668,860,973,726,658,861,1077,1863,876,2149,1949,1739]},"15":{"extent2000":2062267,"extent2010":1912411,"loss":[338,544,280,818,662,1183,1040,1739,972,722,863,1409,525,649,837,947,716,643,832,1044,1834,853,2089,1894,1694]},"20":{"extent2000":2040361,"extent2010":1898818,"loss":[336,540,275,810,645,1165,1028,1729,963,712,846,1395,506,636,820,931,711,639,819,1032,1822,844,2060,1874,1674]},"25":{"extent2000":2001002,"extent2010":1772605,"loss":[332,537,271,804,637,1155,1020,1718,955,705,827,1375,488,624,799,911,702,633,808,1018,1806,832,2027,1851,1647]},"30":{"extent2000":1948836,"extent2010":1731226,"loss":[330,535,269,800,631,1148,1014,1709,951,701,811,1364,468,607,779,885,690,622,788,992,1778,813,1977,1816,1616]},"50":{"extent2000":1637552,"extent2010":1351638,"loss":[275,460,211,705,515,990,876,1496,822,614,655,1205,363,505,632,721,602,564,656,867,1649,722,1720,1610,1437]},"75":{"extent2000":973083,"extent2010":758336,"loss":[165,323,110,466,314,541,472,901,549,398,340,805,146,255,271,412,265,299,344,371,909,392,800,862,641]}},"drivers":{"Hard commodities":[2,1,4,33,18,8,9,50,13,71,20,19,7,2,1,4,10,16,46,23,19,35,66,35,76],"Logging":[132,79,96,240,159,412,493,909,179,92,363,342,296,453,622,573,316,211,318,605,577,219,623,453,617],"Other natural disturbances":[18,58,15,111,101,43,43,107,71,147,57,133,12,21,9,35,71,51,24,20,99,24,51,57,82],"Permanent agriculture":[113,160,86,202,185,510,290,422,300,239,178,333,77,44,90,186,162,214,258,238,876,390,1063,985,670],"Settlements & Infrastructure":[12,23,18,41,47,50,54,65,76,48,61,102,35,46,11,43,105,85,96,80,122,97,134,99,95],"Shifting cultivation":[2,1,9,14,3,3,24,15,11,0,6,8,2,6,27,6,2,19,11,6,3,0,3,12,28],"Wildfire":[4,57,7,24,18,23,33,55,144,18,37,66,3,1,3,26,10,7,9,3,48,20,10,147,18]},"primary":[1,0,1,0,0,0,0,4,1,1,1,0,0,0,2,6,0,1,0,7,0,0,2,1],"carbon":{"agc":238272329,"agcDensity":122,"emissions":609919,"removals":8771381,"netFlux":-8161462}},{"name":"West Bengal","area":8536528,"th":{"10":{"extent2000":677197,"extent2010":553929,"loss":[405,378,206,613,473,818,1569,1599,949,2110,992,1345,425,846,203,371,603,382,476,404,526,601,723,505,921]},"15":{"extent2000":508578,"extent2010":407394,"loss":[398,371,201,596,463,804,1541,1570,927,2071,970,1298,396,788,186,333,564,351,435,364,497,574,660,468,834]},"20":{"extent2000":482328,"extent2010":394507,"loss":[396,367,198,586,457,795,1527,1555,914,2050,962,1277,376,749,175,307,543,335,410,342,477,560,622,449,798]},"25":{"extent2000":441568,"extent2010":375679,"loss":[390,362,196,576,452,785,1516,1543,908,2035,954,1254,361,705,158,263,506,306,377,313,451,537,574,426,763]},"30":{"extent2000":407920,"extent2010":331884,"loss":[387,359,194,570,447,777,1503,1534,897,2021,946,1228,331,653,148,245,483,284,345,282,423,508,528,394,709]},"50":{"extent2000":290585,"extent2010":196783,"loss":[321,282,148,357,352,577,1265,1267,729,1669,770,941,211,436,111,177,377,212,241,178,294,376,333,249,460]},"75":{"extent2000":91425,"extent2010":53686,"loss":[200,135,72,143,179,250,655,621,320,676,309,379,24,46,11,29,70,30,31,26,64,53,57,41,47]}},"drivers":{"Hard commodities":[5,9,2,4,4,9,4,19,6,13,1,10,0,1,1,13,2,0,1,30,46,22,7,4,67],"Logging":[29,56,16,124,78,178,379,235,152,235,96,225,80,175,57,77,149,37,57,31,21,97,30,61,68],"Other natural disturbances":[63,53,28,57,35,60,119,228,61,213,62,66,9,15,1,28,23,17,20,23,43,29,27,22,281],"Permanent agriculture":[195,175,134,290,258,430,729,848,581,1434,719,793,217,413,81,110,290,211,246,161,262,326,425,274,276],"Settlements & Infrastructure":[29,14,2,25,8,38,72,30,26,39,22,31,9,17,4,11,5,5,12,29,42,25,27,13,10],"Shifting cultivation":[6,2,0,4,16,10,120,118,12,11,7,34,6,17,1,3,11,9,3,4,2,4,9,17,0],"Wildfire":[0,0,0,1,0,1,1,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1]},"primary":[34,6,17,33,32,137,94,48,53,13,43,19,62,16,30,43,6,13,14,37,75,13,19,18],"carbon":{"agc":36782392,"agcDensity":90,"emissions":342844,"removals":6884376,"netFlux":-6541532}}],"districts":[{"s":"Andaman and Nicobar","n":"Nicobar Islands","e":147634,"l":[1236,1499,1391,66,2281,228,74,161,325,354,37,100,0,105,0,0,0,12,39,44,12,21,6,19,13]},{"s":"Andaman and Nicobar","n":"North and Middle Andaman","e":310755,"l":[117,208,159,84,352,486,347,1426,267,199,42,549,136,670,37,83,231,57,63,400,79,38,47,90,62]},{"s":"Andaman and Nicobar","n":"South Andaman","e":226008,"l":[57,180,80,61,905,103,373,151,247,221,19,42,340,582,36,77,55,38,61,521,31,26,27,24,13]},{"s":"Andhra Pradesh","n":"Anantapur","e":517,"l":[0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Andhra Pradesh","n":"Chittoor","e":81831,"l":[57,21,24,24,1,13,17,26,39,4,36,20,12,6,1,18,11,28,16,13,18,8,41,15,21]},{"s":"Andhra Pradesh","n":"East Godavari","e":310205,"l":[89,185,194,372,465,538,432,955,864,439,1088,513,547,879,710,1134,1357,835,808,622,393,534,1336,1127,653]},{"s":"Andhra Pradesh","n":"Guntur","e":23783,"l":[59,87,75,23,4,36,166,45,35,103,12,27,2,1,0,0,0,0,4,0,0,1,2,1,1]},{"s":"Andhra Pradesh","n":"Krishna","e":17233,"l":[15,11,25,31,12,20,27,26,29,30,47,37,8,4,1,18,6,6,6,3,4,6,15,9,7]},{"s":"Andhra Pradesh","n":"Kurnool","e":59574,"l":[12,7,11,4,6,4,3,10,11,2,1,3,1,3,0,0,0,0,1,0,0,0,0,0,1]},{"s":"Andhra Pradesh","n":"Nellore","e":20837,"l":[58,17,19,24,10,24,27,17,19,3,12,8,0,1,0,1,3,7,6,5,2,1,9,3,2]},{"s":"Andhra Pradesh","n":"Prakasam","e":79027,"l":[53,46,20,16,6,8,19,19,21,3,18,21,4,5,0,0,0,0,1,0,1,0,2,4,2]},{"s":"Andhra Pradesh","n":"Srikakulam","e":32693,"l":[43,10,57,62,26,54,140,58,63,38,73,80,37,72,31,143,184,327,31,85,23,97,166,241,45]},{"s":"Andhra Pradesh","n":"Visakhapatnam","e":300879,"l":[347,210,797,544,521,584,770,1269,1135,282,1182,431,369,705,250,723,1000,717,752,445,294,442,892,1009,659]},{"s":"Andhra Pradesh","n":"Vizianagaram","e":49147,"l":[28,20,165,66,47,68,112,137,86,41,139,82,54,121,51,204,200,140,201,182,97,130,332,372,236]},{"s":"Andhra Pradesh","n":"West Godavari","e":60575,"l":[29,50,103,118,81,53,79,225,239,67,651,127,82,102,102,107,64,34,75,46,23,22,161,89,69]},{"s":"Andhra Pradesh","n":"Y.S.R.","e":69611,"l":[47,12,9,14,2,11,16,6,11,0,5,4,1,6,0,2,0,5,4,3,1,2,1,1,1]},{"s":"Arunachal Pradesh","n":"Anjaw","e":142349,"l":[37,27,28,81,47,64,44,28,62,34,35,67,45,99,58,108,123,84,137,133,170,181,138,109,125]},{"s":"Arunachal Pradesh","n":"Changlang","e":438334,"l":[595,413,572,811,624,906,880,1221,1180,607,2256,1245,866,1175,968,1488,1685,926,1011,1334,1567,1139,1044,1200,1414]},{"s":"Arunachal Pradesh","n":"East Siang","e":44759,"l":[243,233,335,656,319,270,209,307,171,145,229,289,249,250,345,632,691,461,413,352,363,585,506,394,484]},{"s":"Arunachal Pradesh","n":"Lohit","e":266378,"l":[543,402,595,2128,418,689,1027,752,1289,746,3003,3549,748,1297,1208,2091,2160,1175,934,1814,2904,1976,1516,2068,2344]},{"s":"Arunachal Pradesh","n":"Longding","e":78345,"l":[778,516,368,862,723,504,363,420,283,167,471,393,1137,1804,1788,1918,2434,1036,952,948,888,1051,730,372,308]},{"s":"Arunachal Pradesh","n":"Lower Dibang Valley","e":82643,"l":[311,412,494,987,447,911,672,728,862,250,784,1806,189,274,462,715,680,241,388,494,451,570,398,500,768]},{"s":"Arunachal Pradesh","n":"Namsai","e":17668,"l":[134,61,90,132,71,150,191,177,217,171,513,148,116,231,160,118,132,69,113,217,389,159,145,145,146]},{"s":"Arunachal Pradesh","n":"Tirap","e":100279,"l":[479,171,164,306,279,420,230,327,210,221,190,192,489,878,727,717,1001,482,428,561,575,453,401,300,283]},{"s":"Assam","n":"Baksa","e":50158,"l":[12,8,23,77,66,81,132,153,133,104,169,71,2,6,6,11,14,3,26,26,12,14,37,23,14]},{"s":"Assam","n":"Barpeta","e":10844,"l":[11,9,2,9,2,11,7,7,5,7,12,27,0,0,2,0,0,0,1,6,1,2,1,2,1]},{"s":"Assam","n":"Bongaigaon","e":15343,"l":[9,10,4,11,11,17,20,14,13,33,22,26,3,7,2,5,6,5,6,10,8,5,6,8,6]},{"s":"Assam","n":"Cachar","e":219197,"l":[218,153,211,236,151,353,315,540,534,293,345,612,341,590,484,778,711,628,539,878,747,792,1092,738,855]},{"s":"Assam","n":"Chirang","e":44423,"l":[8,4,4,46,21,44,40,45,51,60,43,72,1,5,2,11,21,4,10,13,36,29,57,33,13]},{"s":"Assam","n":"Darrang","e":7656,"l":[4,6,2,17,18,5,12,7,10,25,6,26,2,15,0,7,15,4,1,10,7,3,3,5,3]},{"s":"Assam","n":"Dhemaji","e":39030,"l":[70,47,63,175,154,92,119,181,91,110,167,196,22,64,65,90,53,27,29,96,88,131,81,94,151]},{"s":"Assam","n":"Dhubri","e":35918,"l":[133,494,5,43,504,331,728,739,152,255,569,268,45,282,46,109,37,138,86,84,92,160,158,221,113]},{"s":"Assam","n":"Dibrugarh","e":84744,"l":[156,156,276,390,271,355,325,656,435,427,744,646,138,343,246,349,409,228,177,337,176,232,162,217,206]},{"s":"Assam","n":"Dima Hasao","e":434941,"l":[931,959,635,1575,672,990,1371,1596,2198,1277,1966,3073,3287,7582,4812,9806,5872,4813,3752,6018,5807,6365,5199,4781,4576]},{"s":"Assam","n":"Goalpara","e":21348,"l":[32,24,6,46,48,74,79,93,42,98,142,112,33,42,13,8,9,15,11,17,8,11,26,14,13]},{"s":"Assam","n":"Golaghat","e":49848,"l":[85,82,56,137,217,166,251,273,296,224,381,524,72,193,41,76,51,85,52,74,106,84,217,97,112]},{"s":"Assam","n":"Hailakandi","e":68651,"l":[167,46,48,109,55,124,132,148,214,114,111,110,62,174,153,274,401,191,325,459,651,595,663,458,317]},{"s":"Assam","n":"Jorhat","e":49292,"l":[366,140,43,440,221,287,242,395,368,189,506,437,143,345,213,196,199,153,147,148,144,169,151,166,139]},{"s":"Assam","n":"Kamrup","e":96480,"l":[71,73,33,80,350,193,155,342,172,264,443,232,147,412,240,310,409,279,264,380,322,308,335,375,274]},{"s":"Assam","n":"Kamrup Metropolitan","e":28786,"l":[62,19,5,42,35,33,74,67,100,59,76,53,20,58,36,87,64,42,21,67,23,94,108,72,92]},{"s":"Assam","n":"Karbi Anglong","e":789948,"l":[1925,2664,1301,2695,2223,2792,2950,5239,5869,2535,4303,4800,3760,10359,5858,11437,8055,6808,4262,7591,7480,7026,7055,6175,7795]},{"s":"Assam","n":"Karimganj","e":74680,"l":[85,59,39,241,47,160,212,176,287,235,216,165,72,153,90,129,235,101,202,297,410,322,392,300,206]},{"s":"Assam","n":"Kokrajhar","e":109050,"l":[72,129,53,272,468,356,999,1672,984,1484,1139,674,146,418,55,105,123,159,530,556,1408,1276,581,902,733]},{"s":"Assam","n":"Lakhimpur","e":53192,"l":[79,92,87,119,139,101,103,233,153,142,222,226,86,190,160,140,149,83,79,145,125,140,182,149,235]},{"s":"Assam","n":"Morigaon","e":10518,"l":[8,9,2,30,6,14,40,39,21,23,12,27,1,3,1,10,3,1,2,4,2,2,12,7,4]},{"s":"Assam","n":"Nagaon","e":77487,"l":[323,405,712,1210,306,296,296,338,443,269,264,401,33,134,65,292,209,195,84,117,172,46,76,38,77]},{"s":"Assam","n":"Nalbari","e":11154,"l":[1,1,1,1,4,3,3,3,2,5,5,13,0,0,0,0,1,0,0,1,0,1,1,0,0]},{"s":"Assam","n":"Sivasagar","e":66061,"l":[278,126,91,303,239,364,113,450,349,259,550,277,141,357,180,247,227,224,116,157,238,248,170,212,239]},{"s":"Assam","n":"Sonitpur","e":98395,"l":[976,1864,1092,3136,696,790,1998,1072,1334,763,407,1811,95,162,160,266,156,209,148,218,181,175,319,119,222]},{"s":"Assam","n":"Tinsukia","e":170120,"l":[542,439,560,758,565,740,684,712,755,778,1256,1410,297,639,496,628,558,366,403,578,669,454,664,743,688]},{"s":"Assam","n":"Udalguri","e":32866,"l":[38,36,112,646,771,298,731,668,877,414,247,370,23,21,23,19,22,43,41,55,43,43,46,32,42]},{"s":"Bihar","n":"Araria","e":561,"l":[1,1,0,1,1,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Arwal","e":392,"l":[1,0,0,1,0,0,0,0,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Aurangabad","e":875,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Banka","e":51,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Begusarai","e":196,"l":[0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Bhagalpur","e":66,"l":[0,0,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Bhojpur","e":5464,"l":[17,1,0,1,1,3,3,1,22,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Buxar","e":2040,"l":[22,4,1,8,5,4,2,3,47,13,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Darbhanga","e":969,"l":[1,1,0,1,1,1,0,2,2,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Gaya","e":2110,"l":[0,0,0,0,0,0,0,1,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0]},{"s":"Bihar","n":"Gopalganj","e":175,"l":[0,1,0,1,0,1,1,2,1,1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Jamui","e":8862,"l":[0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Jehanabad","e":169,"l":[7,3,0,4,1,2,1,2,21,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Kaimur","e":4156,"l":[1,1,1,3,4,2,1,2,8,4,2,5,0,0,0,1,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Katihar","e":107,"l":[0,0,1,2,1,1,1,1,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Khagaria","e":67,"l":[0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Kishanganj","e":624,"l":[3,3,2,3,3,2,4,4,7,2,7,4,2,5,0,0,0,1,0,0,0,1,1,1,0]},{"s":"Bihar","n":"Lakhisarai","e":7420,"l":[0,2,0,11,1,1,8,2,2,2,0,1,1,0,0,0,0,0,2,0,0,0,0,0,0]},{"s":"Bihar","n":"Madhepura","e":64,"l":[0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Madhubani","e":3316,"l":[1,3,0,2,4,5,2,3,1,6,1,13,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Munger","e":13748,"l":[0,1,0,7,0,1,1,1,0,0,0,1,1,0,0,1,0,0,0,1,0,0,0,0,0]},{"s":"Bihar","n":"Muzaffarpur","e":437,"l":[0,0,0,1,0,2,0,3,2,2,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Nalanda","e":439,"l":[6,1,0,6,1,2,1,1,27,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Nawada","e":9253,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,0,10,1,6,18,5,2]},{"s":"Bihar","n":"Pashchim Champaran","e":80414,"l":[50,10,20,8,56,26,13,41,26,39,38,46,8,6,0,2,36,6,1,3,7,1,16,31,40]},{"s":"Bihar","n":"Patna","e":1515,"l":[14,0,0,3,4,2,1,3,22,4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Purba Champaran","e":710,"l":[2,1,0,0,1,1,1,0,2,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Purnia","e":128,"l":[0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Rohtas","e":6235,"l":[11,1,0,2,2,4,1,1,6,8,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Saharsa","e":153,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Samastipur","e":137,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Saran","e":223,"l":[0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Sheikhpura","e":9,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Sheohar","e":302,"l":[0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Sitamarhi","e":584,"l":[0,0,0,0,0,1,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Siwan","e":223,"l":[0,0,0,1,1,1,0,1,3,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Supaul","e":1517,"l":[3,2,1,1,14,5,4,10,50,10,11,8,0,0,0,2,0,0,0,0,0,0,0,0,0]},{"s":"Bihar","n":"Vaishali","e":132,"l":[0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Chandigarh","n":"Chandigarh","e":702,"l":[0,0,0,1,1,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]},{"s":"Chhattisgarh","n":"Balod","e":16920,"l":[3,1,1,3,0,4,1,2,1,0,1,8,6,4,4,0,3,0,3,3,2,0,3,3,1]},{"s":"Chhattisgarh","n":"Baloda Bazar","e":25143,"l":[66,17,10,63,23,3,12,10,4,94,40,61,4,1,9,0,1,2,1,1,1,1,3,2,2]},{"s":"Chhattisgarh","n":"Balrampur","e":115996,"l":[42,1,7,18,10,16,10,20,12,15,12,24,3,5,0,2,6,2,4,1,6,4,8,8,97]},{"s":"Chhattisgarh","n":"Bastar","e":130358,"l":[45,113,107,139,224,140,247,322,257,155,423,199,38,139,79,291,145,256,191,158,192,342,188,322,234]},{"s":"Chhattisgarh","n":"Bemetara","e":44,"l":[2,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Chhattisgarh","n":"Bijapur","e":540836,"l":[221,185,197,177,150,265,242,243,164,87,549,246,182,180,153,226,168,290,260,177,270,266,682,637,517]},{"s":"Chhattisgarh","n":"Bilaspur","e":52822,"l":[171,18,15,96,28,59,47,51,14,95,107,80,28,3,4,3,6,0,1,2,0,0,10,3,8]},{"s":"Chhattisgarh","n":"Dantewada","e":88405,"l":[17,134,53,51,79,76,126,75,164,60,83,67,70,125,96,356,136,379,406,153,359,301,208,570,364]},{"s":"Chhattisgarh","n":"Dhamtari","e":84698,"l":[27,23,13,71,44,37,40,37,18,41,118,71,15,3,2,2,15,11,18,8,2,2,28,2,10]},{"s":"Chhattisgarh","n":"Durg","e":30,"l":[1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Chhattisgarh","n":"Gariaband","e":110487,"l":[126,87,24,191,109,77,153,187,66,157,517,320,47,47,10,9,61,30,34,23,3,8,30,10,20]},{"s":"Chhattisgarh","n":"Janjgir-Champa","e":812,"l":[36,2,1,2,3,4,2,7,1,9,2,3,0,0,0,0,0,0,0,0,0,0,1,0,0]},{"s":"Chhattisgarh","n":"Jashpur","e":73535,"l":[17,1,3,3,1,12,1,4,10,2,4,4,5,9,3,1,5,2,4,6,3,1,12,4,10]},{"s":"Chhattisgarh","n":"Kabeerdham","e":68989,"l":[27,5,16,41,98,94,73,84,82,26,158,12,7,23,9,9,24,4,8,8,7,2,6,10,11]},{"s":"Chhattisgarh","n":"Kondagaon","e":101270,"l":[401,281,14,139,509,473,138,95,21,133,2036,512,18,47,32,13,15,22,47,62,11,14,69,69,126]},{"s":"Chhattisgarh","n":"Korba","e":134283,"l":[118,6,6,34,22,29,26,67,24,53,68,124,5,6,18,11,40,1,25,13,6,1,4,13,10]},{"s":"Chhattisgarh","n":"Koriya","e":115888,"l":[9,0,2,2,9,5,8,11,5,5,16,11,1,1,2,0,0,0,0,0,0,0,1,1,2]},{"s":"Chhattisgarh","n":"Mahasamund","e":7215,"l":[26,15,8,14,17,5,5,9,2,41,34,50,1,0,0,0,0,0,0,0,0,0,0,0,1]},{"s":"Chhattisgarh","n":"Mungeli","e":74732,"l":[9,3,9,36,58,18,22,20,52,32,84,38,16,3,0,4,2,0,0,2,0,0,6,7,7]},{"s":"Chhattisgarh","n":"Narayanpur","e":271260,"l":[151,480,229,184,360,143,377,123,547,98,494,344,843,706,896,1300,1029,1332,1164,402,715,1225,1386,1398,1174]},{"s":"Chhattisgarh","n":"Raigarh","e":55534,"l":[203,8,43,50,13,25,35,21,38,13,59,49,2,4,0,0,1,5,0,1,1,2,4,10,5]},{"s":"Chhattisgarh","n":"Raipur","e":370,"l":[2,1,0,1,1,0,0,3,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Chhattisgarh","n":"Rajnandgaon","e":113119,"l":[370,217,245,232,164,276,69,119,128,32,361,156,104,196,52,47,14,59,15,33,7,22,79,44,55]},{"s":"Chhattisgarh","n":"Sukma","e":150881,"l":[56,228,110,123,124,136,189,131,96,52,313,156,28,61,31,106,65,80,49,44,48,71,177,144,147]},{"s":"Chhattisgarh","n":"Surajpur","e":70867,"l":[5,1,1,7,4,19,9,12,7,17,12,23,6,1,0,0,13,0,0,0,1,0,0,1,12]},{"s":"Chhattisgarh","n":"Surguja","e":51150,"l":[8,1,3,8,4,11,8,16,13,14,19,40,9,1,1,15,8,1,2,5,10,0,28,75,70]},{"s":"Chhattisgarh","n":"Uttar Bastar Kanker","e":207926,"l":[464,203,171,597,362,466,256,261,423,113,1567,749,85,162,74,138,104,174,128,87,54,65,255,203,175]},{"s":"Dadra and Nagar Haveli","n":"Dadra and Nagar Haveli","e":457,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Daman and Diu","n":"Daman","e":17,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Daman and Diu","n":"Diu","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Goa","n":"North Goa","e":41915,"l":[0,1,2,0,12,5,3,9,3,4,11,10,3,5,1,13,17,17,24,35,20,18,46,22,14]},{"s":"Goa","n":"South Goa","e":104551,"l":[6,4,8,13,27,24,52,61,59,1,102,24,15,20,11,68,43,34,18,25,8,6,32,13,21]},{"s":"Gujarat","n":"Ahmadabad","e":60,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Amreli","e":5,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Anand","e":46,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Aravalli","e":10,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Banas Kantha","e":121,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Bharuch","e":105,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Bhavnagar","e":95,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Botad","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Chhota Udaipur","e":52,"l":[0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Dahod","e":310,"l":[3,0,0,0,1,0,4,10,2,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Devbhumi Dwarka","e":17,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Gandhinagar","e":1,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Gir Somnath","e":15,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Jamnagar","e":34,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Junagadh","e":487,"l":[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Kachchh","e":33,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Kheda","e":30,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Mahesana","e":2,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Mahisagar","e":11,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Morbi","e":12,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Narmada","e":2533,"l":[2,0,1,0,1,2,1,3,3,1,5,8,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Navsari","e":1297,"l":[0,0,0,0,0,0,0,0,0,0,0,1,0,5,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Panch Mahals","e":27,"l":[0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Patan","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Porbandar","e":39,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Rajkot","e":17,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Sabar Kantha","e":132,"l":[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Surat","e":623,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Surendranagar","e":180,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Tapi","e":1563,"l":[1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"The Dangs","e":8716,"l":[1,0,0,2,2,1,1,4,2,1,3,4,3,1,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Vadodara","e":9,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Gujarat","n":"Valsad","e":1346,"l":[0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,0]},{"s":"Haryana","n":"Ambala","e":1380,"l":[2,4,6,6,4,8,13,4,5,5,5,5,1,0,0,0,0,0,0,0,0,0,1,1,1]},{"s":"Haryana","n":"Bhiwani","e":56,"l":[1,0,0,2,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Faridabad","e":80,"l":[0,1,0,3,0,0,2,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Fatehabad","e":13,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Gurgaon","e":169,"l":[1,0,0,1,3,7,0,2,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Hisar","e":68,"l":[2,0,0,0,0,2,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Jhajjar","e":135,"l":[4,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Jind","e":248,"l":[1,0,2,0,0,0,2,0,5,1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Kaithal","e":1056,"l":[3,1,0,1,0,4,1,0,5,2,0,9,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Karnal","e":21,"l":[0,0,0,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Kurukshetra","e":445,"l":[2,3,1,1,3,1,3,1,3,1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Mahendragarh","e":8,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Mewat","e":104,"l":[0,0,0,0,1,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Palwal","e":89,"l":[0,0,0,2,0,0,2,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Panchkula","e":27505,"l":[5,3,2,28,7,11,9,10,26,21,9,21,1,1,0,1,0,0,6,1,1,1,6,9,10]},{"s":"Haryana","n":"Panipat","e":60,"l":[0,0,0,0,0,0,1,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Rewari","e":47,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0]},{"s":"Haryana","n":"Rohtak","e":79,"l":[1,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Sirsa","e":4,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Sonipat","e":63,"l":[1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Haryana","n":"Yamunanagar","e":11018,"l":[1,3,3,4,5,4,6,4,3,5,1,3,0,0,0,0,0,0,0,1,0,0,4,1,2]},{"s":"Himachal Pradesh","n":"Bilaspur","e":34773,"l":[0,1,1,23,17,1,7,4,2,2,1,4,3,7,0,0,0,0,8,2,2,2,6,7,7]},{"s":"Himachal Pradesh","n":"Chamba","e":170242,"l":[40,135,6,40,68,25,32,31,28,21,8,91,4,2,0,0,39,25,21,3,4,10,11,4,16]},{"s":"Himachal Pradesh","n":"Hamirpur","e":49052,"l":[1,1,1,21,7,3,7,5,5,5,1,18,2,1,0,0,0,0,7,0,6,12,14,56,9]},{"s":"Himachal Pradesh","n":"Kangra","e":231326,"l":[77,40,10,77,65,38,54,36,63,47,6,216,14,21,3,1,2,36,26,23,48,61,113,129,120]},{"s":"Himachal Pradesh","n":"Kinnaur","e":27942,"l":[3,17,1,10,6,2,13,3,1,12,1,1,0,0,0,0,0,0,0,0,0,0,0,1,2]},{"s":"Himachal Pradesh","n":"Kullu","e":151529,"l":[163,30,50,179,31,43,52,80,58,60,10,182,4,2,0,2,23,42,42,5,23,55,29,10,55]},{"s":"Himachal Pradesh","n":"Lahul & Spiti","e":2605,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Himachal Pradesh","n":"Mandi","e":172546,"l":[19,5,5,116,24,12,21,22,63,16,6,94,7,1,0,1,0,29,20,8,16,27,41,27,61]},{"s":"Himachal Pradesh","n":"Shimla","e":216913,"l":[18,84,5,91,42,24,116,18,89,18,7,25,3,1,0,0,1,16,9,4,2,10,6,26,21]},{"s":"Himachal Pradesh","n":"Sirmaur","e":163101,"l":[8,16,3,59,25,28,20,26,70,17,6,44,7,5,0,1,2,12,9,16,5,7,22,49,60]},{"s":"Himachal Pradesh","n":"Solan","e":92485,"l":[4,6,4,77,32,19,26,17,41,13,4,20,10,2,0,1,0,4,13,6,8,4,19,51,61]},{"s":"Himachal Pradesh","n":"Una","e":54588,"l":[11,3,4,24,14,9,9,14,10,8,4,23,11,13,9,8,18,12,7,4,9,13,47,84,112]},{"s":"Jharkhand","n":"Bokaro","e":10615,"l":[1,0,0,1,0,0,0,1,0,1,5,1,1,0,0,2,0,0,0,0,0,0,0,0,1]},{"s":"Jharkhand","n":"Chatra","e":35924,"l":[7,2,1,7,11,5,3,12,3,8,0,27,3,3,1,5,8,2,2,3,2,3,11,15,11]},{"s":"Jharkhand","n":"Deoghar","e":59,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,0,0,0,0,0,0,0]},{"s":"Jharkhand","n":"Dhanbad","e":674,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Jharkhand","n":"Dumka","e":3146,"l":[123,2,0,13,30,21,20,5,121,6,9,4,3,9,1,0,2,2,2,2,5,1,2,2,2]},{"s":"Jharkhand","n":"Garhwa","e":29720,"l":[3,1,1,2,3,3,2,5,1,4,2,5,5,0,0,1,0,0,0,0,0,0,0,0,0]},{"s":"Jharkhand","n":"Giridih","e":8971,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,6,2,0,1,0,1,1,0]},{"s":"Jharkhand","n":"Godda","e":4067,"l":[227,4,1,9,99,109,38,23,220,64,49,16,6,22,3,0,3,2,7,8,12,5,1,3,2]},{"s":"Jharkhand","n":"Gumla","e":58922,"l":[19,1,2,10,1,30,1,4,13,3,8,8,2,2,5,1,1,1,4,2,1,1,1,1,1]},{"s":"Jharkhand","n":"Hazaribagh","e":41777,"l":[1,2,1,5,3,11,2,3,11,31,4,14,10,10,1,2,2,3,9,4,1,0,5,2,4]},{"s":"Jharkhand","n":"Jamtara","e":8,"l":[2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Jharkhand","n":"Khunti","e":15381,"l":[0,2,1,1,1,2,2,3,3,4,1,1,1,1,1,0,7,2,5,2,1,1,1,2,2]},{"s":"Jharkhand","n":"Kodarma","e":18562,"l":[0,2,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,2,4,2,0,0,1,3,0]},{"s":"Jharkhand","n":"Latehar","e":102907,"l":[32,6,5,17,23,26,38,49,16,42,11,69,7,9,2,4,2,6,2,3,2,1,10,4,24]},{"s":"Jharkhand","n":"Lohardaga","e":25424,"l":[63,1,3,30,2,100,4,16,28,7,15,7,7,5,3,1,5,2,4,9,4,1,3,2,3]},{"s":"Jharkhand","n":"Pakur","e":1630,"l":[67,5,2,3,35,53,19,5,96,22,10,10,1,7,0,0,0,1,1,2,2,1,1,0,0]},{"s":"Jharkhand","n":"Palamu","e":18227,"l":[2,1,0,2,2,1,2,2,1,3,1,6,3,2,0,0,0,0,0,0,0,0,2,5,2]},{"s":"Jharkhand","n":"Pashchimi Singhbhum","e":133283,"l":[51,54,19,74,49,77,87,195,194,155,50,148,77,53,68,145,262,124,114,156,86,65,311,247,146]},{"s":"Jharkhand","n":"Purbi Singhbhum","e":9110,"l":[7,2,1,3,2,5,1,5,2,3,4,4,0,0,0,0,0,1,0,0,0,0,0,1,1]},{"s":"Jharkhand","n":"Ramgarh","e":5646,"l":[0,0,0,0,0,1,0,2,5,2,1,1,0,0,0,0,1,1,0,0,0,0,0,1,1]},{"s":"Jharkhand","n":"Ranchi","e":9234,"l":[1,0,0,0,1,0,1,4,1,2,2,2,0,1,1,3,5,2,7,4,0,0,1,2,1]},{"s":"Jharkhand","n":"Sahibganj","e":3225,"l":[35,3,4,3,24,29,16,7,124,22,16,6,5,15,2,0,0,1,2,2,3,0,1,6,12]},{"s":"Jharkhand","n":"Saraikela-kharsawan","e":8165,"l":[0,3,0,1,0,2,1,4,2,1,0,1,0,0,0,1,3,2,3,2,0,1,2,2,4]},{"s":"Jharkhand","n":"Simdega","e":11654,"l":[0,0,0,0,0,0,0,1,1,1,0,1,0,0,0,0,0,0,0,0,0,0,4,1,0]},{"s":"Karnataka","n":"Bagalkot","e":105,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Bangalore","e":162,"l":[0,0,0,0,2,1,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Bangalore Rural","e":137,"l":[0,1,1,0,0,0,0,0,7,0,1,3,0,0,0,0,1,0,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Belgaum","e":49040,"l":[1,0,2,2,22,2,1,1,2,0,6,3,7,8,25,43,10,11,22,27,7,4,15,6,7]},{"s":"Karnataka","n":"Bellary","e":1836,"l":[0,0,0,3,1,1,6,5,2,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,1]},{"s":"Karnataka","n":"Bidar","e":52,"l":[1,2,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Bijapur","e":53,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Chamrajnagar","e":116045,"l":[4,3,6,6,4,10,11,3,1,0,13,9,3,7,1,1,4,9,13,3,4,6,9,13,10]},{"s":"Karnataka","n":"Chikballapura","e":1462,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0]},{"s":"Karnataka","n":"Chikmagalur","e":323327,"l":[239,271,264,299,245,147,538,340,290,184,85,410,218,263,176,471,396,385,329,401,269,249,793,446,621]},{"s":"Karnataka","n":"Chitradurga","e":416,"l":[0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]},{"s":"Karnataka","n":"Dakshina Kannada","e":281112,"l":[273,179,163,294,328,214,949,638,568,325,299,809,541,510,338,1109,955,1072,582,642,816,1046,1458,876,870]},{"s":"Karnataka","n":"Davanagere","e":6521,"l":[42,0,17,4,2,5,19,9,20,0,0,10,1,0,0,0,1,0,0,0,0,0,0,1,1]},{"s":"Karnataka","n":"Dharwad","e":464,"l":[0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Gadag","e":15,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Gulbarga","e":48,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Hassan","e":84418,"l":[561,147,175,167,264,86,547,289,327,99,37,172,77,154,123,251,198,345,269,331,181,205,360,347,331]},{"s":"Karnataka","n":"Haveri","e":587,"l":[1,1,2,1,1,7,1,5,0,0,2,0,0,7,0,4,0,0,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Kodagu","e":308609,"l":[145,53,249,143,170,68,368,262,329,105,60,196,131,221,72,175,160,666,284,252,170,195,479,346,463]},{"s":"Karnataka","n":"Kolar","e":344,"l":[3,2,3,1,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Koppal","e":14,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Mandya","e":774,"l":[1,0,2,2,1,3,1,1,0,1,1,8,0,0,0,0,0,0,0,0,0,0,1,0,0]},{"s":"Karnataka","n":"Mysore","e":70536,"l":[22,2,32,9,3,32,26,61,7,1,12,11,16,6,1,1,6,1,1,0,2,3,19,6,8]},{"s":"Karnataka","n":"Raichur","e":61,"l":[0,0,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Ramanagara","e":2928,"l":[0,0,1,2,1,1,0,0,0,0,1,6,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Shimoga","e":212771,"l":[340,195,154,288,732,269,1152,489,268,88,378,393,301,333,100,271,235,233,210,267,236,241,366,151,204]},{"s":"Karnataka","n":"Tumkur","e":1426,"l":[0,0,0,2,0,2,1,0,2,0,3,1,0,0,0,0,0,1,0,0,0,0,0,0,0]},{"s":"Karnataka","n":"Udupi","e":180567,"l":[65,83,90,85,240,205,352,241,283,94,692,439,589,503,527,740,857,665,482,373,584,802,1253,877,907]},{"s":"Karnataka","n":"Uttara Kannada","e":632365,"l":[51,66,63,70,230,74,173,109,174,0,153,73,234,216,117,245,236,149,218,322,268,234,266,178,124]},{"s":"Karnataka","n":"Yadgir","e":10,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Kerala","n":"Alappuzha","e":51188,"l":[5,8,8,14,8,8,28,29,8,1,79,36,13,11,4,43,36,17,24,26,22,15,48,51,53]},{"s":"Kerala","n":"Ernakulam","e":142323,"l":[26,48,62,117,169,232,333,168,56,3,610,282,273,211,156,633,1004,478,487,617,429,485,938,1155,891]},{"s":"Kerala","n":"Idukki","e":422964,"l":[191,215,805,423,158,459,528,452,62,5,891,863,475,667,551,728,910,914,898,763,572,791,1107,1301,1173]},{"s":"Kerala","n":"Kannur","e":220056,"l":[61,112,77,101,168,109,611,456,139,109,211,219,189,341,108,557,278,416,309,323,284,441,1241,647,748]},{"s":"Kerala","n":"Kasaragod","e":107422,"l":[148,77,23,79,120,88,454,365,207,54,57,179,84,102,44,214,159,116,128,176,118,195,579,346,415]},{"s":"Kerala","n":"Kollam","e":193294,"l":[80,225,184,233,124,73,258,296,71,3,545,403,387,745,663,1015,1348,597,970,918,803,751,1167,1069,908]},{"s":"Kerala","n":"Kottayam","e":158915,"l":[18,46,108,109,54,175,207,88,46,3,391,209,94,166,140,710,1313,652,659,750,497,811,1314,1317,1517]},{"s":"Kerala","n":"Kozhikode","e":161134,"l":[14,26,19,13,52,18,190,90,29,4,73,95,75,69,15,209,222,210,97,140,142,231,395,220,256]},{"s":"Kerala","n":"Malappuram","e":174081,"l":[7,20,18,44,50,80,375,180,29,1,249,170,238,238,80,600,811,701,1142,687,350,623,923,625,627]},{"s":"Kerala","n":"Palakkad","e":216046,"l":[18,44,72,60,106,92,245,157,67,0,294,200,255,276,196,525,482,721,771,678,566,562,1145,904,830]},{"s":"Kerala","n":"Pathanamthitta","e":235819,"l":[117,63,223,140,127,220,323,158,73,4,370,283,168,317,160,475,943,374,884,763,559,534,1077,1002,1030]},{"s":"Kerala","n":"Thiruvananthapuram","e":153498,"l":[23,77,90,142,176,191,265,326,119,12,630,388,293,310,383,829,1547,427,432,369,533,586,907,660,640]},{"s":"Kerala","n":"Thrissur","e":191935,"l":[15,53,47,53,62,89,158,141,81,0,331,314,166,246,166,472,484,361,404,451,285,249,558,422,532]},{"s":"Kerala","n":"Wayanad","e":169547,"l":[22,17,43,54,86,52,368,169,59,5,178,145,90,123,44,177,185,290,213,189,139,193,975,485,553]},{"s":"Lakshadweep","n":"Lakshadweep","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Agar Malwa","e":11,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Alirajpur","e":526,"l":[5,2,0,13,0,0,0,5,3,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Anuppur","e":5151,"l":[0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0]},{"s":"Madhya Pradesh","n":"Ashoknagar","e":353,"l":[1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Balaghat","e":318153,"l":[175,123,152,221,283,287,205,248,309,149,446,154,245,296,179,253,176,167,19,82,13,46,90,93,124]},{"s":"Madhya Pradesh","n":"Barwani","e":191,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Betul","e":44620,"l":[42,13,8,47,32,120,19,18,7,4,2,2,7,2,0,0,0,1,1,0,0,0,8,4,3]},{"s":"Madhya Pradesh","n":"Bhind","e":37,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Bhopal","e":411,"l":[7,1,0,0,0,1,1,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Burhanpur","e":304,"l":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Chhatarpur","e":9432,"l":[0,0,0,0,1,1,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1]},{"s":"Madhya Pradesh","n":"Chhindwara","e":47597,"l":[32,9,2,3,4,8,6,8,8,1,4,8,6,7,0,2,1,5,3,3,1,0,7,2,4]},{"s":"Madhya Pradesh","n":"Damoh","e":4141,"l":[2,2,0,1,3,2,0,1,5,0,3,5,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Datia","e":13,"l":[0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Dewas","e":683,"l":[2,1,0,3,1,3,0,1,3,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Dhar","e":45,"l":[2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Dindori","e":165015,"l":[28,1,8,10,83,24,11,6,11,2,126,6,4,5,6,12,7,33,37,158,8,1,10,18,19]},{"s":"Madhya Pradesh","n":"East Nimar","e":2848,"l":[2,2,6,6,1,9,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Guna","e":209,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Gwalior","e":63,"l":[0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Harda","e":2518,"l":[2,0,0,1,0,2,1,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Hoshangabad","e":79044,"l":[5,0,2,2,2,4,2,5,4,6,8,5,17,8,0,1,0,11,1,0,0,0,14,2,3]},{"s":"Madhya Pradesh","n":"Indore","e":572,"l":[5,0,0,0,0,0,0,5,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Jabalpur","e":8857,"l":[71,74,41,58,33,25,29,13,7,0,9,11,0,0,0,0,1,0,0,0,0,0,2,1,1]},{"s":"Madhya Pradesh","n":"Jhabua","e":9,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Katni","e":20446,"l":[27,30,17,21,75,21,11,25,32,9,11,11,0,3,18,1,10,1,1,4,0,1,1,3,5]},{"s":"Madhya Pradesh","n":"Mandla","e":93818,"l":[24,21,22,13,19,25,24,27,9,6,37,33,16,18,3,0,0,1,24,32,3,18,27,33,24]},{"s":"Madhya Pradesh","n":"Mandsaur","e":66,"l":[2,0,0,1,0,0,0,1,0,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Morena","e":60,"l":[0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Narsimhapur","e":17516,"l":[20,6,2,4,4,13,2,2,10,0,1,7,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Neemuch","e":39,"l":[0,1,0,1,0,0,1,0,1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Panna","e":11942,"l":[0,2,1,0,2,1,0,1,1,0,4,1,0,0,0,0,0,0,0,0,0,0,1,1,0]},{"s":"Madhya Pradesh","n":"Raisen","e":17064,"l":[19,7,5,2,10,9,10,7,3,4,0,4,0,1,0,0,0,0,0,0,0,0,0,1,0]},{"s":"Madhya Pradesh","n":"Rajgarh","e":44,"l":[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Ratlam","e":33,"l":[0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Rewa","e":2701,"l":[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Sagar","e":8268,"l":[7,2,1,1,8,19,4,6,25,3,4,7,0,0,0,0,0,0,0,0,0,0,0,0,2]},{"s":"Madhya Pradesh","n":"Satna","e":10327,"l":[1,2,0,3,2,1,0,2,2,2,22,5,1,1,0,0,0,0,0,0,0,0,1,0,0]},{"s":"Madhya Pradesh","n":"Sehore","e":4726,"l":[1,0,0,0,0,2,1,1,2,1,1,1,0,2,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Seoni","e":60198,"l":[80,44,46,67,38,227,98,64,11,0,74,58,46,38,46,62,18,36,0,7,0,6,14,19,15]},{"s":"Madhya Pradesh","n":"Shahdol","e":36033,"l":[2,2,1,0,5,1,4,13,6,2,7,3,0,0,2,1,5,2,0,0,1,1,19,1,5]},{"s":"Madhya Pradesh","n":"Shajapur","e":38,"l":[0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Sheopur","e":400,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Shivpuri","e":407,"l":[0,1,2,5,6,15,0,2,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Sidhi","e":43221,"l":[8,0,0,0,5,2,5,2,1,0,5,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Singrauli","e":24183,"l":[0,0,0,0,2,0,4,1,4,1,0,5,8,8,9,25,3,1,0,0,0,0,5,0,26]},{"s":"Madhya Pradesh","n":"Tikamgarh","e":22,"l":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Ujjain","e":73,"l":[6,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"Umaria","e":32574,"l":[39,35,23,38,77,13,83,86,32,7,26,66,21,43,8,30,53,13,0,1,0,1,3,7,1]},{"s":"Madhya Pradesh","n":"Vidisha","e":2580,"l":[9,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Madhya Pradesh","n":"West Nimar","e":504,"l":[0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Ahmadnagar","e":2155,"l":[0,0,0,1,0,1,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Akola","e":121,"l":[4,1,0,0,1,0,1,2,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Amravati","e":37188,"l":[149,28,8,10,18,6,20,26,53,13,23,21,2,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Aurangabad","e":139,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Bhandara","e":29630,"l":[33,45,38,249,31,65,23,25,35,61,130,79,25,82,30,25,2,5,12,5,20,17,39,58,17]},{"s":"Maharashtra","n":"Bid","e":18,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Buldana","e":562,"l":[1,0,0,0,0,1,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Chandrapur","e":38431,"l":[12,167,156,473,173,314,185,285,346,70,263,128,61,99,60,75,107,48,25,15,0,6,3,9,17]},{"s":"Maharashtra","n":"Dhule","e":292,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Garhchiroli","e":565777,"l":[564,298,254,637,519,329,473,421,775,150,1182,733,232,425,239,309,329,294,567,397,239,496,1042,896,563]},{"s":"Maharashtra","n":"Gondiya","e":77177,"l":[27,63,4,63,9,15,8,28,217,55,137,47,33,12,6,22,34,64,89,33,39,27,66,103,95]},{"s":"Maharashtra","n":"Hingoli","e":51,"l":[4,0,0,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Jalgaon","e":1357,"l":[8,1,3,1,1,4,0,1,6,1,8,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Jalna","e":9,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Kolhapur","e":64263,"l":[0,4,1,6,34,3,5,11,4,3,48,11,8,7,2,6,13,35,7,12,14,28,56,53,33]},{"s":"Maharashtra","n":"Latur","e":84,"l":[4,2,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Mumbai City","e":2,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Mumbai Suburban","e":913,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Nagpur","e":17895,"l":[59,50,37,46,17,18,11,24,27,5,21,37,0,2,0,0,25,5,17,2,0,8,19,39,4]},{"s":"Maharashtra","n":"Nanded","e":2209,"l":[14,3,2,6,1,1,2,4,4,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Nandurbar","e":1224,"l":[9,0,0,2,1,2,1,1,7,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Nashik","e":2521,"l":[1,1,0,1,1,1,1,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Osmanabad","e":31,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Palghar","e":12058,"l":[2,0,2,1,8,8,1,0,0,0,1,0,0,1,0,0,0,0,1,2,2,0,3,1,2]},{"s":"Maharashtra","n":"Parbhani","e":56,"l":[2,1,2,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Pune","e":20505,"l":[5,1,1,3,2,6,1,5,0,1,0,0,0,1,0,44,23,2,7,10,6,3,7,9,3]},{"s":"Maharashtra","n":"Raigarh","e":28536,"l":[6,2,1,4,5,3,1,3,2,2,1,1,5,6,0,4,1,1,4,5,7,4,11,7,5]},{"s":"Maharashtra","n":"Ratnagiri","e":33833,"l":[1,2,0,1,3,1,1,3,3,3,2,4,5,4,0,12,7,12,21,9,7,8,15,12,24]},{"s":"Maharashtra","n":"Sangli","e":4437,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,1,0,0,0]},{"s":"Maharashtra","n":"Satara","e":27561,"l":[0,1,0,1,1,1,2,2,2,2,1,1,1,1,0,2,1,1,2,2,9,9,1,0,1]},{"s":"Maharashtra","n":"Sindhudurg","e":96181,"l":[4,9,5,18,54,23,101,90,87,51,186,144,92,187,57,385,259,338,274,184,138,132,236,146,157]},{"s":"Maharashtra","n":"Solapur","e":67,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Thane","e":6042,"l":[2,0,0,1,1,1,0,1,1,0,0,0,0,0,0,1,4,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Wardha","e":578,"l":[22,3,1,3,3,3,4,4,8,2,8,4,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Washim","e":104,"l":[6,2,1,2,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Maharashtra","n":"Yavatmal","e":1395,"l":[14,4,2,14,3,2,2,4,18,1,7,5,0,0,0,0,0,0,0,0,0,0,1,0,0]},{"s":"Manipur","n":"Bishnupur","e":1740,"l":[2,10,21,23,2,16,2,5,6,5,16,10,3,9,12,11,13,14,9,5,3,7,7,6,4]},{"s":"Manipur","n":"Chandel","e":269517,"l":[759,834,1108,790,853,1104,823,1212,1485,729,1187,1534,2381,3289,3767,4531,2763,1935,2037,2074,2506,1656,1935,2745,1937]},{"s":"Manipur","n":"Churachandpur","e":405635,"l":[1219,1157,988,1481,1136,1330,979,1223,1325,1158,1672,2568,4051,4862,4353,6751,7140,5355,4730,4935,6001,4435,4339,4639,4357]},{"s":"Manipur","n":"Imphal East","e":18726,"l":[32,11,22,22,44,55,37,60,61,44,48,96,97,152,133,230,244,136,128,140,115,106,196,94,121]},{"s":"Manipur","n":"Imphal West","e":4009,"l":[4,7,1,7,9,9,16,8,17,9,29,49,43,51,48,84,55,48,47,25,28,19,34,24,21]},{"s":"Manipur","n":"Senapati","e":241261,"l":[310,224,331,497,490,370,468,812,659,603,749,655,827,1370,1265,1562,1379,1200,1606,1711,1432,988,1186,1041,1755]},{"s":"Manipur","n":"Tamenglong","e":386377,"l":[1061,999,997,887,1102,938,903,1332,989,892,1302,2069,2565,3362,3286,5006,4986,3922,3119,4178,3855,3595,3961,4160,4245]},{"s":"Manipur","n":"Thoubal","e":6569,"l":[24,17,64,49,5,57,19,31,51,15,55,63,56,112,88,91,46,53,74,57,85,58,79,70,44]},{"s":"Manipur","n":"Ukhrul","e":369843,"l":[922,980,1297,1496,1218,1476,1029,1202,1586,875,1231,1753,2409,3384,2716,3482,3125,2262,2527,2900,3065,1853,2367,2573,2187]},{"s":"Meghalaya","n":"East Garo Hills","e":179465,"l":[616,652,277,652,841,698,623,901,549,774,877,701,944,2325,2142,2552,3124,1975,1757,1486,1272,1071,1035,844,576]},{"s":"Meghalaya","n":"East Khasi Hills","e":179568,"l":[378,239,110,554,307,396,767,402,403,359,388,297,379,785,698,991,895,632,633,599,515,658,763,600,825]},{"s":"Meghalaya","n":"Jaintia Hills","e":272721,"l":[805,607,550,1073,428,695,1208,982,1391,1020,723,995,1688,2917,3125,4305,4198,2238,2048,2498,2152,2249,2162,1758,2189]},{"s":"Meghalaya","n":"North Garo Hills","e":40203,"l":[89,71,29,96,60,135,112,229,131,246,194,161,38,181,143,160,248,159,120,120,80,99,65,106,39]},{"s":"Meghalaya","n":"Ri Bhoi","e":190726,"l":[419,282,326,588,338,438,689,744,595,637,654,668,536,1707,1306,2492,2804,1919,1590,2040,1478,1555,1925,1918,1554]},{"s":"Meghalaya","n":"South Garo Hills","e":162995,"l":[481,332,187,544,435,613,717,537,343,466,506,416,757,1604,2102,1714,2279,1249,1209,1039,854,916,592,629,514]},{"s":"Meghalaya","n":"South West Garo Hills","e":24713,"l":[30,37,3,12,61,16,72,33,20,32,20,45,36,198,57,98,83,34,47,34,54,33,67,90,34]},{"s":"Meghalaya","n":"South West Khasi Hills","e":101166,"l":[495,369,153,328,360,439,355,359,207,425,351,258,358,572,730,683,785,610,581,516,555,515,534,470,401]},{"s":"Meghalaya","n":"West Garo Hills","e":219604,"l":[648,595,163,463,526,561,633,624,457,746,574,1011,1612,4860,3233,3673,3940,2450,1995,1455,1172,974,995,830,488]},{"s":"Meghalaya","n":"West Khasi Hills","e":312729,"l":[667,504,437,1487,964,1282,1474,2482,1088,1927,1413,1323,2083,3951,3811,4777,5057,3677,3420,3922,3235,3769,4865,4222,3620]},{"s":"Mizoram","n":"Aizawl","e":318686,"l":[566,532,608,652,702,713,420,613,783,422,443,1358,2256,3191,3689,6339,7027,4220,3445,4088,4532,3127,2467,2567,1892]},{"s":"Mizoram","n":"Champhai","e":298622,"l":[2770,2603,2060,2556,2831,1502,387,1914,1697,1385,1473,2466,3570,5273,5408,7637,7346,5505,4121,5072,3671,3431,3882,4230,3090]},{"s":"Mizoram","n":"Kolasib","e":125638,"l":[162,93,134,175,93,198,152,131,244,134,117,194,239,459,446,1024,2846,609,579,800,1192,1088,966,770,763]},{"s":"Mizoram","n":"Lawangtlai","e":176553,"l":[184,108,125,193,136,130,37,194,214,99,297,475,581,1630,2442,3782,5408,2770,3498,3091,3750,2083,2296,2672,2699]},{"s":"Mizoram","n":"Lunglei","e":422561,"l":[284,341,290,414,360,480,93,276,479,308,322,842,1602,3412,4621,6972,8490,5436,5517,5454,7497,4518,4219,5669,4931]},{"s":"Mizoram","n":"Mamit","e":293143,"l":[363,195,197,380,240,423,575,255,475,308,229,395,627,1781,2399,3470,4396,2537,3282,2552,3036,2363,2421,2531,2204]},{"s":"Mizoram","n":"Saiha","e":179643,"l":[98,150,172,295,180,153,0,238,237,150,215,338,517,732,1291,1654,2307,1793,1178,1348,1677,1231,1383,1507,1476]},{"s":"Mizoram","n":"Serchhip","e":117115,"l":[528,443,305,406,348,196,17,210,242,191,253,744,935,1281,1813,2728,3172,1881,1475,1655,1919,1257,1364,1809,1471]},{"s":"NCT of Delhi","n":"West","e":263,"l":[0,0,0,1,1,1,3,3,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Nagaland","n":"Dimapur","e":48009,"l":[69,124,70,112,133,86,91,173,255,157,215,267,123,460,281,466,448,300,155,369,400,332,403,421,434]},{"s":"Nagaland","n":"Kiphire","e":76885,"l":[633,732,348,454,461,264,262,375,346,229,276,721,920,1389,1402,2044,1629,940,1078,1016,1010,667,464,410,407]},{"s":"Nagaland","n":"Kohima","e":113206,"l":[338,229,239,365,344,280,349,285,433,246,362,485,452,842,866,885,981,613,516,691,713,608,712,514,536]},{"s":"Nagaland","n":"Longleng","e":46310,"l":[1265,611,656,1159,876,650,319,336,300,245,387,476,384,636,575,818,1017,683,409,888,509,433,428,392,281]},{"s":"Nagaland","n":"Mokokchung","e":135765,"l":[2901,1015,1715,1843,1593,1195,994,935,1034,592,831,1110,731,1154,768,1119,1124,810,525,905,741,578,711,646,493]},{"s":"Nagaland","n":"Mon","e":175757,"l":[2028,1430,863,2344,1613,1779,901,1352,1416,980,1404,1436,2173,4002,3558,4343,5256,2988,2173,3354,2473,2197,1766,1297,1378]},{"s":"Nagaland","n":"Peren","e":153322,"l":[942,806,517,668,901,747,498,1064,783,757,964,1347,1258,1583,1694,2319,1819,1391,1190,1406,1432,1193,1429,1221,979]},{"s":"Nagaland","n":"Phek","e":138636,"l":[281,410,195,209,294,160,167,207,406,163,377,522,537,933,1124,1222,987,793,802,1029,764,501,678,612,525]},{"s":"Nagaland","n":"Tuensang","e":163569,"l":[1775,1383,1009,1052,1124,878,578,691,936,506,614,1992,2776,4201,3599,3673,3620,2922,2162,2829,2772,1862,2048,1328,1149]},{"s":"Nagaland","n":"Wokha","e":134385,"l":[1164,602,819,918,870,481,431,750,753,569,922,1638,1055,2016,1398,1432,1341,1374,982,1043,727,655,837,677,850]},{"s":"Nagaland","n":"Zunheboto","e":124499,"l":[935,417,731,722,655,526,385,372,588,375,397,1121,1307,2373,2187,2130,2337,1853,1287,1754,1344,975,1329,851,794]},{"s":"Odisha","n":"Anugul","e":147440,"l":[24,48,29,58,36,53,55,74,17,48,27,49,22,37,11,47,49,37,34,51,4,18,37,16,36]},{"s":"Odisha","n":"Balangir","e":21125,"l":[16,10,12,21,18,11,23,30,17,26,26,31,3,2,0,0,0,1,0,0,0,0,2,2,0]},{"s":"Odisha","n":"Baleshwar","e":8669,"l":[13,5,4,12,0,20,2,3,3,5,1,11,1,1,0,1,1,0,0,0,0,0,0,0,0]},{"s":"Odisha","n":"Bargarh","e":19856,"l":[36,18,12,11,13,10,33,6,20,13,25,41,2,1,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Odisha","n":"Bauda","e":94961,"l":[27,16,11,21,13,18,26,37,32,13,11,7,5,3,5,9,4,10,3,4,17,11,56,31,35]},{"s":"Odisha","n":"Bhadrak","e":122,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]},{"s":"Odisha","n":"Cuttack","e":20532,"l":[10,8,26,20,16,9,21,39,9,17,16,37,0,1,0,2,0,0,0,0,0,0,6,1,3]},{"s":"Odisha","n":"Debagarh","e":60859,"l":[4,27,4,13,5,9,12,7,8,22,8,11,5,3,1,8,6,7,13,11,1,6,9,10,5]},{"s":"Odisha","n":"Dhenkanal","e":34340,"l":[6,13,17,21,9,9,24,33,5,15,23,17,4,7,1,3,1,3,1,6,0,2,2,5,5]},{"s":"Odisha","n":"Gajapati","e":163314,"l":[98,176,119,607,277,357,545,612,460,181,480,328,365,552,289,730,1291,2019,840,1458,408,1184,1444,999,1214]},{"s":"Odisha","n":"Ganjam","e":161507,"l":[78,78,100,268,150,103,369,282,227,173,219,175,375,334,109,163,332,498,315,469,201,435,552,512,431]},{"s":"Odisha","n":"Jagatsinghapur","e":77,"l":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Odisha","n":"Jajapur","e":4074,"l":[1,7,0,3,1,3,3,1,3,1,1,2,0,5,3,2,3,0,1,2,0,1,5,4,9]},{"s":"Odisha","n":"Jharsuguda","e":2842,"l":[0,1,0,0,0,0,1,0,1,1,0,3,0,0,0,0,0,0,0,0,0,0,8,4,0]},{"s":"Odisha","n":"Kalahandi","e":160738,"l":[498,672,722,606,742,624,953,708,759,284,827,461,898,1084,581,896,1350,1243,716,977,494,880,1577,704,703]},{"s":"Odisha","n":"Kandhamal","e":442907,"l":[1273,1272,1644,1153,763,855,1307,1386,1142,461,1092,636,2400,2966,1699,3635,3723,3115,2926,3064,1986,2506,3392,2790,2905]},{"s":"Odisha","n":"Kendrapara","e":58,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Odisha","n":"Kendujhar","e":111739,"l":[67,320,121,212,174,183,284,216,211,175,64,214,133,335,181,435,452,440,419,370,75,292,328,267,307]},{"s":"Odisha","n":"Khordha","e":15903,"l":[9,5,4,11,14,4,8,20,7,5,14,16,6,4,1,7,12,23,10,12,3,59,11,12,7]},{"s":"Odisha","n":"Koraput","e":105475,"l":[65,52,544,107,146,187,250,274,199,82,215,160,222,430,163,579,767,615,683,526,373,478,931,685,572]},{"s":"Odisha","n":"Malkangiri","e":122556,"l":[142,296,356,220,336,273,356,195,211,175,424,232,166,365,126,166,250,263,257,214,191,287,520,549,377]},{"s":"Odisha","n":"Mayurbhanj","e":220030,"l":[52,90,11,101,16,70,45,27,42,91,31,111,22,14,1,3,5,18,13,2,9,109,42,33,10]},{"s":"Odisha","n":"Nabarangapur","e":29098,"l":[104,331,74,107,274,291,285,313,134,198,916,450,54,38,7,29,64,43,61,56,40,37,91,46,68]},{"s":"Odisha","n":"Nayagarh","e":120024,"l":[29,22,29,50,31,22,48,80,37,35,31,54,11,25,4,21,12,24,19,24,5,15,27,47,27]},{"s":"Odisha","n":"Nuapada","e":32953,"l":[34,30,8,7,20,7,19,27,12,35,20,83,7,14,2,5,5,2,1,2,8,4,10,6,5]},{"s":"Odisha","n":"Puri","e":376,"l":[1,0,0,1,2,1,1,1,2,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1]},{"s":"Odisha","n":"Rayagada","e":215344,"l":[217,370,1425,699,442,995,1122,1442,1082,161,1021,422,551,1063,594,1376,1599,1184,1255,1413,1017,1416,2370,1577,1248]},{"s":"Odisha","n":"Sambalpur","e":168907,"l":[24,8,43,41,14,32,30,29,43,82,49,98,11,12,1,0,5,3,3,2,4,2,2,8,7]},{"s":"Odisha","n":"Subarnapur","e":5721,"l":[2,2,0,5,1,2,2,5,6,8,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Odisha","n":"Sundargarh","e":188647,"l":[145,98,66,88,90,78,59,94,101,87,46,127,89,196,89,222,201,242,190,211,54,174,238,96,189]},{"s":"Puducherry","n":"Karaikal","e":35,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Puducherry","n":"Mahe","e":6855,"l":[1,1,1,2,5,2,14,16,8,2,5,4,5,4,3,26,9,10,9,16,16,22,37,22,39]},{"s":"Puducherry","n":"Puducherry","e":19,"l":[0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0]},{"s":"Puducherry","n":"Yanam","e":2,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Punjab","n":"Amritsar","e":377,"l":[2,0,0,2,1,1,1,1,0,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Punjab","n":"Barnala","e":320,"l":[10,1,2,2,6,0,2,2,1,9,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Punjab","n":"Bathinda","e":139,"l":[1,0,0,0,1,4,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Punjab","n":"Faridkot","e":75,"l":[1,0,1,0,1,1,0,2,1,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Punjab","n":"Fatehgarh Sahib","e":202,"l":[2,1,1,1,1,3,0,1,1,1,1,3,0,0,0,0,0,0,0,0,0,0,1,0,0]},{"s":"Punjab","n":"Fazilka","e":87,"l":[1,0,1,0,1,0,2,2,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Punjab","n":"Firozpur","e":642,"l":[5,3,5,5,11,5,2,5,4,7,4,8,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Punjab","n":"Gurdaspur","e":347,"l":[5,1,0,1,3,3,2,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0]},{"s":"Punjab","n":"Hoshiarpur","e":36187,"l":[2,6,5,13,10,5,17,15,10,15,4,18,4,4,0,1,0,1,5,5,10,11,18,30,42]},{"s":"Punjab","n":"Jalandhar","e":36,"l":[1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Punjab","n":"Kapurthala","e":563,"l":[3,2,2,4,3,2,3,5,3,3,0,5,0,1,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Punjab","n":"Ludhiana","e":1649,"l":[30,6,20,15,23,5,11,14,7,19,4,15,0,0,0,0,0,0,0,0,0,0,0,1,0]},{"s":"Punjab","n":"Mansa","e":33,"l":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Punjab","n":"Moga","e":779,"l":[9,1,12,4,20,2,3,7,2,23,4,7,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Punjab","n":"Muktsar","e":35,"l":[0,0,1,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Punjab","n":"Pathankot","e":11476,"l":[2,28,2,7,18,2,18,8,13,8,2,19,12,20,1,1,0,7,2,2,5,7,9,32,17]},{"s":"Punjab","n":"Patiala","e":1592,"l":[8,6,5,3,5,12,2,1,6,3,1,5,0,0,0,0,0,0,0,0,1,0,2,0,3]},{"s":"Punjab","n":"Rupnagar","e":10695,"l":[7,12,20,27,21,27,19,19,23,13,12,33,0,3,0,0,0,0,0,0,0,0,2,10,9]},{"s":"Punjab","n":"Sahibzada Ajit Singh Nagar","e":7882,"l":[5,3,3,18,6,13,11,3,7,7,6,8,1,1,0,0,0,0,0,1,0,0,3,3,4]},{"s":"Punjab","n":"Sangrur","e":296,"l":[6,1,2,1,3,1,1,1,1,1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Punjab","n":"Shahid Bhagat Singh Nagar","e":1155,"l":[1,6,2,6,8,1,2,1,3,2,3,2,0,0,0,0,0,0,0,0,0,0,0,2,1]},{"s":"Punjab","n":"Tarn Taran","e":133,"l":[0,1,0,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Ajmer","e":2,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Alwar","e":4301,"l":[1,2,0,3,4,1,4,2,19,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Banswara","e":44,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Baran","e":75,"l":[0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Barmer","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Bharatpur","e":543,"l":[0,4,0,0,0,2,29,23,10,0,2,1,0,0,0,0,0,0,0,0,0,0,3,0,34]},{"s":"Rajasthan","n":"Bhilwara","e":8,"l":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Bikaner","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Bundi","e":18,"l":[0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Chittaurgarh","e":38,"l":[2,2,0,1,0,1,0,1,1,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Churu","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Dausa","e":22,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Dhaulpur","e":43,"l":[0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Dungarpur","e":12,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Ganganagar","e":18,"l":[0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Hanumangarh","e":1,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Jaipur","e":250,"l":[1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Jaisalmer","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Jalor","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Jhalawar","e":16,"l":[0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Jhunjhunun","e":12,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Jodhpur","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Karauli","e":40,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Kota","e":41,"l":[0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Nagaur","e":0,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Pali","e":32,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Pratapgarh","e":62,"l":[0,0,0,3,0,0,0,1,0,1,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Rajsamand","e":100,"l":[1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Sawai Madhopur","e":63,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Sikar","e":15,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Sirohi","e":1992,"l":[0,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Tonk","e":3,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Rajasthan","n":"Udaipur","e":4288,"l":[7,5,11,16,13,6,3,4,1,3,1,15,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Sikkim","n":"East Sikkim","e":54725,"l":[3,3,3,7,3,4,16,11,29,24,29,18,4,3,0,5,7,16,45,22,28,84,115,97,65]},{"s":"Sikkim","n":"North Sikkim","e":101793,"l":[13,2,6,23,9,3,29,65,40,25,221,37,10,9,6,25,27,23,77,46,23,13,136,128,134]},{"s":"Sikkim","n":"South Sikkim","e":39736,"l":[9,2,2,13,8,2,35,27,38,14,15,14,3,6,0,10,15,13,13,18,13,15,13,3,11]},{"s":"Sikkim","n":"West Sikkim","e":54196,"l":[11,2,5,15,6,3,17,18,29,17,26,15,6,4,0,7,10,10,19,46,27,12,44,13,10]},{"s":"Tamil Nadu","n":"Ariyalur","e":179,"l":[2,10,0,3,0,2,2,2,0,1,2,4,0,0,0,0,0,0,0,1,1,0,0,0,0]},{"s":"Tamil Nadu","n":"Chennai","e":24,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Tamil Nadu","n":"Coimbatore","e":106394,"l":[16,29,47,21,24,31,59,45,20,0,172,104,57,94,23,74,59,124,90,89,66,130,307,405,323]},{"s":"Tamil Nadu","n":"Cuddalore","e":567,"l":[3,2,1,4,0,0,3,2,0,2,1,4,0,0,0,2,1,1,2,5,1,1,1,1,0]},{"s":"Tamil Nadu","n":"Dharmapuri","e":60229,"l":[10,6,2,5,1,2,6,3,1,0,41,8,1,3,2,2,1,7,39,2,1,5,12,32,8]},{"s":"Tamil Nadu","n":"Dindigul","e":131707,"l":[936,114,46,427,87,394,166,236,40,0,127,114,122,228,221,176,96,123,192,177,180,150,178,1005,338]},{"s":"Tamil Nadu","n":"Erode","e":110441,"l":[3,6,22,6,3,7,13,10,1,0,9,7,2,3,1,4,12,7,19,4,7,5,11,15,23]},{"s":"Tamil Nadu","n":"Kancheepuram","e":884,"l":[16,12,7,7,1,4,5,3,2,1,6,5,0,0,0,4,1,2,5,8,13,3,2,1,1]},{"s":"Tamil Nadu","n":"Kanniyakumari","e":94368,"l":[127,64,108,7,325,564,362,288,137,66,149,322,176,257,393,664,911,903,593,389,650,435,538,426,579]},{"s":"Tamil Nadu","n":"Karur","e":2034,"l":[3,1,0,2,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Tamil Nadu","n":"Krishnagiri","e":22659,"l":[12,7,3,4,1,3,4,2,2,0,6,3,1,0,0,0,0,1,22,0,1,1,96,32,6]},{"s":"Tamil Nadu","n":"Madurai","e":20142,"l":[66,107,36,25,37,16,12,23,15,0,7,34,1,1,3,6,4,2,1,1,4,1,1,1,3]},{"s":"Tamil Nadu","n":"Nagappattinam","e":2545,"l":[47,123,7,10,1,3,7,2,0,5,3,8,0,2,1,1,2,11,7,2,4,3,3,2,1]},{"s":"Tamil Nadu","n":"Namakkal","e":26490,"l":[7,4,4,116,2,45,30,8,2,0,17,40,1,2,11,17,14,23,30,37,12,10,13,25,37]},{"s":"Tamil Nadu","n":"Perambalur","e":6038,"l":[5,1,0,1,0,0,1,5,0,0,0,3,0,0,0,0,0,1,24,5,1,0,0,2,6]},{"s":"Tamil Nadu","n":"Pudukkottai","e":429,"l":[4,3,1,0,3,0,2,1,0,0,1,1,2,0,0,0,0,0,12,1,0,0,0,1,0]},{"s":"Tamil Nadu","n":"Ramanathapuram","e":1106,"l":[3,1,1,1,1,2,7,1,2,4,2,2,1,5,1,4,0,1,0,0,0,0,0,1,1]},{"s":"Tamil Nadu","n":"Salem","e":69377,"l":[137,13,6,174,3,50,41,70,10,0,67,38,8,8,17,12,27,51,128,106,57,19,33,46,55]},{"s":"Tamil Nadu","n":"Sivaganga","e":719,"l":[6,1,0,1,1,0,2,1,0,0,0,3,0,0,0,0,0,2,1,0,0,0,0,1,1]},{"s":"Tamil Nadu","n":"Thanjavur","e":6027,"l":[48,117,5,33,18,43,74,40,9,15,64,121,0,0,0,0,2,10,139,9,4,0,1,4,2]},{"s":"Tamil Nadu","n":"The Nilgiris","e":161439,"l":[23,54,83,174,192,136,637,106,52,0,175,140,140,212,235,209,199,532,514,262,133,269,662,728,589]},{"s":"Tamil Nadu","n":"Theni","e":68470,"l":[28,46,27,71,28,100,49,86,25,1,137,154,43,41,38,40,35,20,25,38,37,33,105,72,67]},{"s":"Tamil Nadu","n":"Thiruvallur","e":878,"l":[5,3,2,3,1,3,3,2,1,2,1,3,0,0,0,4,5,1,1,0,0,0,0,0,0]},{"s":"Tamil Nadu","n":"Thiruvarur","e":5829,"l":[48,139,4,7,1,3,6,3,1,6,15,8,0,1,1,3,1,1,7,1,0,0,2,0,0]},{"s":"Tamil Nadu","n":"Thoothukkudi","e":7328,"l":[95,11,17,1,29,12,11,29,16,0,10,58,2,2,6,25,64,1,3,8,1,1,26,8,5]},{"s":"Tamil Nadu","n":"Tiruchirappalli","e":19990,"l":[40,20,6,28,6,13,15,45,1,0,11,59,1,2,5,4,4,28,114,65,11,1,12,15,12]},{"s":"Tamil Nadu","n":"Tirunelveli","e":122641,"l":[259,207,77,32,181,143,138,205,22,0,125,263,20,19,44,35,14,24,7,6,8,9,64,14,26]},{"s":"Tamil Nadu","n":"Tiruppur","e":35152,"l":[16,27,15,6,13,14,33,12,3,0,72,56,53,106,7,15,55,15,13,4,3,9,56,67,52]},{"s":"Tamil Nadu","n":"Tiruvannamalai","e":53147,"l":[42,12,16,14,1,6,14,14,57,0,28,16,2,3,2,11,7,27,5,4,6,2,6,4,5]},{"s":"Tamil Nadu","n":"Vellore","e":52516,"l":[84,14,30,14,6,41,24,48,35,0,10,8,1,1,4,7,3,12,32,17,26,1,4,27,14]},{"s":"Tamil Nadu","n":"Viluppuram","e":26945,"l":[35,15,4,44,0,21,20,30,6,0,39,88,6,30,6,18,64,98,39,51,28,11,49,80,251]},{"s":"Tamil Nadu","n":"Virudunagar","e":13827,"l":[24,7,9,28,19,13,24,27,5,0,2,18,3,1,1,3,0,0,0,0,1,0,3,0,7]},{"s":"Telangana","n":"Adilabad","e":43451,"l":[191,31,77,153,57,150,70,239,213,11,267,94,1,2,0,0,0,0,0,0,0,0,2,2,2]},{"s":"Telangana","n":"Hyderabad","e":7,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Telangana","n":"Karimnagar","e":33293,"l":[27,8,26,30,9,57,66,21,122,8,120,45,13,46,11,18,8,9,0,1,1,2,68,25,31]},{"s":"Telangana","n":"Khammam","e":420082,"l":[352,843,861,893,1287,1414,2079,3694,3690,1098,5448,4325,913,1856,220,328,218,409,678,267,225,165,528,690,792]},{"s":"Telangana","n":"Mahbubnagar","e":16103,"l":[37,10,27,5,2,3,1,7,7,0,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Telangana","n":"Medak","e":310,"l":[25,7,7,7,1,3,3,2,4,0,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Telangana","n":"Nalgonda","e":393,"l":[34,9,4,5,1,3,3,2,2,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Telangana","n":"Nizamabad","e":5468,"l":[48,41,48,28,6,60,14,81,72,2,71,65,4,30,0,0,0,0,0,0,0,0,4,7,4]},{"s":"Telangana","n":"Ranga Reddy","e":86,"l":[10,1,1,2,0,2,1,2,1,0,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Telangana","n":"Warangal","e":144423,"l":[300,60,209,196,120,283,315,653,1569,154,1231,1091,84,664,44,67,130,42,21,5,2,2,88,263,139]},{"s":"Tripura","n":"Dhalai","e":196776,"l":[783,432,221,636,307,1427,1461,974,828,684,508,496,1015,2325,2017,2586,7557,3415,5371,6220,4917,4628,5549,4980,3364]},{"s":"Tripura","n":"Gomati","e":92621,"l":[407,344,286,333,319,950,886,1089,1060,634,448,399,485,761,281,465,1159,820,937,1139,1025,1655,2144,1302,1471]},{"s":"Tripura","n":"Khowai","e":64933,"l":[269,75,62,479,63,318,883,304,675,273,223,148,295,329,209,382,1174,508,574,775,754,818,1232,1021,1196]},{"s":"Tripura","n":"North Tripura","e":95512,"l":[312,63,87,220,105,337,516,233,407,272,188,173,259,997,968,684,2651,1107,2007,1602,2172,1427,1545,1169,1038]},{"s":"Tripura","n":"Sipahijala","e":44035,"l":[83,108,137,237,129,249,386,449,492,408,398,269,126,168,44,140,164,83,122,184,192,335,469,300,456]},{"s":"Tripura","n":"South Tripura","e":84216,"l":[939,704,313,462,435,2329,823,1660,734,525,350,284,336,509,285,569,1238,841,722,737,807,1070,1257,924,734]},{"s":"Tripura","n":"Unokoti","e":50736,"l":[257,52,59,282,55,416,454,305,389,317,216,155,81,225,249,266,833,400,741,589,873,635,925,610,724]},{"s":"Tripura","n":"West Tripura","e":40465,"l":[40,110,52,252,81,117,356,231,396,218,191,158,65,79,43,133,187,86,94,130,125,255,400,331,502]},{"s":"Uttar Pradesh","n":"Agra","e":1111,"l":[1,1,1,2,2,3,5,6,2,4,9,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Aligarh","e":269,"l":[1,1,0,4,1,1,2,1,4,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Allahabad","e":109,"l":[0,0,0,1,0,1,1,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Ambedkar Nagar","e":190,"l":[0,1,0,1,2,1,2,1,1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Amethi","e":180,"l":[0,0,0,0,0,0,1,1,1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Amroha","e":225,"l":[2,0,0,2,1,3,3,3,5,2,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Auraiya","e":52,"l":[1,0,0,0,0,0,1,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Azamgarh","e":399,"l":[2,2,4,6,5,5,6,4,6,2,2,8,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Baghpat","e":118,"l":[1,0,0,0,0,1,2,1,3,1,1,4,0,0,0,0,0,0,0,0,0,0,0,0,2]},{"s":"Uttar Pradesh","n":"Bahraich","e":29878,"l":[3,1,0,3,3,7,9,2,6,4,6,6,2,0,0,0,0,0,0,0,0,0,27,23,7]},{"s":"Uttar Pradesh","n":"Ballia","e":152,"l":[0,1,1,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Balrampur","e":42532,"l":[3,2,3,9,7,12,22,8,18,9,81,14,5,4,2,0,1,0,0,4,1,2,6,10,3]},{"s":"Uttar Pradesh","n":"Banda","e":158,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Barabanki","e":439,"l":[2,1,0,2,1,3,4,4,2,1,6,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Bareilly","e":72,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]},{"s":"Uttar Pradesh","n":"Basti","e":171,"l":[0,2,0,0,0,1,2,1,1,0,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Bijnor","e":15649,"l":[6,9,5,7,30,9,13,11,14,51,41,20,12,69,29,101,11,47,7,2,1,2,12,26,29]},{"s":"Uttar Pradesh","n":"Budaun","e":86,"l":[2,1,1,4,0,2,0,1,4,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Bulandshahr","e":101,"l":[2,1,0,0,1,1,2,1,3,1,3,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Chandauli","e":1556,"l":[0,1,1,7,5,6,2,1,32,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Chitrakoot","e":5790,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Deoria","e":321,"l":[2,12,5,6,10,1,2,3,4,1,3,13,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Etah","e":120,"l":[0,0,0,1,0,0,1,2,2,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Etawah","e":531,"l":[0,0,0,0,1,0,2,1,1,1,1,6,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Faizabad","e":186,"l":[0,1,0,0,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Farrukhabad","e":353,"l":[21,0,3,11,7,9,3,3,15,5,4,7,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Fatehpur","e":14,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Firozabad","e":426,"l":[0,1,0,1,1,0,0,3,4,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Gautam Buddha Nagar","e":8,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Ghaziabad","e":15,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Ghazipur","e":527,"l":[1,1,2,5,3,3,1,1,2,3,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Gonda","e":3583,"l":[0,0,1,2,3,0,19,1,0,0,27,1,5,7,35,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Gorakhpur","e":1170,"l":[3,12,5,2,3,2,3,2,3,1,8,8,2,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Hamirpur","e":251,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Hapur","e":33,"l":[4,0,1,0,0,1,1,1,2,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Hardoi","e":1430,"l":[124,11,4,23,13,42,24,17,33,22,25,24,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Hathras","e":113,"l":[0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Jalaun","e":32,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Jaunpur","e":104,"l":[0,0,0,3,1,1,2,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Jhansi","e":161,"l":[0,0,0,0,0,1,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Kannauj","e":139,"l":[7,1,2,4,7,2,2,2,6,2,3,5,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Kanpur Dehat","e":26,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Kanpur Nagar","e":65,"l":[0,1,1,0,1,3,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Kasganj","e":280,"l":[1,3,1,8,3,3,3,3,12,6,5,12,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Kaushambi","e":11,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Kushinagar","e":531,"l":[2,0,2,2,1,1,1,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Lakhimpur Kheri","e":94749,"l":[124,28,15,45,31,86,62,44,35,37,76,88,2,3,1,2,0,0,0,0,1,0,6,1,0]},{"s":"Uttar Pradesh","n":"Lalitpur","e":2496,"l":[1,1,0,0,0,0,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Lucknow","e":1160,"l":[6,7,7,17,7,52,30,14,23,7,33,27,0,0,0,0,0,0,0,0,0,0,0,1,0]},{"s":"Uttar Pradesh","n":"Maharajganj","e":31937,"l":[6,3,6,2,34,4,9,8,7,4,9,20,6,1,0,0,0,0,0,0,0,0,3,5,0]},{"s":"Uttar Pradesh","n":"Mahoba","e":111,"l":[0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Mainpuri","e":148,"l":[0,0,1,1,0,1,1,2,1,0,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Mathura","e":304,"l":[0,0,0,3,1,0,4,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,9]},{"s":"Uttar Pradesh","n":"Mau","e":176,"l":[1,2,4,2,2,3,1,1,7,2,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Meerut","e":729,"l":[1,1,0,0,0,2,3,1,2,2,4,2,0,0,0,0,0,0,0,0,0,0,0,1,1]},{"s":"Uttar Pradesh","n":"Mirzapur","e":76,"l":[0,0,1,1,0,1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Moradabad","e":62,"l":[1,0,0,0,1,1,1,1,1,0,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Muzaffarnagar","e":336,"l":[0,0,0,1,0,1,2,2,2,0,5,5,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Pilibhit","e":51081,"l":[4,3,2,2,3,3,11,13,3,7,3,15,2,13,0,0,0,15,0,0,0,0,2,1,2]},{"s":"Uttar Pradesh","n":"Pratapgarh","e":115,"l":[0,0,0,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Rae Bareli","e":73,"l":[0,1,0,0,1,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Rampur","e":3333,"l":[5,1,1,1,2,2,1,4,3,2,2,3,0,0,0,0,0,0,0,0,0,0,0,16,0]},{"s":"Uttar Pradesh","n":"Saharanpur","e":19898,"l":[2,1,1,1,3,4,5,10,6,7,3,5,1,0,0,1,0,0,0,0,0,0,4,6,0]},{"s":"Uttar Pradesh","n":"Sambhal","e":19,"l":[0,0,0,1,0,2,0,1,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Sant Kabir Nagar","e":182,"l":[1,5,1,1,1,2,1,2,2,1,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Sant Ravi Das Nagar","e":16,"l":[0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Shahjahanpur","e":5698,"l":[22,2,4,7,10,12,2,6,6,2,4,14,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Shamli","e":222,"l":[0,0,0,0,0,1,3,1,1,2,2,2,0,0,0,0,0,0,1,0,0,0,1,2,0]},{"s":"Uttar Pradesh","n":"Shravasti","e":29555,"l":[16,2,1,14,3,5,24,7,13,7,55,17,22,3,0,9,27,4,3,0,0,1,7,6,1]},{"s":"Uttar Pradesh","n":"Siddharth Nagar","e":721,"l":[2,3,1,1,4,1,2,1,2,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Sitapur","e":1843,"l":[132,15,10,22,17,53,40,23,22,11,32,53,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Sonbhadra","e":4879,"l":[0,0,1,1,1,0,1,3,1,4,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Sultanpur","e":90,"l":[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Unnao","e":244,"l":[6,3,3,4,1,17,4,1,12,3,5,9,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttar Pradesh","n":"Varanasi","e":54,"l":[0,1,1,3,0,1,1,0,1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"Uttarakhand","n":"Almora","e":112210,"l":[4,4,4,47,7,4,4,4,54,12,3,45,2,2,8,18,6,2,8,4,9,11,1,9,4]},{"s":"Uttarakhand","n":"Bageshwar","e":79668,"l":[0,1,4,4,13,1,3,3,12,4,1,21,1,2,15,5,4,1,6,1,5,7,6,6,5]},{"s":"Uttarakhand","n":"Chamoli","e":192909,"l":[3,3,3,24,15,7,12,8,52,17,14,15,10,15,3,8,28,20,28,14,32,27,27,30,23]},{"s":"Uttarakhand","n":"Champawat","e":118482,"l":[25,27,19,61,69,39,27,117,36,62,46,137,5,6,21,50,68,80,76,23,136,38,11,31,35]},{"s":"Uttarakhand","n":"Dehradun","e":156028,"l":[5,30,5,7,17,20,18,18,27,18,24,80,25,11,8,27,156,18,7,6,23,27,74,34,39]},{"s":"Uttarakhand","n":"Garhwal","e":291677,"l":[7,17,7,38,20,33,13,37,76,70,37,70,17,14,12,17,11,21,16,21,37,18,94,37,23]},{"s":"Uttarakhand","n":"Hardwar","e":25703,"l":[1,4,7,7,26,13,6,3,3,5,5,6,7,7,8,6,0,0,14,1,1,6,10,1,2]},{"s":"Uttarakhand","n":"Nainital","e":297779,"l":[226,132,124,455,320,685,722,1317,319,349,541,548,270,223,479,503,97,380,358,366,976,422,1174,1228,1102]},{"s":"Uttarakhand","n":"Pithoragarh","e":124239,"l":[2,10,5,20,8,7,23,8,20,10,3,33,3,3,1,8,15,8,10,34,38,7,6,26,5]},{"s":"Uttarakhand","n":"Rudraprayag","e":46549,"l":[2,0,1,13,1,1,2,9,21,7,13,5,19,33,0,1,2,5,3,10,8,3,4,5,6]},{"s":"Uttarakhand","n":"Tehri Garhwal","e":216899,"l":[8,115,13,21,28,50,24,30,86,31,37,125,7,9,1,20,15,31,29,24,31,26,57,81,44]},{"s":"Uttarakhand","n":"Udham Singh Nagar","e":54957,"l":[38,27,47,73,59,230,64,124,84,93,52,143,89,271,222,215,277,46,218,474,466,193,494,255,295]},{"s":"Uttarakhand","n":"Uttarkashi","e":231736,"l":[9,164,30,30,48,58,97,30,163,23,34,136,13,10,0,6,12,11,15,12,14,28,20,73,33]},{"s":"West Bengal","n":"Alipurduar","e":118440,"l":[101,213,137,162,255,387,1029,1173,417,1529,469,655,126,269,66,117,313,174,171,86,193,230,279,136,485]},{"s":"West Bengal","n":"Bankura","e":423,"l":[11,1,0,19,0,42,6,10,19,42,18,28,0,0,0,1,0,0,0,0,1,1,5,1,3]},{"s":"West Bengal","n":"Barddhaman","e":190,"l":[0,0,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"West Bengal","n":"Birbhum","e":7,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"West Bengal","n":"Dakshin Dinajpur","e":122,"l":[1,1,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"West Bengal","n":"Darjiling","e":152184,"l":[55,54,15,112,70,99,183,101,186,119,144,184,60,88,31,51,38,41,31,107,132,69,73,89,47]},{"s":"West Bengal","n":"Haora","e":1435,"l":[6,1,0,1,0,1,1,2,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"West Bengal","n":"Hugli","e":1188,"l":[1,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1]},{"s":"West Bengal","n":"Jalpaiguri","e":67361,"l":[58,20,22,63,47,91,191,110,155,251,208,210,116,222,41,69,114,49,124,61,81,188,146,135,125]},{"s":"West Bengal","n":"Koch Bihar","e":14450,"l":[5,23,4,24,30,27,49,28,17,25,24,49,6,27,2,1,5,5,8,11,9,13,3,3,13]},{"s":"West Bengal","n":"Kolkata","e":35,"l":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"West Bengal","n":"Maldah","e":212,"l":[0,9,1,5,6,3,3,2,9,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"West Bengal","n":"Murshidabad","e":357,"l":[1,7,1,3,3,1,1,2,1,4,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"West Bengal","n":"Nadia","e":2000,"l":[3,2,1,2,6,1,1,1,3,11,1,3,0,0,0,0,0,1,0,2,0,0,2,1,3]},{"s":"West Bengal","n":"North 24 Parganas","e":35147,"l":[3,2,0,1,2,1,1,1,2,3,3,1,0,0,0,0,0,1,1,2,1,1,11,4,22]},{"s":"West Bengal","n":"Pashchim Medinipur","e":1560,"l":[84,4,4,142,4,61,12,68,16,10,23,52,1,2,2,4,4,2,4,5,3,0,1,1,4]},{"s":"West Bengal","n":"Purba Medinipur","e":850,"l":[7,4,0,4,1,3,3,2,0,2,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0]},{"s":"West Bengal","n":"Puruliya","e":3124,"l":[1,12,5,10,1,2,1,2,1,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0,1]},{"s":"West Bengal","n":"South 24 Parganas","e":4567,"l":[0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0]},{"s":"West Bengal","n":"Uttar Dinajpur","e":4269,"l":[51,5,2,23,18,56,20,29,69,17,50,38,20,44,6,1,8,10,4,7,2,5,6,23,8]}]}</script>
+<script>
+(function () {
+  "use strict";
+
+  var DATA = JSON.parse(document.getElementById('payload').textContent);
+  var YEARS = DATA.meta.years;
+  var PYEARS = DATA.meta.primaryYears;
+  var STATES = DATA.states;
+
+  // Order drivers by national share, largest first, then hand out the categorical
+  // slots in that fixed order: the dominant driver gets slot 1. This also makes the
+  // stack read largest-at-the-baseline.
+  var DRIVERS = DATA.meta.drivers.slice().sort(function (a, b) {
+    var sa = DATA.countryDrivers[a].reduce(function (x, y) { return x + y; }, 0);
+    var sb = DATA.countryDrivers[b].reduce(function (x, y) { return x + y; }, 0);
+    return sb - sa;
+  });
+  var DCOLORS = {};
+  DRIVERS.forEach(function (d, i) { DCOLORS[d] = 'var(--d' + (i + 1) + ')'; });
+
+  var state = { th: '30', metric: 'abs', sel: 'Assam' };
+
+  // ---------- helpers ----------
+
+  var nf = function (n) { return Math.round(n).toLocaleString('en-US'); };
+  var nf1 = function (n) { return n.toFixed(1); };
+
+  function compact(n) {
+    if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+    if (n >= 1e3) return Math.round(n / 1e3) + 'k';
+    return String(Math.round(n));
+  }
+
+  function css(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  function el(tag, attrs, text) {
+    var n = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function sum(a) { return a.reduce(function (x, y) { return x + (y || 0); }, 0); }
+
+  function byName(n) {
+    for (var i = 0; i < STATES.length; i++) if (STATES[i].name === n) return STATES[i];
+    return null;
+  }
+
+  // rounded-top bar path, 4px radius on the data end, anchored to baseline
+  function barPath(x, y, w, h, r) {
+    r = Math.min(r, w / 2, h);
+    if (h <= 0.5) return '';
+    return 'M' + x + ',' + (y + h) +
+           'L' + x + ',' + (y + r) +
+           'Q' + x + ',' + y + ' ' + (x + r) + ',' + y +
+           'L' + (x + w - r) + ',' + y +
+           'Q' + (x + w) + ',' + y + ' ' + (x + w) + ',' + (y + r) +
+           'L' + (x + w) + ',' + (y + h) + 'Z';
+  }
+
+  // ---------- tooltip ----------
+
+  var tip = document.getElementById('tip');
+
+  function showTip(evt, html) {
+    tip.innerHTML = html;
+    tip.style.opacity = '1';
+    tip.style.left = evt.clientX + 'px';
+    tip.style.top = (evt.clientY - 12) + 'px';
+  }
+  function hideTip() { tip.style.opacity = '0'; }
+
+  function hoverable(node, html) {
+    node.addEventListener('mousemove', function (e) { showTip(e, html); });
+    node.addEventListener('mouseleave', hideTip);
+  }
+
+  // ---------- nice axis ----------
+
+  function niceMax(v) {
+    if (v <= 0) return 1;
+    var mag = Math.pow(10, Math.floor(Math.log10(v)));
+    var norm = v / mag;
+    var step = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 2.5 ? 2.5 : norm <= 5 ? 5 : 10;
+    return step * mag;
+  }
+
+  function ticks(max, count) {
+    var out = [];
+    for (var i = 0; i <= count; i++) out.push(max * i / count);
+    return out;
+  }
+
+  // ---------- threshold explainer ----------
+
+  function renderExplainer() {
+    document.getElementById('explainer-title').textContent =
+      'What does Canopy cover >' + state.th + '% mean?';
+    document.getElementById('ex-th-a').textContent = state.th;
+    document.getElementById('ex-th-b').textContent = state.th;
+  }
+
+  // ---------- tiles ----------
+
+  function renderTiles() {
+    var c = DATA.country[state.th];
+    var tot = sum(c.loss);
+    var peakI = c.loss.indexOf(Math.max.apply(null, c.loss));
+    var host = document.getElementById('tiles');
+
+    var items = [
+      { k: 'Tree cover, 2000', v: compact(c.extent2000), u: 'ha',
+        s: nf1(100 * c.extent2000 / DATA.meta.countryArea) + '% of India’s land area' },
+      { k: 'Lost, 2001–2025', v: compact(tot), u: 'ha',
+        s: nf1(100 * tot / c.extent2000) + '% of the 2000 extent', accent: true },
+      { k: 'Peak year', v: String(YEARS[peakI]), u: '',
+        s: nf(c.loss[peakI]) + ' ha — ' + nf1(c.loss[peakI] / (sum(c.loss.slice(0, 5)) / 5)) + '× the 2001–05 average' },
+      { k: 'Most recent year', v: compact(c.loss[c.loss.length - 1]), u: 'ha',
+        s: '2025, against ' + nf(c.loss[c.loss.length - 2]) + ' ha in 2024' }
+    ];
+
+    host.innerHTML = items.map(function (it) {
+      return '<div class="tile' + (it.accent ? ' accent' : '') + '">' +
+        '<div class="tile-k">' + it.k + '</div>' +
+        '<div class="tile-v">' + it.v + (it.u ? '<span class="unit">' + it.u + '</span>' : '') + '</div>' +
+        '<div class="tile-sub">' + it.s + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  // ---------- annual national loss ----------
+
+  // Drivers are attributed only at 30% canopy. At that setting each bar is split by
+  // driver; at any other threshold the split would be borrowed from a different
+  // population, so the bars stay solid and the note says why.
+  function renderAnnual() {
+    var host = document.getElementById('annual');
+    host.innerHTML = '';
+    var c = DATA.country[state.th];
+    var stacked = state.th === '30';
+    var W = host.clientWidth || 800;
+    var narrow = W < 560;
+    var H = narrow ? 250 : 340;
+    var m = { t: 16, r: 6, b: 34, l: narrow ? 38 : 52 };
+    var iw = W - m.l - m.r, ih = H - m.t - m.b;
+
+    var max = niceMax(Math.max.apply(null, c.loss));
+    var svg = el('svg', { width: W, height: H, role: 'img',
+      'aria-label': 'Annual tree cover loss in India, ' + YEARS[0] + ' to ' +
+        YEARS[YEARS.length - 1] + (stacked ? ', split by dominant driver' : '') });
+
+    ticks(max, 4).forEach(function (t) {
+      var y = m.t + ih - (t / max) * ih;
+      svg.appendChild(el('line', { x1: m.l, x2: m.l + iw, y1: y, y2: y,
+        stroke: css('--rule'), 'stroke-width': 1, fill: 'none' }));
+      svg.appendChild(el('text', { x: m.l - 8, y: y + 3.5, 'text-anchor': 'end',
+        fill: css('--ink-3'), 'font-family': css('--f-mono'), 'font-size': narrow ? 9.5 : 10.5 },
+        t === 0 ? '0' : compact(t)));
+    });
+
+    var peakI = c.loss.indexOf(Math.max.apply(null, c.loss));
+    var lastI = c.loss.length - 1;
+    var slot = iw / YEARS.length;
+    var bw = Math.max(3, slot - (narrow ? 2 : 4));
+    var GAP = 2;
+
+    c.loss.forEach(function (total, i) {
+      var x = m.l + i * slot + (slot - bw) / 2;
+      var hot = i === peakI || i === lastI;
+      var tipHtml = '<b>' + YEARS[i] + '</b> &nbsp;<span class="tk">' + nf(total) + ' ha</span>';
+
+      if (stacked) {
+        var parts = DRIVERS.map(function (d) {
+          return { d: d, v: DATA.countryDrivers[d][i] || 0, c: DCOLORS[d] };
+        }).filter(function (p) { return p.v > 0; });
+        var attributed = parts.reduce(function (a, p) { return a + p.v; }, 0);
+        var residual = total - attributed;
+        if (residual > total * 0.005) {
+          parts.push({ d: 'Unattributed', v: residual, c: css('--graphite-2') });
+        }
+        var denom = parts.reduce(function (a, p) { return a + p.v; }, 0) || 1;
+
+        var acc = 0;
+        parts.forEach(function (p, k) {
+          var frac = p.v / denom;
+          var h = frac * (total / max) * ih;
+          var y = m.t + ih - (acc / denom) * (total / max) * ih - h;
+          acc += p.v;
+          var isTop = k === parts.length - 1;
+          svg.appendChild(isTop
+            ? el('path', { d: barPath(x, y, bw, h, 4), fill: p.c })
+            : el('rect', { x: x, y: y, width: bw, height: Math.max(0.6, h - GAP), fill: p.c }));
+        });
+
+        parts.slice().sort(function (a, b) { return b.v - a.v; }).slice(0, 4).forEach(function (p) {
+          tipHtml += '<br>' + p.d + ' <span class="tk">' +
+            Math.round(100 * p.v / denom) + '%</span>';
+        });
+      } else {
+        var h = (total / max) * ih;
+        svg.appendChild(el('path', { d: barPath(x, m.t + ih - h, bw, h, 4),
+          fill: hot ? css('--ember') : css('--graphite') }));
+      }
+
+      if (hot) {
+        svg.appendChild(el('rect', { x: x, y: m.t + ih + 2, width: bw, height: 2.5,
+          fill: css('--ember'), rx: 1 }));
+      }
+
+      if (hot) tipHtml += '<br><span class="tk">' + (i === peakI ? 'peak year' : 'most recent') + '</span>';
+      var hit = el('rect', { x: m.l + i * slot, y: m.t, width: slot, height: ih, fill: 'transparent' });
+      hoverable(hit, tipHtml);
+      svg.appendChild(hit);
+
+      var showYear = narrow ? (i % 6 === 0 || i === lastI) : (i % 3 === 0 || i === lastI);
+      if (showYear) {
+        svg.appendChild(el('text', { x: m.l + i * slot + slot / 2, y: H - 11,
+          'text-anchor': 'middle', fill: css('--ink-3'),
+          'font-family': css('--f-mono'), 'font-size': narrow ? 9.5 : 10.5 },
+          narrow ? "'" + String(YEARS[i]).slice(2) : YEARS[i]));
+      }
+    });
+
+    svg.appendChild(el('line', { x1: m.l, x2: m.l + iw, y1: m.t + ih, y2: m.t + ih,
+      stroke: css('--rule-2'), 'stroke-width': 1 }));
+    host.appendChild(svg);
+
+    // legend + copy
+    var lg = document.getElementById('annual-legend');
+    if (stacked) {
+      var grand = DRIVERS.reduce(function (a, d) { return a + sum(DATA.countryDrivers[d]); }, 0);
+      lg.innerHTML = DRIVERS.map(function (d) {
+        return '<span class="lg"><i style="background:' + DCOLORS[d] + '"></i>' + d +
+          ' <b>' + nf1(100 * sum(DATA.countryDrivers[d]) / grand) + '%</b></span>';
+      }).join('');
+      lg.style.display = '';
+    } else {
+      lg.style.display = 'none';
+    }
+  }
+
+  // ---------- drivers stacked ----------
+
+  // ---------- state ranking ----------
+
+  function rankValues() {
+    return STATES.map(function (s) {
+      var t = s.th[state.th];
+      var loss = sum(t.loss);
+      return {
+        name: s.name,
+        loss: loss,
+        extent: t.extent2000,
+        pct: t.extent2000 > 0 ? 100 * loss / t.extent2000 : 0
+      };
+    }).filter(function (r) {
+      return state.metric === 'abs' ? r.loss > 0 : r.extent >= 25000;
+    }).sort(function (a, b) {
+      return state.metric === 'abs' ? b.loss - a.loss : b.pct - a.pct;
+    });
+  }
+
+  function renderRank() {
+    var rows = rankValues();
+    var max = rows.length ? (state.metric === 'abs' ? rows[0].loss : rows[0].pct) : 1;
+    var host = document.getElementById('rank');
+    host.innerHTML = '';
+
+    rows.forEach(function (r) {
+      var v = state.metric === 'abs' ? r.loss : r.pct;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'row';
+      btn.setAttribute('aria-current', r.name === state.sel ? 'true' : 'false');
+      btn.innerHTML =
+        '<span class="row-top"><span class="row-name">' + r.name + '</span>' +
+        '<span class="row-val">' + (state.metric === 'abs' ? nf(r.loss) + ' ha' : nf1(r.pct) + '%') +
+        '</span></span>' +
+        '<span class="row-track"><span class="row-fill" style="width:' +
+        (100 * v / max).toFixed(1) + '%"></span></span>';
+      btn.addEventListener('click', function () {
+        state.sel = r.name;
+        renderRank();
+        renderDetail();
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        document.getElementById('states-head').scrollIntoView({
+          block: 'start',
+          behavior: reduce ? 'auto' : 'smooth'
+        });
+      });
+      host.appendChild(btn);
+    });
+
+    document.getElementById('rank-th').textContent = '2001–25 · >' + state.th + '% canopy' +
+      (state.metric === 'pct' ? ' · states over 25,000 ha' : '');
+  }
+
+  // ---------- state detail ----------
+
+  function renderDetail() {
+    var s = byName(state.sel);
+    var host = document.getElementById('detail');
+    if (!s) { host.innerHTML = ''; return; }
+
+    var t = s.th[state.th];
+    var loss = sum(t.loss);
+    var pct = t.extent2000 > 0 ? 100 * loss / t.extent2000 : 0;
+    var peakI = t.loss.indexOf(Math.max.apply(null, t.loss));
+
+    var html = '';
+    html += '<div class="detail-head">' +
+      '<h3 class="detail-name">' + s.name + '</h3>' +
+      '<div class="detail-meta">>' + state.th + '% canopy<br>' +
+      nf(t.extent2000) + ' ha forest in 2000</div></div>';
+
+    html += '<div class="minis">' +
+      '<div><div class="mini-k">Lost 2001–25</div><div class="mini-v">' + nf(loss) +
+        '</div><div class="mini-n">hectares</div></div>' +
+      '<div><div class="mini-k">Share of extent</div><div class="mini-v" style="color:var(--ember)">' +
+        nf1(pct) + '%</div><div class="mini-n">of its 2000 forest</div></div>' +
+      '<div><div class="mini-k">Worst year</div><div class="mini-v">' + YEARS[peakI] +
+        '</div><div class="mini-n">' + nf(t.loss[peakI]) + ' ha</div></div>' +
+      '</div>';
+
+    // driver composition
+    var dr = s.drivers || {};
+    var dtot = DRIVERS.reduce(function (a, d) { return a + sum(dr[d] || []); }, 0);
+    html += '<div class="sub-h">Dominant drivers <span>30% canopy · 2001–25</span></div>';
+    if (dtot > 0) {
+      var segs = DRIVERS.map(function (d) { return { d: d, v: sum(dr[d] || []) }; })
+        .filter(function (x) { return x.v > 0; })
+        .sort(function (a, b) { return b.v - a.v; });
+      html += '<div class="compbar">' + segs.map(function (x) {
+        return '<i style="background:' + DCOLORS[x.d] + ';flex:' + x.v.toFixed(2) + '" ' +
+          'title="' + x.d + ': ' + nf(x.v) + ' ha"></i>';
+      }).join('') + '</div>';
+      html += '<div class="legend" style="margin-top:11px;padding-top:11px">' +
+        segs.slice(0, 4).map(function (x) {
+          return '<span class="lg"><i style="background:' + DCOLORS[x.d] + '"></i>' + x.d +
+            ' <b>' + Math.round(100 * x.v / dtot) + '%</b></span>';
+        }).join('') + '</div>';
+    } else {
+      html += '<div class="note">No driver attribution for this state — loss below the 1 km mapping threshold.</div>';
+    }
+
+    // primary forest
+    html += '<div class="sub-h">Humid tropical primary forest <span>30% canopy · 2002–25</span></div>';
+    if (s.primary && sum(s.primary) > 0) {
+      html += '<div id="pf-host" class="chart-host"></div>';
+    } else {
+      html += '<div class="note">Outside the humid tropical primary forest layer — not an absence of old-growth, just outside this dataset’s scope.</div>';
+    }
+
+    // districts
+    var ds = DATA.districts.filter(function (d) { return d.s === s.name; })
+      .map(function (d) { return { n: d.n, v: sum(d.l) }; })
+      .sort(function (a, b) { return b.v - a.v; }).slice(0, 8);
+    html += '<div class="sub-h">Worst districts <span>30% canopy · top ' + ds.length + ' of ' +
+      DATA.districts.filter(function (d) { return d.s === s.name; }).length + '</span></div>';
+    if (ds.length) {
+      var dmax = ds[0].v || 1;
+      html += '<div class="dlist">' + ds.map(function (d) {
+        return '<div class="drow"><span class="n">' + d.n + '</span>' +
+          '<span class="v">' + nf(d.v) + ' ha</span>' +
+          '<span class="t"><i style="width:' + (100 * d.v / dmax).toFixed(1) + '%"></i></span></div>';
+      }).join('') + '</div>';
+    } else {
+      html += '<div class="note">No district-level records for this state.</div>';
+    }
+
+    // carbon
+    if (s.carbon) {
+      var nfx = s.carbon.netFlux;
+      var isSink = nfx < 0;
+      html += '<div class="sub-h">Forest carbon balance <span>annual average, 2001–25</span></div>';
+      html += '<div class="minis" style="margin-bottom:0">' +
+        '<div><div class="mini-k">Net flux</div><div class="mini-v" style="color:' +
+          (isSink ? 'var(--canopy)' : 'var(--ember)') + '">' +
+          (isSink ? '−' : '+') + compact(Math.abs(nfx)) + '</div>' +
+          '<div class="mini-n">t CO₂e/yr — net ' + (isSink ? 'sink' : 'source') + '</div></div>' +
+        '<div><div class="mini-k">Emissions</div><div class="mini-v">' + compact(s.carbon.emissions) +
+          '</div><div class="mini-n">t CO₂e/yr</div></div>' +
+        '<div><div class="mini-k">Carbon density</div><div class="mini-v">' + nf(s.carbon.agcDensity) +
+          '</div><div class="mini-n">t C/ha in 2000</div></div>' +
+        '</div>';
+    }
+
+    host.innerHTML = html;
+    if (s.primary && sum(s.primary) > 0) renderPrimary(s);
+  }
+
+  function renderPrimary(s) {
+    var host = document.getElementById('pf-host');
+    if (!host) return;
+    var W = host.clientWidth || 420;
+    var H = 120;
+    var m = { t: 10, r: 4, b: 20, l: 44 };
+    var iw = W - m.l - m.r, ih = H - m.t - m.b;
+    var vals = s.primary;
+    var max = niceMax(Math.max.apply(null, vals));
+
+    var svg = el('svg', { width: W, height: H, role: 'img',
+      'aria-label': 'Humid tropical primary forest loss in ' + s.name + ', 2002 to 2025' });
+
+    [0, max].forEach(function (t) {
+      var y = m.t + ih - (t / max) * ih;
+      svg.appendChild(el('line', { x1: m.l, x2: m.l + iw, y1: y, y2: y,
+        stroke: css('--rule'), 'stroke-width': 1 }));
+      svg.appendChild(el('text', { x: m.l - 7, y: y + 3.5, 'text-anchor': 'end',
+        fill: css('--ink-3'), 'font-family': css('--f-mono'), 'font-size': 9.5 },
+        t === 0 ? '0' : compact(t)));
+    });
+
+    var slot = iw / vals.length;
+    var bw = Math.max(2.5, slot - 2);
+    vals.forEach(function (v, i) {
+      var h = (v / max) * ih;
+      var x = m.l + i * slot + (slot - bw) / 2;
+      svg.appendChild(el('path', { d: barPath(x, m.t + ih - h, bw, h, 2.5),
+        fill: css('--graphite') }));
+      var hit = el('rect', { x: m.l + i * slot, y: m.t, width: slot, height: ih, fill: 'transparent' });
+      hoverable(hit, '<b>' + PYEARS[i] + '</b><br>' + nf(v) + ' ha primary');
+      svg.appendChild(hit);
+    });
+
+    [0, vals.length - 1].forEach(function (i) {
+      svg.appendChild(el('text', { x: m.l + i * slot + slot / 2, y: H - 6,
+        'text-anchor': i === 0 ? 'start' : 'end', fill: css('--ink-3'),
+        'font-family': css('--f-mono'), 'font-size': 9.5 }, PYEARS[i]));
+    });
+
+    svg.appendChild(el('line', { x1: m.l, x2: m.l + iw, y1: m.t + ih, y2: m.t + ih,
+      stroke: css('--rule-2'), 'stroke-width': 1 }));
+    host.appendChild(svg);
+  }
+
+  // ---------- controls ----------
+
+  function buildThresholds() {
+    var host = document.getElementById('th-chips');
+    DATA.meta.thresholds.forEach(function (t) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.id = 'th-' + t;
+      b.textContent = '>' + t + '%';
+      b.setAttribute('aria-pressed', String(t) === state.th ? 'true' : 'false');
+      b.addEventListener('click', function () {
+        state.th = String(t);
+        host.querySelectorAll('.chip').forEach(function (c) {
+          c.setAttribute('aria-pressed', c === b ? 'true' : 'false');
+        });
+        renderExplainer(); renderTiles(); renderAnnual(); renderRank(); renderDetail();
+      });
+      host.appendChild(b);
+    });
+  }
+
+  document.getElementById('metric-chips').addEventListener('click', function (e) {
+    var b = e.target.closest('.chip');
+    if (!b) return;
+    state.metric = b.dataset.metric;
+    this.querySelectorAll('.chip').forEach(function (c) {
+      c.setAttribute('aria-pressed', c === b ? 'true' : 'false');
+    });
+    renderRank();
+  });
+
+  // ---------- boot ----------
+
+  buildThresholds();
+  renderExplainer();
+  renderTiles();
+  renderAnnual();
+  renderRank();
+  renderDetail();
+
+  var rt;
+  window.addEventListener('resize', function () {
+    clearTimeout(rt);
+    rt = setTimeout(function () {
+      renderAnnual(); renderDetail();
+    }, 140);
+  });
+
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  if (mq.addEventListener) {
+    mq.addEventListener('change', function () {
+      renderAnnual(); renderDetail();
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
