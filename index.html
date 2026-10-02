@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Tree cover loss and forest carbon reports for India and Kenya, 2001-2025. Hansen/UMD data via Global Nature Watch, dataset v20260427.">
+<title>Tree Cover Loss Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root {
+  color-scheme: light;
+
+  --ground:      #f6f8f5;
+  --surface:     #ffffff;
+  --surface-2:   #eef2ed;
+  --ink:         #15201b;
+  --ink-2:       #4a5a52;
+  --ink-3:       #7b8a82;
+  --rule:        #dde4dc;
+  --rule-2:      #c9d3c8;
+
+  --canopy:      #1f6f5c;
+  --canopy-soft: #e3f0eb;
+  --ember:       #b84a26;
+
+  --shadow: 0 1px 2px rgba(21,32,27,.05), 0 8px 24px -16px rgba(21,32,27,.18);
+
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-sans: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ground:      #111512;
+    --surface:     #181d19;
+    --surface-2:   #1f2620;
+    --ink:         #e7ebe6;
+    --ink-2:       #a9b6ad;
+    --ink-3:       #7d8b82;
+    --rule:        #28302b;
+    --rule-2:      #38423a;
+
+    --canopy:      #43a086;
+    --canopy-soft: #18312a;
+    --ember:       #e08256;
+
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.6);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground:      #111512;
+  --surface:     #181d19;
+  --surface-2:   #1f2620;
+  --ink:         #e7ebe6;
+  --ink-2:       #a9b6ad;
+  --ink-3:       #7d8b82;
+  --rule:        #28302b;
+  --rule-2:      #38423a;
+
+  --canopy:      #43a086;
+  --canopy-soft: #18312a;
+  --ember:       #e08256;
+
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.6);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--f-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 0 64px;
+}
+
+/* ---------- masthead ---------- */
+
+.mast { padding-block: 44px 0px; }
+
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--canopy);
+  margin: 0 0 14px;
+}
+
+h1 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 6.1vw, 4.35rem);
+  line-height: 1.04;
+  letter-spacing: -.035em;
+  margin: 0 0 18px;
+}
+
+.standfirst {
+  font-size: 1.0625rem;
+  color: var(--ink-2);
+  margin: 0;
+}
+
+/* ---------- country groups ---------- */
+
+section { margin-top: 46px; }
+
+h2 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  margin: 0 0 18px;
+  letter-spacing: -.02em;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 22px 20px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color .12s, box-shadow .12s;
+}
+.card:hover { border-color: var(--canopy); box-shadow: var(--shadow); }
+.card:focus-visible { outline: 2px solid var(--canopy); outline-offset: 2px; }
+
+.card-k {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.card-title {
+  font-family: var(--f-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  margin: 0;
+}
+
+.card-stat {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 2.1rem;
+  line-height: 1;
+  letter-spacing: -.025em;
+  margin-top: 4px;
+}
+.card-stat.loss { color: var(--ember); }
+.card-stat.sink { color: #3E9B0A; }
+.card-stat small {
+  font-family: var(--f-mono);
+  font-size: .78rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--ink-3);
+  margin-left: 5px;
+}
+
+.card p { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+
+.card-go {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--canopy);
+}
+
+/* ---------- footer ---------- */
+
+.page-foot {
+  margin-top: 46px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-size: 12px;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+.page-foot p { margin: 0; }
+.page-foot a { color: var(--canopy); text-decoration: none; border-bottom: 1px solid var(--rule-2); }
+.page-foot a:hover { border-bottom-color: var(--canopy); }
+
+@media (max-width: 720px) {
+  .cards { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 620px) {
+  .wrap { padding-inline: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <p class="eyebrow">Hansen / UMD &middot; Global Nature Watch &middot; Dataset v20260427 &middot; 2001&ndash;2025</p>
+    <h1>Tree Cover Loss Study</h1>
+    <p class="standfirst">
+      Two countries, two questions each: how much tree cover has been lost this century, and
+      whether the forest that remains still takes in more carbon than it gives off.
+    </p>
+  </header>
+
+  <section>
+    <h2>India</h2>
+    <div class="cards">
+      <a class="card" href="india-tree-cover-loss.html">
+        <span class="card-k">Tree cover loss</span>
+        <h3 class="card-title">India Tree Cover Loss</h3>
+        <div class="card-stat loss">7.4%<small>of tree cover lost</small></div>
+        <p>Loss by year, state, district and driver, with the canopy cover setting explained.</p>
+        <span class="card-go">Open report &rarr;</span>
+      </a>
+      <a class="card" href="india-carbon-ledger.html">
+        <span class="card-k">Forest carbon</span>
+        <h3 class="card-title">India Forest Carbon Ledger</h3>
+        <div class="card-stat sink">78.8M<small>t CO&#8322;e/yr net sink</small></div>
+        <p>Gross emissions, removals and net carbon flux for all 634 districts.</p>
+        <span class="card-go">Open ledger &rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Kenya</h2>
+    <div class="cards">
+      <a class="card" href="kenya-tree-cover-loss.html">
+        <span class="card-k">Tree cover loss</span>
+        <h3 class="card-title">Kenya Tree Cover Loss</h3>
+        <div class="card-stat loss">12.4%<small>of tree cover lost</small></div>
+        <p>Loss by year, county, sub-county and driver, with the canopy cover setting explained.</p>
+        <span class="card-go">Open report &rarr;</span>
+      </a>
+      <a class="card" href="kenya-carbon-ledger.html">
+        <span class="card-k">Forest carbon</span>
+        <h3 class="card-title">Kenya Forest Carbon Ledger</h3>
+        <div class="card-stat sink">5.7M<small>t CO&#8322;e/yr net sink</small></div>
+        <p>Gross emissions, removals and net carbon flux for all 300 sub-counties.</p>
+        <span class="card-go">Open ledger &rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <footer class="page-foot">
+    <p>Compiled from the Global Nature Watch country downloads for India and Kenya, dataset version v20260427. Explore the source data at <a href="https://www.globalnaturewatch.org" target="_blank" rel="noopener">globalnaturewatch.org</a>.</p>
+  </footer>
+</div>
+</body>
+</html>
